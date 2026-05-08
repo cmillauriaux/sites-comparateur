@@ -19,60 +19,95 @@ import { SITES_DIR } from './env.js';
 const slug = new slugger();
 
 /**
- * Returns `{ imageUrl, asin, price }` for the first organic search result on
- * Amazon.fr. We scope every extraction to the same product block (the first
- * `<div data-component-type="s-search-result">` and the ~16KB of HTML that
- * follows it) so the three values stay consistent — the page also contains
- * sponsored carousels, "frequently bought" widgets, etc., whose ASIN/image
- * don't match the headline product.
+ * Returns `{ imageUrl, asin, price }` for the Amazon.fr search result that
+ * best matches `productName`. Strategy:
  *
- * Returned `price` is normalized to a regular ASCII string (`&nbsp;` → space).
- * Format follows what Amazon serves for FR locale: e.g. "89,99 €", or
- * "1 234,56 €" for thousands.
+ *   1. Walk the first MAX_BLOCKS_TO_INSPECT `data-component-type="s-search-result"`
+ *      blocks (Amazon often shows accessories — "Kit pour Kärcher SC5",
+ *      "Filtre rechange", "Housses compatible avec…" — before the actual
+ *      product, especially when the LLM-generated query is very specific).
+ *   2. Score each block: token overlap between query and product title, with
+ *      a heavy penalty for accessory keywords (compatible, kit, filtre, ...).
+ *   3. Pick the block with the highest score, gated by MIN_TITLE_MATCH.
+ *      Below the gate, return null/null/null — better an empty card than a
+ *      wrong link, image, or price (= zero conversion + lost credibility).
+ *
+ * Returned `price` is normalized (`&nbsp;` → space), format e.g. "89,99 €".
  */
 export async function findAmazonProduct(productName) {
   const url = `https://www.amazon.fr/s?k=${encodeURIComponent(productName)}`;
   try {
     const { html } = await fetchWithBrowser(url, { waitFor: 'domcontentloaded', timeoutMs: 20_000 });
 
-    // Scope to the first organic search result block.
-    const firstStart = html.search(/<div\b[^>]*data-component-type="s-search-result"/);
-    if (firstStart < 0) {
-      // No result block at all — fall back to whole-page extraction (best-effort).
-      return {
-        imageUrl: html.match(/<img[^>]+class="[^"]*s-image[^"]*"[^>]+src="([^"]+)"/)?.[1] ?? null,
-        asin: html.match(/data-asin="(B0[A-Z0-9]{8})"/)?.[1] ?? null,
-        price: null,
-      };
+    const positions = [...html.matchAll(/<div\b[^>]*data-component-type="s-search-result"/g)]
+      .map(m => m.index);
+    if (positions.length === 0) {
+      return { imageUrl: null, asin: null, price: null };
     }
-    const after = html.slice(firstStart, firstStart + 30_000);
-    const nextStart = after.slice(1).search(/<div\b[^>]*data-component-type="s-search-result"/);
-    const block = nextStart > 0 ? after.slice(0, nextStart) : after;
 
-    const asin = block.match(/data-asin="(B0[A-Z0-9]{8})"/)?.[1] ?? null;
+    let best = null;
+    const candidates = [];
+    for (let i = 0; i < Math.min(MAX_BLOCKS_TO_INSPECT, positions.length); i++) {
+      const start = positions[i];
+      const end = positions[i + 1] ?? Math.min(start + 30_000, html.length);
+      const block = html.slice(start, end);
 
-    const imgPrimary = block.match(/<img[^>]+class="[^"]*s-image[^"]*"[^>]+src="([^"]+)"/);
-    const imgFallback = block.match(/<img[^>]+src="(https:\/\/m\.media-amazon\.com\/images\/I\/[^"]+\.jpg)"/);
-    const imageUrl = imgPrimary?.[1] ?? imgFallback?.[1] ?? null;
+      const title = extractTitle(block);
+      if (!title) continue;
+      const { score, accessory } = scoreTitleMatch(productName, title);
+      const price = extractPrice(block);
 
-    // Walk EVERY a-offscreen price-like value in the block and pick the first
-    // that's plausibly the headline product price. Amazon often shows a small
-    // accessory price first ("19,99 €" for a replacement filter) before the
-    // real product price; filtering on a minimum euro value cuts these cases.
-    const priceCandidates = [...block.matchAll(/<span\s+class="a-offscreen">\s*([^<]*?€[^<]*?)<\/span>/g)]
-      .map(m => m[1].replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim());
-    const price = pickPlausiblePrice(priceCandidates);
+      // Cheap-price soft-gate: a high title-match with a price below the
+      // "headline product" floor (e.g. 19,99 € for an SV450 hit) is almost
+      // certainly an accessory whose listing happens to contain the product
+      // name. Apply an extra penalty to drop it below better-priced candidates.
+      const priceValue = price ? parsePriceEur(price) : NaN;
+      let adjusted = score;
+      if (Number.isFinite(priceValue) && priceValue < PRICE_FLOOR_EUR) {
+        adjusted -= PRICE_LOW_PENALTY;
+      }
 
-    return { imageUrl, asin, price };
+      const cand = {
+        idx: i, score, adjusted, accessory, title,
+        asin: extractAsin(block),
+        imageUrl: extractImage(block),
+        price,
+      };
+      candidates.push(cand);
+      if (!best || cand.adjusted > best.adjusted) best = cand;
+    }
+
+    if (!best || best.score < MIN_TITLE_MATCH) {
+      // No plausible match — return nothing rather than misleading data.
+      return { imageUrl: null, asin: null, price: null, title: null, matchScore: best?.score ?? 0 };
+    }
+
+    return {
+      imageUrl: best.imageUrl,
+      asin: best.asin,
+      price: best.price,
+      title: best.title,
+      matchScore: best.score,
+      pickedIdx: best.idx,
+    };
   } catch {
     return { imageUrl: null, asin: null, price: null };
   }
 }
 
-// Minimum plausible price (€) for a "headline product". Below this, the
-// listing is almost certainly an accessory, replacement part or single-unit
-// consumable. Tuned for jardin/electro/sport — adjust per niche later if needed.
+// How many search-result blocks to scan before giving up. Past N, ranking falls
+// off a cliff and we're better off returning null than picking noise.
+const MAX_BLOCKS_TO_INSPECT = 8;
+
+// Minimum match score (in [0,1]) to accept a result. Anything below this and
+// we treat the search as failed (return null rather than wrong product).
+const MIN_TITLE_MATCH = 0.5;
+
+// Below this price, a listing is treated as "almost certainly an accessory"
+// and gets a heavy soft penalty in the candidate ranking. Tuned for the
+// jardin/electro/sport niches where headline products are ≥ ~50 €.
 const PRICE_FLOOR_EUR = 40;
+const PRICE_LOW_PENALTY = 0.4;
 
 const parsePriceEur = (raw) => {
   // "1 234,56 €" → 1234.56 ; returns NaN on garbage.
@@ -81,13 +116,112 @@ const parsePriceEur = (raw) => {
   return Number.isFinite(n) ? n : NaN;
 };
 
-function pickPlausiblePrice(candidates) {
-  for (const raw of candidates) {
-    const value = parsePriceEur(raw);
-    if (value >= PRICE_FLOOR_EUR) return raw;
+// STRONG accessory signals — words that, when in the title's prefix, identify
+// the listing as an accessory rather than the headline product. Penalty is
+// large enough to push a perfect-match score below the acceptance threshold.
+const STRONG_ACCESSORY_TOKENS = new Set([
+  'compatible', 'compatibles',
+  'rechange', 'rechanges', 'remplacement', 'remplacements',
+  'kit', 'kits', 'lot', 'lots', 'pack', 'packs',
+  'set', 'sets', 'sachet', 'sachets',
+  'chiffon', 'chiffons', 'lingette', 'lingettes',
+]);
+const STRONG_ACCESSORY_PENALTY = 0.6;
+const PREFIX_CHARS_FOR_STRONG = 80;     // only check strong signals near the title start
+
+// WEAK signals — accessory-typical nouns. Penalty is mild because legitimate
+// products often list "filtres inclus" / "accessoires fournis" as features.
+const WEAK_ACCESSORY_TOKENS = new Set([
+  'filtre', 'filtres', 'cartouche', 'cartouches',
+  'brosse', 'brosses', 'recharge', 'recharges',
+  'housse', 'housses',
+  'tube', 'tuyau', 'buse', 'embout', 'embouts',
+  'joint', 'joints', 'patin', 'patins',
+  'lingette', 'lingettes', 'tampon', 'tampons', 'chiffon', 'chiffons',
+  'sac', 'sacs',
+  'lame', 'lames',
+  'fixation', 'support',
+  'coque', 'coques', 'protection',
+]);
+const WEAK_ACCESSORY_PENALTY = 0.15;
+
+// Tokenize for fuzzy product matching:
+//  - lowercase + accent strip (NFD)
+//  - collapse "<short letters> <digit>" → "<lettersdigit>" so "SC 3", "i 7",
+//    "M 18" become single tokens that can match "SC3", "i7", "M18" in queries.
+//  - alphanum split, drop tokens shorter than 2 chars
+const tokenize = (s) =>
+  s.toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/([a-z]{1,4})\s+(\d+)/g, '$1$2')
+    .split(/[^a-z0-9]+/)
+    .filter(t => t && t.length >= 2);
+
+function scoreTitleMatch(query, title) {
+  const qTokens = tokenize(query);
+  const tTokensArr = tokenize(title);
+  const tTokens = new Set(tTokensArr);
+  if (qTokens.length === 0) return { score: 0, accessory: false };
+
+  // Hard gate 1 — model identifier match. Tokens that mix letters AND digits
+  // (sc3, sv450, i7, m18) are model identifiers; ALL of them must appear as
+  // tokens in the title. Pure numeric tokens are not used as a gate because
+  // titles also contain spec values ("3,2 bar", "1 500 W") that match by chance.
+  const qAlphanumMix = qTokens.filter(t => /[a-z]/.test(t) && /\d/.test(t));
+  if (qAlphanumMix.length > 0) {
+    if (!qAlphanumMix.every(qt => tTokens.has(qt))) {
+      return { score: 0, accessory: false, reason: 'model-id-mismatch' };
+    }
   }
-  // Nothing met the threshold: better to return null than a misleading 19,99 €.
+
+  // Substring match for fuzzy alignment ("easy" matches "easyfix").
+  const matched = qTokens.filter(qt => tTokensArr.some(tt => tt.includes(qt))).length;
+  let score = matched / qTokens.length;
+
+  // Strong accessory signal: only counts if it appears near the start of the
+  // title (where product-type words live), not when it's just describing
+  // included accessories or features further along.
+  const titleLow = title.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const prefixTokens = new Set(tokenize(titleLow.slice(0, PREFIX_CHARS_FOR_STRONG)));
+  const strong = [...prefixTokens].some(t => STRONG_ACCESSORY_TOKENS.has(t));
+
+  let penalty = 0;
+  if (strong) {
+    penalty = STRONG_ACCESSORY_PENALTY;
+  } else if ([...tTokens].some(t => WEAK_ACCESSORY_TOKENS.has(t))) {
+    penalty = WEAK_ACCESSORY_PENALTY;
+  }
+  score -= penalty;
+
+  return { score, accessory: penalty > 0 };
+}
+
+function extractTitle(block) {
+  const patterns = [
+    /<h2[^>]*>[\s\S]*?<span[^>]*>([^<]+)<\/span>/,
+    /aria-label="([^"]{20,300})"/,
+    /<span[^>]*class="[^"]*a-text-normal[^"]*"[^>]*>([^<]+)<\/span>/,
+  ];
+  for (const re of patterns) {
+    const m = block.match(re);
+    if (m && m[1].trim().length > 15) return m[1].trim();
+  }
   return null;
+}
+
+function extractPrice(block) {
+  const raw = block.match(/<span\s+class="a-offscreen">\s*([^<]*?€[^<]*?)<\/span>/)?.[1];
+  return raw ? raw.replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim() : null;
+}
+
+function extractImage(block) {
+  const primary = block.match(/<img[^>]+class="[^"]*s-image[^"]*"[^>]+src="([^"]+)"/);
+  const fallback = block.match(/<img[^>]+src="(https:\/\/m\.media-amazon\.com\/images\/I\/[^"]+\.jpg)"/);
+  return primary?.[1] ?? fallback?.[1] ?? null;
+}
+
+function extractAsin(block) {
+  return block.match(/data-asin="(B0[A-Z0-9]{8})"/)?.[1] ?? null;
 }
 
 async function downloadTo(url, outputPath) {
@@ -153,12 +287,20 @@ export async function fetchProductImages({ niche, articleSlug, products, verbose
     }
 
     try {
-      const { imageUrl, asin, price } = await findAmazonProduct(productName);
+      const result = await findAmazonProduct(productName);
+      const { imageUrl, asin, price, title, matchScore, pickedIdx } = result;
+
       if (!imageUrl && !asin) {
-        if (verbose) console.warn(`    ⚠️  no image/asin found: ${productName}`);
+        if (verbose) console.warn(`    ⚠️  ${productName} — rejected (score=${matchScore?.toFixed(2) ?? '0.00'})`);
         imageMap[productName] = null;
         asinMap[productName] = null;
         priceMap[productName] = null;
+        // Persist a "no-match" sidecar so we don't refetch on every run.
+        mkdirSync(publicDir, { recursive: true });
+        writeFileSync(jsonSidecar, JSON.stringify({
+          asin: null, price: null, title: null, matchScore: matchScore ?? 0,
+          fetchedAt: new Date().toISOString(),
+        }, null, 2));
         continue;
       }
       if (imageUrl && !existsSync(localPath)) {
@@ -174,10 +316,14 @@ export async function fetchProductImages({ niche, articleSlug, products, verbose
 
       mkdirSync(publicDir, { recursive: true });
       writeFileSync(jsonSidecar, JSON.stringify({
-        asin, price, fetchedAt: new Date().toISOString(),
+        asin, price, title, matchScore, pickedIdx,
+        fetchedAt: new Date().toISOString(),
       }, null, 2));
 
-      if (verbose) console.log(`    ✅ ${productName} → image=${imageMap[productName] ? 'ok' : '–'} asin=${asin ?? '–'} price=${price ?? '–'}`);
+      if (verbose) {
+        const flag = matchScore >= 0.8 ? '✅' : '⚠️ ';
+        console.log(`    ${flag} ${productName} → score=${matchScore.toFixed(2)} idx=${pickedIdx} asin=${asin ?? '–'} price=${price ?? '–'}`);
+      }
     } catch (err) {
       if (verbose) console.warn(`    ⚠️  ${productName}: ${err.message}`);
       imageMap[productName] = null;
