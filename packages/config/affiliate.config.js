@@ -84,14 +84,51 @@ const affiliate = {
   },
 };
 
+// SiteStripe-style tracking suffix appended after `tag=`. Not required for
+// commission attribution (the cookie is set as soon as Amazon sees `tag=`)
+// but gives per-link stats in Associates Central → Reports.
+const AMAZON_SITESTRIPE_PARAMS = 'linkCode=ll1&language=fr_FR&ref_=as_li_ss_tl';
+
+let _warnedNoTag = false;
+
+/**
+ * Build an Amazon.fr URL with the affiliate tag + SiteStripe tracking params.
+ * Single source of truth — used both at article generation time
+ * (buildAffiliateUrl below) and at render time (AffiliateButton.astro).
+ *
+ * @param {{ asin?: string, query?: string, tag?: string }} opts
+ *   - asin:  preferred — produces /dp/<asin>/?tag=...
+ *   - query: fallback — produces /s?k=<query>&tag=...
+ *   - tag:   Associates ID, e.g. "monsite-21". When falsy a warning is
+ *           emitted (once per process) and the URL is returned untagged.
+ */
+export function buildAmazonUrl({ asin, query, tag } = {}) {
+  if (!tag && !_warnedNoTag) {
+    console.warn(
+      '[affiliate] AMAZON_AFFILIATE_ID is empty — outgoing Amazon links will be untagged (no commission).'
+    );
+    _warnedNoTag = true;
+  }
+  const tagPart = tag
+    ? `tag=${encodeURIComponent(tag)}&${AMAZON_SITESTRIPE_PARAMS}`
+    : '';
+  if (asin) {
+    return `https://www.amazon.fr/dp/${asin}/${tagPart ? `?${tagPart}` : ''}`;
+  }
+  if (query) {
+    const q = encodeURIComponent(query);
+    return `https://www.amazon.fr/s?k=${q}${tagPart ? `&${tagPart}` : ''}`;
+  }
+  return `https://www.amazon.fr/${tagPart ? `?${tagPart}` : ''}`;
+}
+
 export function buildAffiliateUrl(productData, programs = affiliate.programs) {
   const { program, asin, fallbackUrl } = productData;
   const programConfig = programs[program];
   if (!programConfig) return fallbackUrl;
 
   if (program === 'amazon' && asin) {
-    const tag = process.env.AMAZON_AFFILIATE_ID;
-    return `${programConfig.baseUrl}${asin}?tag=${tag}`;
+    return buildAmazonUrl({ asin, tag: process.env.AMAZON_AFFILIATE_ID });
   }
 
   if (program.startsWith('awin-')) {

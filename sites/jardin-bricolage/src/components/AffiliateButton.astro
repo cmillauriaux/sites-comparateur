@@ -1,13 +1,15 @@
 ---
 /**
  * Bouton CTA d'affiliation. Construit le href automatiquement quand `product`
- * est fourni et qu'aucun href n'est passé : URL de recherche Amazon.fr avec
- * le tag d'affiliation injecté depuis AMAZON_AFFILIATE_ID.
+ * est fourni et qu'aucun href n'est passé : URL Amazon.fr (ASIN si dispo,
+ * sinon recherche) avec tag + paramètres SiteStripe injectés.
  *
  * Awin est désactivé tant qu'aucun ID Awin n'est configuré dans .env. Si tu
  * passes `program="awin-..."` mais que le programme n'a pas d'advertiserId,
  * on retombe sur Amazon search.
  */
+import { buildAmazonUrl } from '@comparateur/config/affiliate';
+
 interface Props {
   href?: string;
   product?: string;
@@ -18,15 +20,7 @@ interface Props {
 const { href, product, asin, program = 'amazon', variant = 'primary' } = Astro.props;
 
 const amazonTag = import.meta.env.AMAZON_AFFILIATE_ID || process.env.AMAZON_AFFILIATE_ID || '';
-
-function buildAmazonUrl() {
-  const tagSuffix = amazonTag ? `&tag=${encodeURIComponent(amazonTag)}` : '';
-  if (asin) return `https://www.amazon.fr/dp/${asin}/?${tagSuffix.slice(1)}`;
-  if (product) return `https://www.amazon.fr/s?k=${encodeURIComponent(product)}${tagSuffix}`;
-  return `https://www.amazon.fr/${tagSuffix.replace(/^&/, '?')}`;
-}
-
-const finalHref = href || buildAmazonUrl();
+const finalHref = href || buildAmazonUrl({ asin, query: product, tag: amazonTag });
 const label = program === 'amazon' ? 'Voir sur Amazon' : 'Voir le prix';
 ---
 <a
