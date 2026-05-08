@@ -24,16 +24,37 @@ const labelFor = (key: string) =>
 
 const imageFor = (p: Product) =>
   (p.image && !p.image.startsWith('auto:')) ? p.image : null;
+
+// Per-column maxes — used to bold the leader(s) in each criterion + global score.
+// Ties are intentional: multiple rows can be bolded.
+const numericVal = (v: number | string | undefined) => {
+  const n = typeof v === 'number' ? v : Number(v);
+  return Number.isFinite(n) ? n : null;
+};
+const maxByCriterion: Record<string, number> = {};
+for (const c of allCriteria) {
+  const vals = products.map(p => numericVal(p.criteria?.[c])).filter((v): v is number => v !== null);
+  if (vals.length) maxByCriterion[c] = Math.max(...vals);
+}
+const scoreVals = products.map(p => p.score).filter((v): v is number => typeof v === 'number');
+const maxScore = scoreVals.length ? Math.max(...scoreVals) : null;
+
+const isLeaderCriterion = (p: Product, c: string) => {
+  const v = numericVal(p.criteria?.[c]);
+  return v !== null && v === maxByCriterion[c];
+};
+const isLeaderScore = (p: Product) =>
+  maxScore !== null && p.score === maxScore;
 ---
 <div class="not-prose my-8 overflow-x-auto rounded-lg border border-[var(--color-border)]">
   <table class="w-full text-sm">
     <thead class="bg-[var(--color-hero-bg)] text-[var(--color-primary-dark)]">
       <tr>
-        <th class="px-4 py-3 text-left font-semibold w-20">&nbsp;</th>
-        <th class="px-4 py-3 text-left font-semibold">Produit</th>
-        {allCriteria.map(c => <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">{labelFor(c)}</th>)}
-        <th class="px-4 py-3 text-left font-semibold">Note</th>
-        <th class="px-4 py-3 text-left font-semibold">Prix</th>
+        <th class="px-3 py-3 text-left font-semibold w-28">&nbsp;</th>
+        <th class="px-3 py-3 text-left font-semibold">Produit</th>
+        {allCriteria.map(c => <th class="px-2 py-3 text-center font-semibold w-16">{labelFor(c)}</th>)}
+        <th class="px-2 py-3 text-center font-semibold w-16">Note</th>
+        <th class="px-3 py-3 text-left font-semibold">Prix</th>
       </tr>
     </thead>
     <tbody>
@@ -47,17 +68,32 @@ const imageFor = (p: Product) =>
                   src={img}
                   alt={p.name}
                   loading="lazy"
-                  class="w-16 h-16 object-contain rounded bg-[var(--color-hero-bg)]"
+                  class="w-24 h-24 object-contain rounded bg-[var(--color-hero-bg)]"
                   onerror="this.style.visibility='hidden'"
                 />
               ) : (
-                <div class="w-16 h-16 rounded bg-[var(--color-hero-bg)]"></div>
+                <div class="w-24 h-24 rounded bg-[var(--color-hero-bg)]"></div>
               )}
             </td>
-            <td class="px-4 py-3 font-semibold text-[var(--color-primary-dark)]">{p.name}</td>
-            {allCriteria.map(c => <td class="px-4 py-3">{p.criteria?.[c] ?? '—'}</td>)}
-            <td class="px-4 py-3 whitespace-nowrap">{p.score !== undefined ? `${p.score}/10` : '—'}</td>
-            <td class="px-4 py-3">
+            <td class="px-3 py-3 font-semibold text-[var(--color-primary-dark)]">{p.name}</td>
+            {allCriteria.map(c => {
+              const leader = isLeaderCriterion(p, c);
+              return (
+                <td class:list={[
+                  "px-2 py-3 text-center tabular-nums",
+                  leader && "font-bold text-[var(--color-primary-dark)]",
+                ]}>
+                  {p.criteria?.[c] ?? '—'}
+                </td>
+              );
+            })}
+            <td class:list={[
+              "px-2 py-3 text-center whitespace-nowrap tabular-nums",
+              isLeaderScore(p) && "font-bold text-[var(--color-primary-dark)]",
+            ]}>
+              {p.score !== undefined ? `${p.score}/10` : '—'}
+            </td>
+            <td class="px-3 py-3">
               <AffiliateButton
                 product={p.name}
                 asin={p.asin ?? undefined}
