@@ -23,7 +23,7 @@ import { REPO_ROOT, SITES_DIR, requireEnv } from './lib/env.js';
 import { readQueue, writeQueue, appendPublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveSiteArg } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
-import { fetchProductImages, injectImagePaths, injectAffiliateAsins } from './lib/product-images.js';
+import { fetchProductImages, injectImagePaths, injectAffiliateAsins, injectPrices } from './lib/product-images.js';
 import sourcesConfig from '@comparateur/config/sources';
 
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '2', 10);
@@ -53,7 +53,7 @@ function buildPrompt({ keyword, intent, scrapedSources, siteConfig, articleSlug,
    - Une <ProductCard name="Marque Modèle" image="auto:Marque Modèle" score={8.5} description="..." pros={["...", "..."]} cons={["..."]} /> — le placeholder image="auto:..." sera remplacé automatiquement par l'image Amazon (ne mets PAS d'URL d'image manuelle)
    - 3-5 lignes de prose qui présentent le produit avec verdict
 5. ## Tableau comparatif — <ComparisonTable products={[{name: "Marque Modèle", image: "auto:Marque Modèle", score: 8.5, criteria: {performance: 9, ergonomie: 8, rapportQualitePrix: 8}}, ...]} criteria={["performance", "ergonomie", "rapportQualitePrix"]} criteriaLabels={{performance: "Performance", ergonomie: "Ergonomie", rapportQualitePrix: "Rapport qualité-prix"}} />
-   IMPORTANT : chaque produit dans la table DOIT avoir un `image: "auto:Marque Modèle"` avec EXACTEMENT la même string que celle utilisée dans la <ProductCard> correspondante. Le pipeline remplace ces placeholders par les chemins locaux après génération.
+   IMPORTANT : chaque produit dans la table DOIT avoir un \`image: "auto:Marque Modèle"\` avec EXACTEMENT la même string que celle utilisée dans la <ProductCard> correspondante. Le pipeline remplace ces placeholders par les chemins locaux après génération.
 6. ## FAQ — 3-5 questions/réponses
 7. ## Notre verdict — recommandation finale claire ("Notre choix" / "Meilleur rapport qualité-prix" / "Le moins cher") avec un dernier <AffiliateButton product="..." />`
     : `INTENT = TEST (un seul produit). Structure REQUISE:
@@ -156,6 +156,17 @@ TU ES L'AUTEUR. C'EST L'AVIS DU SITE. Pas une compilation de citations.
 EXCEPTION RARE : tu peux nommer une source UNIQUEMENT si deux sources se contredisent franchement et qu'il faut signaler la divergence ("Que Choisir lui attribue 4/5 contre 3/5 chez Les Numériques sur la longévité de la batterie."). C'est le seul cas.
 
 ==========================================
+PRIX — NE PAS INVENTER
+==========================================
+N'écris AUCUN prix dans le corps de l'article. Le pipeline injecte
+automatiquement le prix Amazon en temps réel sur les <ProductCard> et dans
+le tableau comparatif via l'attribut \`price="..."\`. Ces prix sont vérifiés
+au moment du build, ceux que tu pourrais écrire seraient déjà périmés.
+Si tu veux discuter du positionnement tarifaire, parle de gammes ("entrée
+de gamme", "milieu de gamme", "premium") ou d'écarts relatifs ("environ
+deux fois plus cher que X"), jamais de prix absolus en euros.
+
+==========================================
 RÈGLE GROUNDING — INTANGIBLE
 ==========================================
 Toutes les infos factuelles (prix, specs, performances, classements, noms de modèles) doivent venir des ${scrapedSources.length} sources fournies plus bas. Ne JAMAIS inventer un chiffre. Si une info manque, évite la mention sans le dire au lecteur — choisis simplement les produits + critères que tes sources te permettent de défendre solidement.
@@ -176,7 +187,7 @@ COMPOSANTS ASTRO À UTILISER
 - <AffiliateButton product="Marque Modèle">Texte du bouton</AffiliateButton>
    → href est construit AUTOMATIQUEMENT vers Amazon avec le tag d'affiliation. NE JAMAIS passer href.
    → product="..." doit être le nom EXACT du produit ; ce nom sert pour la recherche Amazon.
-   → NE JAMAIS passer asin="..." — l'ASIN est injecté automatiquement par le pipeline (recherche Amazon du `product`). Inventer un ASIN crée des liens cassés.
+   → NE JAMAIS passer asin="..." — l'ASIN est injecté automatiquement par le pipeline (recherche Amazon du \`product\`). Inventer un ASIN crée des liens cassés.
 
 - <ProductCard
      name="Marque Modèle"
@@ -302,14 +313,16 @@ async function generateOne(siteConfig) {
 
     if (productNames.size > 0) {
       const productList = [...productNames];
-      console.log(`  🛒 Fetching ${productList.length} product images + ASINs from Amazon…`);
-      const { imageMap, asinMap } = await fetchProductImages({ niche, articleSlug, products: productList });
+      console.log(`  🛒 Fetching ${productList.length} product images + ASINs + prices from Amazon…`);
+      const { imageMap, asinMap, priceMap } = await fetchProductImages({ niche, articleSlug, products: productList });
       let updated = injectImagePaths(written, imageMap);
       updated = injectAffiliateAsins(updated, asinMap);
+      updated = injectPrices(updated, priceMap);
       writeFileSync(outputPath, updated);
       const imgs = Object.values(imageMap).filter(Boolean).length;
       const asins = Object.values(asinMap).filter(Boolean).length;
-      console.log(`  🖼  ${imgs}/${productList.length} images injected · 🔗 ${asins}/${productList.length} ASINs injected`);
+      const prices = Object.values(priceMap).filter(Boolean).length;
+      console.log(`  🖼  ${imgs}/${productList.length} images · 🔗 ${asins}/${productList.length} ASINs · 💶 ${prices}/${productList.length} prices`);
     }
 
     // 6. Promote in queue + register published URL

@@ -6,6 +6,7 @@ interface Product {
   score?: number;
   asin?: string | null;
   image?: string;       // chemin résolu par l'article-generator post-pass ("auto:..." → /images/products/...)
+  price?: string;       // injecté par le pipeline depuis Amazon (ex: "89,99 €")
   program?: string;
   criteria?: Record<string, number | string>;
 }
@@ -50,11 +51,11 @@ const isLeaderScore = (p: Product) =>
   <table class="w-full text-sm">
     <thead class="bg-[var(--color-hero-bg)] text-[var(--color-primary-dark)]">
       <tr>
-        <th class="px-3 py-3 text-left font-semibold w-28">&nbsp;</th>
-        <th class="px-3 py-3 text-left font-semibold">Produit</th>
-        {allCriteria.map(c => <th class="px-2 py-3 text-center font-semibold w-16">{labelFor(c)}</th>)}
-        <th class="px-2 py-3 text-center font-semibold w-16">Note</th>
-        <th class="px-3 py-3 text-left font-semibold">Prix</th>
+        <th class="px-2 py-2 text-left font-semibold w-20">&nbsp;</th>
+        <th class="px-2 py-2 text-left font-semibold">Produit</th>
+        {allCriteria.map(c => <th class="px-2 py-2 text-center font-semibold w-14 whitespace-nowrap">{labelFor(c)}</th>)}
+        <th class="px-2 py-2 text-center font-semibold w-12 whitespace-nowrap">Note</th>
+        <th class="px-2 py-2 text-center font-semibold w-32 whitespace-nowrap">Prix</th>
       </tr>
     </thead>
     <tbody>
@@ -62,20 +63,20 @@ const isLeaderScore = (p: Product) =>
         const img = imageFor(p);
         return (
           <tr class="border-t border-[var(--color-border)]">
-            <td class="px-3 py-3">
+            <td class="px-2 py-3">
               {img ? (
                 <img
                   src={img}
                   alt={p.name}
                   loading="lazy"
-                  class="w-24 h-24 object-contain rounded bg-[var(--color-hero-bg)]"
+                  class="w-16 h-16 object-contain rounded bg-[var(--color-hero-bg)]"
                   onerror="this.style.visibility='hidden'"
                 />
               ) : (
-                <div class="w-24 h-24 rounded bg-[var(--color-hero-bg)]"></div>
+                <div class="w-16 h-16 rounded bg-[var(--color-hero-bg)]"></div>
               )}
             </td>
-            <td class="px-3 py-3 font-semibold text-[var(--color-primary-dark)]">{p.name}</td>
+            <td class="px-2 py-3 font-semibold text-[var(--color-primary-dark)]">{p.name}</td>
             {allCriteria.map(c => {
               const leader = isLeaderCriterion(p, c);
               return (
@@ -93,14 +94,17 @@ const isLeaderScore = (p: Product) =>
             ]}>
               {p.score !== undefined ? `${p.score}/10` : '—'}
             </td>
-            <td class="px-3 py-3">
+            <td class="px-2 py-3 text-center whitespace-nowrap">
+              {p.price && (
+                <p class="font-semibold tabular-nums text-[var(--color-primary-dark)] mb-1">{p.price}</p>
+              )}
               <AffiliateButton
                 product={p.name}
                 asin={p.asin ?? undefined}
                 program={p.program ?? 'amazon'}
                 variant="secondary"
               >
-                Voir le prix
+                {p.price ? 'Voir l\'offre' : 'Voir le prix'}
               </AffiliateButton>
             </td>
           </tr>

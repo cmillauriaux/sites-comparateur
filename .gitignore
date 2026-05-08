@@ -27,3 +27,4 @@ sites/*/package-lock.json
 # debugging artifacts
 screenshots/
 /tmp/
+screenshots-tmp/

@@ -35,7 +35,11 @@ const jsonLd = {
 ---
 <SiteLayout title={data.title} description={data.description} ogImage={data.heroImage}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-  <article class="mx-auto max-w-3xl px-4 py-8">
+  <article class:list={[
+    "mx-auto px-4 py-8",
+    // Comparatifs need more horizontal space for their products table.
+    data.intent === 'comparatif' ? "max-w-5xl" : "max-w-3xl",
+  ]}>
     <p class="text-xs uppercase tracking-wide text-[var(--color-primary)] font-semibold mb-2">{intentLabel}</p>
     <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-3">{data.title}</h1>
     <p class="text-[var(--color-text-muted)] text-sm flex flex-wrap gap-3 mb-6">
