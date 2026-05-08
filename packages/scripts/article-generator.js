@@ -23,7 +23,7 @@ import { REPO_ROOT, SITES_DIR, requireEnv } from './lib/env.js';
 import { readQueue, writeQueue, appendPublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveSiteArg } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
-import { fetchProductImages, injectImagePaths, injectAffiliateAsins, injectPrices } from './lib/product-images.js';
+import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices } from './lib/product-images.js';
 import sourcesConfig from '@comparateur/config/sources';
 
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '2', 10);
@@ -316,6 +316,7 @@ async function generateOne(siteConfig) {
       console.log(`  🛒 Fetching ${productList.length} product images + ASINs + prices from Amazon…`);
       const { imageMap, asinMap, priceMap } = await fetchProductImages({ niche, articleSlug, products: productList });
       let updated = injectImagePaths(written, imageMap);
+      updated = injectImageAttributes(updated, imageMap);
       updated = injectAffiliateAsins(updated, asinMap);
       updated = injectPrices(updated, priceMap);
       writeFileSync(outputPath, updated);

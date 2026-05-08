@@ -404,20 +404,30 @@ function injectAttributeByProductName(markdown, attr, valueMap, { onAffiliateBut
   out = out.replace(
     /(<ComparisonTable\b[\s\S]*?products=\{\[)([\s\S]*?)(\]\}[\s\S]*?\/?>)/g,
     (_full, prefix, productsArr, suffix) => {
-      // Inject `<attr>: "..."` right after each `name: "..."`. Scoping by braces
-      // is unreliable (each product object embeds a nested `criteria: {...}`),
-      // so we rely on `name:` only appearing inside `products={[...]}` here.
-      const transformed = productsArr.replace(
-        /(\bname\s*:\s*(["'])([^"']+)\2)/g,
-        (whole, head, q, name) => {
-          const value = valueMap[name.trim()];
-          if (!value) return whole;
-          // If this product entry already has the attribute, skip.
-          // Conservative scope: look at the next 200 chars of the substring after `head`.
-          return `${head}, ${attr}: ${q}${value}${q}`;
-        },
-      );
-      return prefix + transformed + suffix;
+      // Inject `<attr>: "..."` right after each `name: "..."`, but only if
+      // the entry doesn't already declare the attribute. Per-entry scope is
+      // approximated as "from this name: to the next name:" since each
+      // product object embeds a nested `criteria: {...}` that breaks naive
+      // brace counting.
+      const matches = [...productsArr.matchAll(/\bname\s*:\s*(["'])([^"']+)\1/g)];
+      if (matches.length === 0) return prefix + productsArr + suffix;
+      const attrRe = new RegExp(`\\b${attr}\\s*:`);
+      let out2 = '';
+      let cursor = 0;
+      for (let i = 0; i < matches.length; i++) {
+        const m = matches[i];
+        const headEnd = m.index + m[0].length;
+        const nextStart = matches[i + 1]?.index ?? productsArr.length;
+        const entryBody = productsArr.slice(headEnd, nextStart);
+        const value = valueMap[m[2].trim()];
+        out2 += productsArr.slice(cursor, headEnd);
+        if (value && !attrRe.test(entryBody)) {
+          out2 += `, ${attr}: "${value}"`;
+        }
+        cursor = headEnd;
+      }
+      out2 += productsArr.slice(cursor);
+      return prefix + out2 + suffix;
     },
   );
 
@@ -429,6 +439,14 @@ function injectAttributeByProductName(markdown, attr, valueMap, { onAffiliateBut
  *  Targets ProductCard, AffiliateButton, ComparisonTable. */
 export function injectAffiliateAsins(markdown, asinMap) {
   return injectAttributeByProductName(markdown, 'asin', asinMap, { onAffiliateButton: true });
+}
+
+/** Inject `image="..."` on ProductCards and ComparisonTable products that lack
+ *  one. Used as a safety net after `injectImagePaths`: if Claude forgets the
+ *  `image="auto:..."` placeholder, we still wire the resolved local path by
+ *  matching on product name. */
+export function injectImageAttributes(markdown, imageMap) {
+  return injectAttributeByProductName(markdown, 'image', imageMap, { onAffiliateButton: false });
 }
 
 /** Inject `price="..."` (e.g. "89,99 €") on ProductCards and inside

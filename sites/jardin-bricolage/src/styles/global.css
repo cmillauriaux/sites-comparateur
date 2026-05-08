@@ -39,8 +39,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--color-primary); }
-a:hover { color: var(--color-primary-dark); }
+@layer base {
+  a { color: var(--color-primary); }
+  a:hover { color: var(--color-primary-dark); }
+}
 
 .prose :where(h1, h2, h3) { color: var(--color-primary-dark); }
 .prose :where(a) { text-decoration-thickness: 1px; }
