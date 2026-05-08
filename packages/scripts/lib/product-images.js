@@ -86,13 +86,15 @@ export async function fetchProductImages({ niche, articleSlug, products, verbose
 }
 
 /**
- * Replace `image="auto:Some Product Name"` (or `image='auto:...'`) markers
- * in the article markdown with actual local paths from the imageMap.
+ * Replace `image="auto:Some Product Name"` markers in the article markdown
+ * with actual local paths from the imageMap. Matches both attribute syntax
+ * (`image="auto:..."` in <ProductCard>) and object-property syntax
+ * (`image: "auto:..."` inside <ComparisonTable products={[{...}]} />).
  */
 export function injectImagePaths(markdown, imageMap) {
-  return markdown.replace(/image=(["'])auto:([^"']+)\1/g, (full, quote, name) => {
+  return markdown.replace(/image\s*([:=])\s*(["'])auto:([^"']+)\2/g, (_full, sep, quote, name) => {
     const path = imageMap[name.trim()];
-    if (!path) return `image=${quote}${quote}`;
-    return `image=${quote}${path}${quote}`;
+    if (!path) return `image${sep === ':' ? ': ' : '='}${quote}${quote}`;
+    return `image${sep === ':' ? ': ' : '='}${quote}${path}${quote}`;
   });
 }

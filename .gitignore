@@ -23,3 +23,7 @@ Thumbs.db
 # Per-site Polyglow lockfiles — keep root pnpm-lock.yaml only
 sites/*/pnpm-lock.yaml
 sites/*/package-lock.json
+
+# debugging artifacts
+screenshots/
+/tmp/

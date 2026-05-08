@@ -66,6 +66,9 @@ importers:
       dayjs:
         specifier: ^1.11.13
         version: 1.11.20
+      github-slugger:
+        specifier: ^2.0.0
+        version: 2.0.0
       tailwindcss:
         specifier: ^4.1.12
         version: 4.2.4

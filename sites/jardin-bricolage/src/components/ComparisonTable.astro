@@ -1,19 +1,11 @@
 ---
 import AffiliateButton from './AffiliateButton.astro';
 
-function slugify(s: string) {
-  return s
-    .toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
 interface Product {
   name: string;
   score?: number;
   asin?: string | null;
-  image?: string;       // optionnel : si absent, on cherche /images/products/<slug-article>/<slug-produit>.jpg téléchargé par le pipeline
+  image?: string;       // chemin résolu par l'article-generator post-pass ("auto:..." → /images/products/...)
   program?: string;
   criteria?: Record<string, number | string>;
 }
@@ -24,23 +16,14 @@ interface Props {
 }
 const { products, criteria, criteriaLabels = {} } = Astro.props;
 
-// L'article-generator télécharge les images dans /images/products/<article-slug>/<product-slug>.jpg.
-// On dérive le slug de l'article depuis l'URL courante pour réutiliser ces images dans le tableau
-// sans demander au LLM de les ressaisir.
-const segments = Astro.url.pathname.split('/').filter(Boolean);
-const articleSlug = segments[segments.length - 1] ?? '';
-
 const allCriteria = criteria
   ?? Array.from(new Set(products.flatMap(p => Object.keys(p.criteria ?? {}))));
 
 const labelFor = (key: string) =>
   criteriaLabels[key] ?? key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
 
-const imageFor = (p: Product) => {
-  if (p.image && !p.image.startsWith('auto:')) return p.image;
-  if (!articleSlug) return null;
-  return `/images/products/${articleSlug}/${slugify(p.name)}.jpg`;
-};
+const imageFor = (p: Product) =>
+  (p.image && !p.image.startsWith('auto:')) ? p.image : null;
 ---
 <div class="not-prose my-8 overflow-x-auto rounded-lg border border-[var(--color-border)]">
   <table class="w-full text-sm">

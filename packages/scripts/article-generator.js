@@ -52,7 +52,8 @@ function buildPrompt({ keyword, intent, scrapedSources, siteConfig, articleSlug,
 4. ## Notre sélection [année] — un H3 par produit (4-6 produits). Pour chacun :
    - Une <ProductCard name="Marque Modèle" image="auto:Marque Modèle" score={8.5} description="..." pros={["...", "..."]} cons={["..."]} /> — le placeholder image="auto:..." sera remplacé automatiquement par l'image Amazon (ne mets PAS d'URL d'image manuelle)
    - 3-5 lignes de prose qui présentent le produit avec verdict
-5. ## Tableau comparatif — <ComparisonTable products={[...]} criteria={["performance", "ergonomie", "rapportQualitePrix"]} criteriaLabels={{performance: "Performance", ergonomie: "Ergonomie", rapportQualitePrix: "Rapport qualité-prix"}} />
+5. ## Tableau comparatif — <ComparisonTable products={[{name: "Marque Modèle", image: "auto:Marque Modèle", score: 8.5, criteria: {performance: 9, ergonomie: 8, rapportQualitePrix: 8}}, ...]} criteria={["performance", "ergonomie", "rapportQualitePrix"]} criteriaLabels={{performance: "Performance", ergonomie: "Ergonomie", rapportQualitePrix: "Rapport qualité-prix"}} />
+   IMPORTANT : chaque produit dans la table DOIT avoir un `image: "auto:Marque Modèle"` avec EXACTEMENT la même string que celle utilisée dans la <ProductCard> correspondante. Le pipeline remplace ces placeholders par les chemins locaux après génération.
 6. ## FAQ — 3-5 questions/réponses
 7. ## Notre verdict — recommandation finale claire ("Notre choix" / "Meilleur rapport qualité-prix" / "Le moins cher") avec un dernier <AffiliateButton product="..." />`
     : `INTENT = TEST (un seul produit). Structure REQUISE:
