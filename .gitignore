@@ -1,0 +1,25 @@
+node_modules/
+.pnpm-store/
+.env
+.env.local
+*.log
+
+# Astro
+dist/
+.astro/
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Scraping cache (regenerated each run)
+.scrape-cache/
+
+# Per-site Polyglow lockfiles — keep root pnpm-lock.yaml only
+sites/*/pnpm-lock.yaml
+sites/*/package-lock.json

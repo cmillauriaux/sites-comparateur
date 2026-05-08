@@ -1,0 +1,40 @@
+name: GSC Indexation Requests
+
+on:
+  schedule:
+    - cron: '30 8 * * *'   # 08:30 UTC, after daily build
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN || github.token }}
+
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Submit pending URLs to GSC
+        env:
+          GSC_SERVICE_ACCOUNT_KEY: ${{ secrets.GSC_SERVICE_ACCOUNT_KEY }}
+        run: node packages/scripts/gsc-indexing.js
+
+      - name: Commit indexation tracking
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/published-urls.json data/indexation-requests.json
+          git diff --staged --quiet || git commit -m "chore: GSC indexation tracking"
+          git push

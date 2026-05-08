@@ -1,0 +1,14 @@
+{
+  "name": "@comparateur/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./sources": "./sources.config.js",
+    "./affiliate": "./affiliate.config.js",
+    "./images": "./images.config.js",
+    "./niches": "./niches.js"
+  }
+}

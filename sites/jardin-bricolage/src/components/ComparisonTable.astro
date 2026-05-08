@@ -1,0 +1,92 @@
+---
+import AffiliateButton from './AffiliateButton.astro';
+
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+interface Product {
+  name: string;
+  score?: number;
+  asin?: string | null;
+  image?: string;       // optionnel : si absent, on cherche /images/products/<slug-article>/<slug-produit>.jpg téléchargé par le pipeline
+  program?: string;
+  criteria?: Record<string, number | string>;
+}
+interface Props {
+  products: Product[];
+  criteria?: string[];
+  criteriaLabels?: Record<string, string>;
+}
+const { products, criteria, criteriaLabels = {} } = Astro.props;
+
+// L'article-generator télécharge les images dans /images/products/<article-slug>/<product-slug>.jpg.
+// On dérive le slug de l'article depuis l'URL courante pour réutiliser ces images dans le tableau
+// sans demander au LLM de les ressaisir.
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const articleSlug = segments[segments.length - 1] ?? '';
+
+const allCriteria = criteria
+  ?? Array.from(new Set(products.flatMap(p => Object.keys(p.criteria ?? {}))));
+
+const labelFor = (key: string) =>
+  criteriaLabels[key] ?? key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
+
+const imageFor = (p: Product) => {
+  if (p.image && !p.image.startsWith('auto:')) return p.image;
+  if (!articleSlug) return null;
+  return `/images/products/${articleSlug}/${slugify(p.name)}.jpg`;
+};
+---
+<div class="not-prose my-8 overflow-x-auto rounded-lg border border-[var(--color-border)]">
+  <table class="w-full text-sm">
+    <thead class="bg-[var(--color-hero-bg)] text-[var(--color-primary-dark)]">
+      <tr>
+        <th class="px-4 py-3 text-left font-semibold w-20">&nbsp;</th>
+        <th class="px-4 py-3 text-left font-semibold">Produit</th>
+        {allCriteria.map(c => <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">{labelFor(c)}</th>)}
+        <th class="px-4 py-3 text-left font-semibold">Note</th>
+        <th class="px-4 py-3 text-left font-semibold">Prix</th>
+      </tr>
+    </thead>
+    <tbody>
+      {products.map((p) => {
+        const img = imageFor(p);
+        return (
+          <tr class="border-t border-[var(--color-border)]">
+            <td class="px-3 py-3">
+              {img ? (
+                <img
+                  src={img}
+                  alt={p.name}
+                  loading="lazy"
+                  class="w-16 h-16 object-contain rounded bg-[var(--color-hero-bg)]"
+                  onerror="this.style.visibility='hidden'"
+                />
+              ) : (
+                <div class="w-16 h-16 rounded bg-[var(--color-hero-bg)]"></div>
+              )}
+            </td>
+            <td class="px-4 py-3 font-semibold text-[var(--color-primary-dark)]">{p.name}</td>
+            {allCriteria.map(c => <td class="px-4 py-3">{p.criteria?.[c] ?? '—'}</td>)}
+            <td class="px-4 py-3 whitespace-nowrap">{p.score !== undefined ? `${p.score}/10` : '—'}</td>
+            <td class="px-4 py-3">
+              <AffiliateButton
+                product={p.name}
+                asin={p.asin ?? undefined}
+                program={p.program ?? 'amazon'}
+                variant="secondary"
+              >
+                Voir le prix
+              </AffiliateButton>
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>

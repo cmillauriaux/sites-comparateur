@@ -1,0 +1,77 @@
+name: Weekly Content Refresh
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # Monday 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        site:
+          - jardin-bricolage
+    env:
+      SITE: ${{ matrix.site }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN || github.token }}
+
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium (for scraper browser fallback)
+        run: pnpm --filter ./packages/scripts exec playwright install --with-deps chromium
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Refresh content (or refill queue if empty)
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          DATAFORSEO_LOGIN:        ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD:     ${{ secrets.DATAFORSEO_PASSWORD }}
+          AMAZON_AFFILIATE_ID:     ${{ secrets.AMAZON_AFFILIATE_ID }}
+          AWIN_PUBLISHER_ID:       ${{ secrets.AWIN_PUBLISHER_ID }}
+          MAX_REFRESH_PER_RUN:     '3'
+          MIN_AGE_DAYS:            '60'
+        run: node packages/scripts/content-updater.js --site "$SITE"
+
+      - name: Rebuild + flag deploy if articles changed
+        run: |
+          if ! git diff --quiet HEAD -- "sites/$SITE/src/content/"; then
+            pnpm --filter "./sites/$SITE" build
+            echo "DEPLOY=1" >> "$GITHUB_ENV"
+          fi
+
+      - name: Deploy if changed
+        if: env.DEPLOY == '1'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken:  ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy sites/${{ matrix.site }}/dist --project-name=${{ matrix.site }} --branch=main
+
+      - name: Commit refresh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/ "sites/$SITE/src/content/articles/"
+          git diff --staged --quiet || git commit -m "content: weekly refresh $SITE"
+          git push

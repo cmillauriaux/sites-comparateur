@@ -1,0 +1,47 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* JardinGuide — vert jardin */
+:root {
+  --color-primary:    #2d6a4f;
+  --color-primary-dark: #1b4332;
+  --color-accent:     #74c69d;
+  --color-accent-light: #b7e4c7;
+  --color-hero-bg:    #f0f7f4;
+
+  --color-text:       #1f2937;
+  --color-text-muted: #4b5563;
+  --color-bg:         #ffffff;
+  --color-border:     #e5e7eb;
+
+  --color-good:       #15803d;
+  --color-warn:       #b45309;
+  --color-bad:        #b91c1c;
+
+  --max-w-prose:      72ch;
+  --max-w-page:       1200px;
+}
+
+@theme {
+  --color-brand-50:  #f0f7f4;
+  --color-brand-100: #d1e9dd;
+  --color-brand-200: #b7e4c7;
+  --color-brand-400: #74c69d;
+  --color-brand-600: #2d6a4f;
+  --color-brand-700: #1b4332;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--color-primary); }
+a:hover { color: var(--color-primary-dark); }
+
+.prose :where(h1, h2, h3) { color: var(--color-primary-dark); }
+.prose :where(a) { text-decoration-thickness: 1px; }
+.prose :where(table) { font-size: 0.9rem; }

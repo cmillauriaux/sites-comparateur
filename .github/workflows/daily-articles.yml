@@ -1,0 +1,100 @@
+name: Daily Article Generation
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # 07:00 UTC daily
+  workflow_dispatch:
+    inputs:
+      site:
+        description: 'Niche to run (or "all")'
+        type: choice
+        default: jardin-bricolage
+        options:
+          - jardin-bricolage
+          - sport-fitness
+          - cuisine
+          - maison-elec
+          - all
+
+permissions:
+  contents: write     # commit data/ updates back to main
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1   # serialize writes to data/keywords-queue.json
+      matrix:
+        site:
+          - jardin-bricolage
+        # sport-fitness, cuisine, maison-elec — uncomment once each site is scaffolded
+    env:
+      SITE: ${{ matrix.site }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN || github.token }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium (for scraper browser fallback)
+        run: pnpm --filter ./packages/scripts exec playwright install --with-deps chromium
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Refill keyword queue if empty (DataForSEO)
+        env:
+          DATAFORSEO_LOGIN:    ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+        run: |
+          QUEUE_LEN=$(node -e "const q=require('./data/keywords-queue.json'); console.log((q[process.env.SITE]||[]).filter(k=>k.status==='pending').length)")
+          echo "pending keywords for $SITE: $QUEUE_LEN"
+          if [ "$QUEUE_LEN" = "0" ]; then
+            node packages/scripts/dataforseo-keywords.js --site "$SITE"
+          fi
+
+      - name: Generate articles
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          AMAZON_AFFILIATE_ID:     ${{ secrets.AMAZON_AFFILIATE_ID }}
+          AWIN_PUBLISHER_ID:       ${{ secrets.AWIN_PUBLISHER_ID }}
+          AWIN_LEROY_MERLIN_ID:    ${{ secrets.AWIN_LEROY_MERLIN_ID }}
+          AWIN_BOULANGER_ID:       ${{ secrets.AWIN_BOULANGER_ID }}
+          AWIN_DECATHLON_ID:       ${{ secrets.AWIN_DECATHLON_ID }}
+          AWIN_DARTY_ID:           ${{ secrets.AWIN_DARTY_ID }}
+          AWIN_FNAC_ID:            ${{ secrets.AWIN_FNAC_ID }}
+          AWIN_CASTORAMA_ID:       ${{ secrets.AWIN_CASTORAMA_ID }}
+          AWIN_MR_BRICOLAGE_ID:    ${{ secrets.AWIN_MR_BRICOLAGE_ID }}
+          MAX_ARTICLES_PER_RUN:    '2'
+        run: node packages/scripts/article-generator.js --site "$SITE"
+
+      - name: Build site
+        run: pnpm --filter "./sites/$SITE" build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken:  ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy sites/${{ matrix.site }}/dist --project-name=${{ matrix.site }} --branch=main
+
+      - name: Commit data/ updates
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/ "sites/$SITE/src/content/articles/"
+          git diff --staged --quiet || git commit -m "content: daily $SITE articles + queue update"
+          git push

@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import siteConfig from '../../site.config.js';
+
+const all = await getCollection('articles', ({ data }) => !data.draft);
+all.sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+
+const tests = all.filter(a => a.data.intent === 'avis').slice(0, 4);
+const comparatifs = all.filter(a => a.data.intent === 'comparatif').slice(0, 4);
+const guides = all.filter(a => a.data.intent === 'guide' || a.data.intent === 'informational').slice(0, 4);
+
+const hrefFor = (a) => `/${a.data.intent === 'comparatif' ? 'comparatifs' : a.data.intent === 'avis' ? 'avis' : 'guides'}/${a.id}/`;
+---
+<SiteLayout
+  title={`${siteConfig.name} — Tests, comparatifs et guides d'achat`}
+  description={siteConfig.longDescription}
+>
+  <section class="bg-[var(--color-hero-bg)] py-16">
+    <div class="mx-auto max-w-[var(--max-w-page)] px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-[var(--color-primary-dark)] mb-4">
+        Le guide d'achat indépendant<br/>du jardin et du bricolage
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] max-w-2xl mx-auto">
+        Tests détaillés, comparatifs argumentés et guides d'achat — tous nos avis sont étayés par des sources vérifiées (Que Choisir, Les Numériques, retailers officiels).
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3 justify-center">
+        <a href="/comparatifs/" class="rounded-md bg-[var(--color-primary)] text-white px-5 py-3 font-semibold hover:bg-[var(--color-primary-dark)]">Voir les comparatifs</a>
+        <a href="/avis/" class="rounded-md border-2 border-[var(--color-primary)] text-[var(--color-primary)] px-5 py-3 font-semibold hover:bg-[var(--color-primary)] hover:text-white">Voir les tests</a>
+      </div>
+    </div>
+  </section>
+
+  {comparatifs.length > 0 && (
+    <section class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
+      <h2 class="text-2xl font-bold text-[var(--color-primary-dark)] mb-6">Derniers comparatifs</h2>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {comparatifs.map((a) => <ArticleCard href={hrefFor(a)} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} />)}
+      </div>
+    </section>
+  )}
+
+  {tests.length > 0 && (
+    <section class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
+      <h2 class="text-2xl font-bold text-[var(--color-primary-dark)] mb-6">Derniers tests</h2>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {tests.map((a) => <ArticleCard href={hrefFor(a)} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} finalScore={a.data.finalScore} />)}
+      </div>
+    </section>
+  )}
+
+  {guides.length > 0 && (
+    <section class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
+      <h2 class="text-2xl font-bold text-[var(--color-primary-dark)] mb-6">Guides d'achat</h2>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {guides.map((a) => <ArticleCard href={hrefFor(a)} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} />)}
+      </div>
+    </section>
+  )}
+
+  {all.length === 0 && (
+    <section class="mx-auto max-w-2xl px-4 py-20 text-center text-[var(--color-text-muted)]">
+      <p>Aucun article publié pour le moment. Le pipeline DataForSEO + Claude Code génère les premiers articles automatiquement.</p>
+    </section>
+  )}
+</SiteLayout>

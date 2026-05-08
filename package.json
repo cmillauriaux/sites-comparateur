@@ -1,0 +1,19 @@
+{
+  "name": "sites-comparateur",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.15.0",
+  "scripts": {
+    "keywords": "node packages/scripts/dataforseo-keywords.js",
+    "generate": "node packages/scripts/article-generator.js",
+    "update": "node packages/scripts/content-updater.js",
+    "indexing": "node packages/scripts/gsc-indexing.js",
+    "fetch:images": "node packages/scripts/fetch-pillar-images.js",
+    "build:jardin": "pnpm --filter ./sites/jardin-bricolage build",
+    "build:sport": "pnpm --filter ./sites/sport-fitness build",
+    "build:cuisine": "pnpm --filter ./sites/cuisine build",
+    "build:maison": "pnpm --filter ./sites/maison-elec build",
+    "dev:jardin": "pnpm --filter ./sites/jardin-bricolage dev"
+  }
+}
