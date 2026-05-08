@@ -21,11 +21,11 @@
       "cpc": 0.23,
       "score": 4056,
       "intent": "comparatif",
-      "status": "pending",
+      "status": "published",
       "site": "jardin-bricolage",
       "createdAt": "2026-05-07T22:07:58.150Z",
-      "publishedUrl": null,
-      "publishedAt": null,
+      "publishedUrl": "https://jardinguide.fr/comparatifs/perceuse/",
+      "publishedAt": "2026-05-08T17:36:09.165Z",
       "errorCount": 0
     },
     {

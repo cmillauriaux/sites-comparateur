@@ -22,34 +22,50 @@ const slug = new slugger();
  * Returns `{ imageUrl, asin, price }` for the Amazon.fr search result that
  * best matches `productName`. Strategy:
  *
- *   1. Walk the first MAX_BLOCKS_TO_INSPECT `data-component-type="s-search-result"`
- *      blocks (Amazon often shows accessories — "Kit pour Kärcher SC5",
- *      "Filtre rechange", "Housses compatible avec…" — before the actual
- *      product, especially when the LLM-generated query is very specific).
+ *   1. Walk the first MAX_BLOCKS_TO_INSPECT product blocks. Amazon's HTML
+ *      structure changes regularly (used to be `data-component-type=
+ *      "s-search-result"` per product, now it's a single wrapper with
+ *      lazy-loaded children). We anchor on `/dp/<ASIN>` href patterns,
+ *      take each unique ASIN in DOM order, and slice the HTML between
+ *      consecutive ASIN positions as that ASIN's "block".
  *   2. Score each block: token overlap between query and product title, with
- *      a heavy penalty for accessory keywords (compatible, kit, filtre, ...).
+ *      heavy penalties for accessory keywords (compatible, kit, filtre, ...)
+ *      and suspiciously low prices.
  *   3. Pick the block with the highest score, gated by MIN_TITLE_MATCH.
  *      Below the gate, return null/null/null — better an empty card than a
  *      wrong link, image, or price (= zero conversion + lost credibility).
  *
- * Returned `price` is normalized (`&nbsp;` → space), format e.g. "89,99 €".
+ * `waitFor: 'networkidle'` is required: Amazon now hydrates results client-
+ * side, so 'domcontentloaded' returns the shell HTML without ASINs.
  */
 export async function findAmazonProduct(productName) {
   const url = `https://www.amazon.fr/s?k=${encodeURIComponent(productName)}`;
   try {
-    const { html } = await fetchWithBrowser(url, { waitFor: 'domcontentloaded', timeoutMs: 20_000 });
+    const { html } = await fetchWithBrowser(url, { waitFor: 'networkidle', timeoutMs: 30_000 });
 
-    const positions = [...html.matchAll(/<div\b[^>]*data-component-type="s-search-result"/g)]
-      .map(m => m.index);
-    if (positions.length === 0) {
+    // Collect unique ASINs in DOM order (first occurrence wins).
+    const asinFirstSeen = new Map();
+    for (const m of html.matchAll(/\/dp\/(B0[A-Z0-9]{8})/g)) {
+      if (!asinFirstSeen.has(m[1])) asinFirstSeen.set(m[1], m.index);
+    }
+    const asinsByPosition = [...asinFirstSeen.entries()]
+      .sort((a, b) => a[1] - b[1]);
+
+    if (asinsByPosition.length === 0) {
       return { imageUrl: null, asin: null, price: null };
     }
+
+    // Build a (position → asin) list with a sentinel at end for slicing.
+    const positions = asinsByPosition.map(([asin, idx], i) => ({
+      asin,
+      start: Math.max(0, idx - 2000),   // include some context before the link (image/title sit before)
+      end: i + 1 < asinsByPosition.length ? asinsByPosition[i + 1][1] : Math.min(idx + 6000, html.length),
+    }));
 
     let best = null;
     const candidates = [];
     for (let i = 0; i < Math.min(MAX_BLOCKS_TO_INSPECT, positions.length); i++) {
-      const start = positions[i];
-      const end = positions[i + 1] ?? Math.min(start + 30_000, html.length);
+      const { asin, start, end } = positions[i];
       const block = html.slice(start, end);
 
       const title = extractTitle(block);
@@ -69,7 +85,7 @@ export async function findAmazonProduct(productName) {
 
       const cand = {
         idx: i, score, adjusted, accessory, title,
-        asin: extractAsin(block),
+        asin,
         imageUrl: extractImage(block),
         price,
       };
