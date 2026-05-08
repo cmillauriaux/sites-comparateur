@@ -23,7 +23,7 @@ import { REPO_ROOT, SITES_DIR, requireEnv } from './lib/env.js';
 import { readQueue, writeQueue, appendPublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveSiteArg } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
-import { fetchProductImages, injectImagePaths } from './lib/product-images.js';
+import { fetchProductImages, injectImagePaths, injectAffiliateAsins } from './lib/product-images.js';
 import sourcesConfig from '@comparateur/config/sources';
 
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '2', 10);
@@ -176,6 +176,7 @@ COMPOSANTS ASTRO À UTILISER
 - <AffiliateButton product="Marque Modèle">Texte du bouton</AffiliateButton>
    → href est construit AUTOMATIQUEMENT vers Amazon avec le tag d'affiliation. NE JAMAIS passer href.
    → product="..." doit être le nom EXACT du produit ; ce nom sert pour la recherche Amazon.
+   → NE JAMAIS passer asin="..." — l'ASIN est injecté automatiquement par le pipeline (recherche Amazon du `product`). Inventer un ASIN crée des liens cassés.
 
 - <ProductCard
      name="Marque Modèle"
@@ -187,6 +188,7 @@ COMPOSANTS ASTRO À UTILISER
    />
    → image="auto:..." est OBLIGATOIRE. Le contenu après "auto:" sert de query Amazon. Le pipeline remplace par un chemin local après génération. NE JAMAIS mettre une URL externe ni omettre l'attribut.
    → ProductCard intègre déjà son propre <AffiliateButton>, pas besoin d'en ajouter un autre juste après.
+   → NE JAMAIS passer asin="..." — l'ASIN est récupéré et injecté automatiquement (même requête Amazon que pour l'image).
 
 - <ComparisonTable products={[{name, score, criteria: {perf:8, ergo:9}}, ...]} criteria={["perf", "ergo"]} criteriaLabels={{perf: "Performance", ergo: "Ergonomie"}} />
 
@@ -289,16 +291,25 @@ async function generateOne(siteConfig) {
       throw new Error('Generated file is missing YAML frontmatter');
     }
 
-    // 5b. Post-pass: fetch product images from Amazon for each `image="auto:..."` placeholder
-    const imageMatches = [...written.matchAll(/image=(["'])auto:([^"']+)\1/g)];
-    const productNames = [...new Set(imageMatches.map(m => m[2].trim()))];
-    if (productNames.length > 0) {
-      console.log(`  🖼  Fetching ${productNames.length} product images from Amazon…`);
-      const imageMap = await fetchProductImages({ niche, articleSlug, products: productNames });
-      const updated = injectImagePaths(written, imageMap);
+    // 5b. Post-pass: fetch images + ASINs from Amazon and inject them.
+    //   - `image="auto:..."` placeholders get replaced with local /images paths.
+    //   - <AffiliateButton>, <ProductCard>, <ComparisonTable> entries get the
+    //     ASIN injected so links go to amazon.fr/dp/<asin> instead of search.
+    const productNames = new Set();
+    for (const m of written.matchAll(/\bimage\s*[:=]\s*(["'])auto:([^"']+)\1/g)) productNames.add(m[2].trim());
+    for (const m of written.matchAll(/<AffiliateButton\b[\s\S]*?\bproduct\s*=\s*(["'])([^"']+)\1/g)) productNames.add(m[2].trim());
+    for (const m of written.matchAll(/<ProductCard\b[\s\S]*?\bname\s*=\s*(["'])([^"']+)\1/g)) productNames.add(m[2].trim());
+
+    if (productNames.size > 0) {
+      const productList = [...productNames];
+      console.log(`  🛒 Fetching ${productList.length} product images + ASINs from Amazon…`);
+      const { imageMap, asinMap } = await fetchProductImages({ niche, articleSlug, products: productList });
+      let updated = injectImagePaths(written, imageMap);
+      updated = injectAffiliateAsins(updated, asinMap);
       writeFileSync(outputPath, updated);
-      const replaced = Object.values(imageMap).filter(Boolean).length;
-      console.log(`  🖼  ${replaced}/${productNames.length} images injected`);
+      const imgs = Object.values(imageMap).filter(Boolean).length;
+      const asins = Object.values(asinMap).filter(Boolean).length;
+      console.log(`  🖼  ${imgs}/${productList.length} images injected · 🔗 ${asins}/${productList.length} ASINs injected`);
     }
 
     // 6. Promote in queue + register published URL
