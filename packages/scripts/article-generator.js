@@ -18,16 +18,17 @@
  *   MAX_ARTICLES_PER_RUN=3 node packages/scripts/article-generator.js
  */
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import slugger from 'github-slugger';
 
 import { REPO_ROOT, SITES_DIR, requireEnv } from './lib/env.js';
-import { readQueue, writeQueue, appendPublished, getBucket } from './lib/queue.js';
+import { readQueue, writeQueue, appendPublished, getBucket, readPublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveTargets, isLaunched } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
 import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices } from './lib/product-images.js';
 import { buildPrompt } from './lib/prompts.js';
+import { validateGeneratedArticle } from './lib/article-validator.js';
 import { getSourcesFor } from '@comparateur/config/sources';
 
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '2', 10);
@@ -83,6 +84,13 @@ async function generateOne(siteConfig) {
     }
 
     // 3. Build prompt and invoke Claude Code CLI
+    // Internal-linking input: pass the 20 most recent published URLs in the
+    // same (niche, market) so the model can hyperlink into them and form a
+    // SEO cluster instead of writing isolated pages.
+    const existingArticles = readPublished()
+      .filter(u => u.niche === niche && u.market === market && u.url)
+      .slice(-20)
+      .map(u => ({ title: u.keyword, url: u.url }));
     const prompt = buildPrompt({
       keyword: next.keyword,
       intent: next.intent,
@@ -91,6 +99,7 @@ async function generateOne(siteConfig) {
       market,
       articleSlug,
       outputPath,
+      existingArticles,
     });
 
     console.log(`  🤖 Invoking Claude Code CLI…`);
@@ -146,6 +155,15 @@ async function generateOne(siteConfig) {
       updated = injectImageAttributes(updated, imageMap);
       updated = injectAffiliateAsins(updated, asinMap);
       updated = injectPrices(updated, priceMap);
+
+      // Post-write validation: fail if the model dropped affiliate buttons or
+      // wrote raw prices in body prose. Caught by the surrounding try/catch
+      // which puts the keyword back to `pending` with errorCount++.
+      const validationErrors = validateGeneratedArticle(updated);
+      if (validationErrors.length > 0) {
+        throw new Error(`article validation failed: ${validationErrors.join('; ')}`);
+      }
+
       writeFileSync(outputPath, updated);
       const imgs = Object.values(imageMap).filter(Boolean).length;
       const asins = Object.values(asinMap).filter(Boolean).length;
@@ -189,6 +207,14 @@ async function generateOne(siteConfig) {
     return publishedUrl;
   } catch (err) {
     console.error(`  ❌ Failed: ${err.message}`);
+    // Drop the Claude-written file when present so the next retry isn't
+    // blocked by `output already exists`. Only relevant for validation
+    // failures (file written, never accepted) and post-flight rejections.
+    try {
+      const articleSlug = slug.slug(next.keyword);
+      const outputPath = resolve(SITES_DIR, niche, market, 'src/content/articles', `${articleSlug}.mdx`);
+      if (existsSync(outputPath)) unlinkSync(outputPath);
+    } catch { /* best-effort */ }
     const fresh = readQueue();
     const bucket = fresh?.[niche]?.[market] || [];
     const idx = bucket.findIndex(k => k.keyword === next.keyword);

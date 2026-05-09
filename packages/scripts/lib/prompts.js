@@ -49,7 +49,7 @@ COMPONENTS / COMPOSANTS
 `;
 
 // ───────────────────────────────────────────────────────────── FR
-function buildPromptFr({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock }) {
+function buildPromptFr({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, clusterBlock = '' }) {
   const intentBrief = intent === 'comparatif'
     ? `INTENT = COMPARATIF (multi-produit). Structure REQUISE:
 1. H1 contenant le keyword
@@ -191,7 +191,7 @@ ${frontmatterTemplate}
 SOURCES VÉRIFIÉES (${scrapedSources.length} disponibles)
 ==========================================
 ${sourcesBlock}
-
+${clusterBlock}
 ==========================================
 TÂCHE
 ==========================================
@@ -203,7 +203,7 @@ Si les sources sont insuffisantes, écris UNIQUEMENT le mot ERROR_INSUFFICIENT_S
 }
 
 // ───────────────────────────────────────────────────────────── EN (US/GB)
-function buildPromptEn({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, market }) {
+function buildPromptEn({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, market, clusterBlock = '' }) {
   const isUS = market === 'us';
   const spelling = isUS ? 'American English' : 'British English';
   const editorial = siteConfig.editorialReference || (isUS ? 'Wirecutter' : 'Which?');
@@ -350,7 +350,7 @@ ${frontmatterTemplate}
 VERIFIED SOURCES (${scrapedSources.length} available)
 ==========================================
 ${sourcesBlock}
-
+${clusterBlock}
 ==========================================
 TASK
 ==========================================
@@ -374,8 +374,27 @@ URL: ${s.url}
 ${s.content}
 <<<END_UNTRUSTED_SOURCE>>>`)
     .join('\n\n---\n\n');
+
+  // Internal-linking instruction. Empty when no prior articles exist
+  // (cold-start / new market) — the prompt then simply omits the section.
+  const existingArticles = opts.existingArticles ?? [];
+  const isFr = opts.market === 'fr';
+  const clusterBlock = existingArticles.length === 0 ? '' : (isFr
+    ? `\n==========================================
+ARTICLES DÉJÀ PUBLIÉS — INTERNAL LINKING
+==========================================
+Insère 2-3 liens markdown vers ces articles existants quand l'angle est pertinent (cluster SEO). Ne FORCE PAS un lien si aucun n'est thématiquement proche.
+${existingArticles.map(a => `- [${a.title}](${a.url})`).join('\n')}
+`
+    : `\n==========================================
+ALREADY-PUBLISHED ARTICLES — INTERNAL LINKING
+==========================================
+Insert 2-3 markdown links into these existing articles when topically relevant (SEO cluster). Do NOT force a link when no entry is a close topical match.
+${existingArticles.map(a => `- [${a.title}](${a.url})`).join('\n')}
+`);
+
   const today = new Date().toISOString();
-  const ctx = { ...opts, today, sourcesBlock };
+  const ctx = { ...opts, today, sourcesBlock, clusterBlock };
 
   if (opts.market === 'fr') return buildPromptFr(ctx);
   return buildPromptEn(ctx);
