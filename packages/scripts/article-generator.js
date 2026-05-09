@@ -24,7 +24,7 @@ import slugger from 'github-slugger';
 
 import { REPO_ROOT, SITES_DIR, requireEnv } from './lib/env.js';
 import { readQueue, writeQueue, appendPublished, getBucket } from './lib/queue.js';
-import { loadSiteConfig, parseArgs, resolveTargets } from './lib/site-config.js';
+import { loadSiteConfig, parseArgs, resolveTargets, isLaunched } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
 import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices } from './lib/product-images.js';
 import { buildPrompt } from './lib/prompts.js';
@@ -190,6 +190,10 @@ async function generateOne(siteConfig) {
 async function run(targets) {
   for (const { niche, market } of targets) {
     const siteConfig = await loadSiteConfig(niche, market);
+    if (!isLaunched(siteConfig)) {
+      console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
+      continue;
+    }
     let written = 0;
     for (let i = 0; i < MAX_ARTICLES_PER_RUN; i++) {
       const url = await generateOne(siteConfig);

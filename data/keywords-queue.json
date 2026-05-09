@@ -1834,12 +1834,12 @@
         "cpc": 1.2,
         "score": 1500,
         "intent": "comparatif",
-        "status": "published",
+        "status": "pending",
         "niche": "jardin-bricolage",
         "market": "us",
         "createdAt": "2026-05-09T07:13:36.822Z",
-        "publishedUrl": "https://TODO_US_DOMAIN/comparisons/best-cordless-drill/",
-        "publishedAt": "2026-05-09T07:18:15.230Z",
+        "publishedUrl": null,
+        "publishedAt": null,
         "errorCount": 0
       }
     ],
@@ -1851,12 +1851,12 @@
         "cpc": 1.5,
         "score": 1200,
         "intent": "comparatif",
-        "status": "published",
+        "status": "pending",
         "niche": "jardin-bricolage",
         "market": "gb",
         "createdAt": "2026-05-09T07:13:36.822Z",
-        "publishedUrl": "https://TODO_GB_DOMAIN/comparisons/best-pressure-washer/",
-        "publishedAt": "2026-05-09T07:38:09.544Z",
+        "publishedUrl": null,
+        "publishedAt": null,
         "errorCount": 0
       }
     ]

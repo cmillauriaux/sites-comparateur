@@ -26,7 +26,7 @@
  */
 import { requireEnv } from './lib/env.js';
 import { readQueue, writeQueue, getBucket } from './lib/queue.js';
-import { resolveTargets, loadSiteConfig, parseArgs } from './lib/site-config.js';
+import { resolveTargets, loadSiteConfig, parseArgs, isLaunched } from './lib/site-config.js';
 import { detectIntent } from './lib/intent.js';
 import { MARKET_DATAFORSEO } from '@comparateur/config/niches';
 
@@ -206,6 +206,10 @@ async function refillQueue(targets) {
 
   for (const { niche, market } of targets) {
     const siteConfig = await loadSiteConfig(niche, market);
+    if (!isLaunched(siteConfig)) {
+      console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
+      continue;
+    }
     let candidates = await fetchKeywordIdeas(siteConfig);
     candidates = await enrichWithKD(candidates, market);
     candidates = applyKDFilter(candidates, siteConfig.keywords.maxKD);

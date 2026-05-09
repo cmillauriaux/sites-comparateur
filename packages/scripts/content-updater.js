@@ -16,7 +16,7 @@ import { resolve } from 'node:path';
 
 import { REPO_ROOT, SITES_DIR, requireEnv } from './lib/env.js';
 import { readQueue, readPublished, writePublished } from './lib/queue.js';
-import { loadSiteConfig, parseArgs, resolveTargets, siteId } from './lib/site-config.js';
+import { loadSiteConfig, parseArgs, resolveTargets, siteId, isLaunched } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
 import { getSourcesFor } from '@comparateur/config/sources';
 
@@ -140,6 +140,11 @@ TASK:
 
 async function run(targets) {
   for (const { niche, market } of targets) {
+    const siteConfig = await loadSiteConfig(niche, market);
+    if (!isLaunched(siteConfig)) {
+      console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
+      continue;
+    }
     const queue = readQueue();
     const pending = (queue?.[niche]?.[market] || []).filter(k => k.status === 'pending');
 
@@ -149,7 +154,6 @@ async function run(targets) {
       continue;
     }
 
-    const siteConfig = await loadSiteConfig(niche, market);
     const candidates = readPublished()
       .filter(u => u.niche === niche && u.market === market && u.publishedAt && ageInDays(u.publishedAt) >= MIN_AGE_DAYS)
       .sort((a, b) => new Date(a.publishedAt) - new Date(b.publishedAt))

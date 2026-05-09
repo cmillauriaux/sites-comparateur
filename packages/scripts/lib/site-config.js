@@ -25,6 +25,13 @@ export async function loadSiteConfig(niche, market) {
   return { ...mod.default, niche, market };
 }
 
+/** Returns false when the site's domain is still a TODO_*_DOMAIN placeholder.
+ *  Pipelines should skip such sites — running them poisons published-urls.json
+ *  with broken canonicals and submits TODO URLs to GSC. */
+export function isLaunched(siteConfig) {
+  return Boolean(siteConfig?.domain) && !/^TODO[_A-Z]*_DOMAIN$/i.test(siteConfig.domain);
+}
+
 /** Load every config in ENABLED_SITES. */
 export async function loadAllSiteConfigs() {
   return Promise.all(ENABLED_SITES.map(({ niche, market }) => loadSiteConfig(niche, market)));
