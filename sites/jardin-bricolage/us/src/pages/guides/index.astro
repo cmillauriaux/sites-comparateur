@@ -2,15 +2,18 @@
 import { getCollection } from 'astro:content';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
+import siteConfig from '../../../site.config.js';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
 
 const all = await getCollection('articles', ({ data }) => !data.draft && (data.intent === 'guide' || data.intent === 'informational'));
 all.sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
 ---
-<SiteLayout title="Guides d'achat — JardinGuide" description="Comment choisir le bon outil ? Nos guides expliquent les critères techniques avant l'achat.">
+<SiteLayout title={`${s.allGuides} — ${siteConfig.name}`} description={siteConfig.shortDescription}>
   <div class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
-    <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-6">Guides d'achat</h1>
+    <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-6">{s.allGuides}</h1>
     {all.length === 0 ? (
-      <p class="text-[var(--color-text-muted)]">Aucun guide publié pour le moment.</p>
+      <p class="text-[var(--color-text-muted)]">{s.noGuides}</p>
     ) : (
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {all.map((a) => <ArticleCard href={`/guides/${a.id}/`} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} />)}

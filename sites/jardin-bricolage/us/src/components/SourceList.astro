@@ -1,24 +1,29 @@
 ---
+import siteConfig from '../../site.config.js';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
+
 interface SourceEntry { name: string; url: string; domain: string; scrapedAt: Date | string }
 interface Props { sources: SourceEntry[]; groundingScore?: string }
 const { sources, groundingScore } = Astro.props;
 const fmt = (d: Date | string) => {
   const date = typeof d === 'string' ? new Date(d) : d;
-  return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+  return date.toLocaleDateString(siteConfig.locale ?? 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
 };
+const consultedOn = siteConfig.market === 'fr' ? 'consulté le' : 'consulted on';
 ---
 <section class="mt-12 border-t border-[var(--color-border)] pt-6 not-prose">
-  <h2 class="text-lg font-semibold text-[var(--color-primary-dark)] mb-3">Sources consultées</h2>
+  <h2 class="text-lg font-semibold text-[var(--color-primary-dark)] mb-3">{s.sourcesHeading}</h2>
   <p class="text-sm text-[var(--color-text-muted)] mb-3">
-    Cet article s'appuie sur {sources.length} sources vérifiées{groundingScore ? ` (couverture : ${groundingScore})` : ''}. Toutes les informations factuelles (prix, specs, classements) en proviennent.
+    {s.sourcesBlurb(sources.length, groundingScore)}
   </p>
   <ul class="text-sm space-y-1">
-    {sources.map((s) => (
+    {sources.map((src) => (
       <li>
-        <a href={s.url} rel="nofollow noopener" target="_blank" class="text-[var(--color-primary)] hover:underline">
-          {s.name}
+        <a href={src.url} rel="nofollow noopener" target="_blank" class="text-[var(--color-primary)] hover:underline">
+          {src.name}
         </a>
-        <span class="text-[var(--color-text-muted)]"> — consulté le {fmt(s.scrapedAt)}</span>
+        <span class="text-[var(--color-text-muted)]"> — {consultedOn} {fmt(src.scrapedAt)}</span>
       </li>
     ))}
   </ul>

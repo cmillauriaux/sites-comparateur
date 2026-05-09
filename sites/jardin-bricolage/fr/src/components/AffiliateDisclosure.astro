@@ -1,4 +1,7 @@
 ---
+import siteConfig from '../../site.config.js';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
 const { compact = false } = Astro.props;
 ---
 <aside class:list={[
@@ -6,6 +9,6 @@ const { compact = false } = Astro.props;
   compact ? "px-3 py-2" : "px-4 py-3 my-6"
 ]}>
   <p class="m-0">
-    <strong>Liens d'affiliation</strong> — cette page contient des liens d'affiliation. Si vous achetez via ces liens, nous percevons une commission sans surcoût pour vous. Notre éditorial reste indépendant.
+    <strong>{s.disclosureLabel}</strong> — {s.disclosureBody}
   </p>
 </aside>

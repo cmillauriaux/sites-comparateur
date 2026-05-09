@@ -1,5 +1,8 @@
 ---
 import AffiliateButton from './AffiliateButton.astro';
+import siteConfig from '../../site.config.js';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
 
 interface Product {
   name: string;
@@ -54,7 +57,7 @@ const isLeaderScore = (p: Product) =>
         <th class="px-2 py-2 text-left font-semibold w-20">&nbsp;</th>
         <th class="px-2 py-2 text-left font-semibold">Produit</th>
         {allCriteria.map(c => <th class="px-2 py-2 text-center font-semibold w-14 whitespace-nowrap">{labelFor(c)}</th>)}
-        <th class="px-2 py-2 text-center font-semibold w-12 whitespace-nowrap">Note</th>
+        <th class="px-2 py-2 text-center font-semibold w-12 whitespace-nowrap">{s.scoreLabel}</th>
         <th class="px-2 py-2 text-center font-semibold w-32 whitespace-nowrap">Prix</th>
       </tr>
     </thead>
@@ -104,7 +107,7 @@ const isLeaderScore = (p: Product) =>
                 program={p.program}
                 variant="secondary"
               >
-                {p.price ? 'Voir l\'offre' : 'Voir le prix'}
+                {p.price ? s.viewOffer : s.viewPrice}
               </AffiliateButton>
             </td>
           </tr>

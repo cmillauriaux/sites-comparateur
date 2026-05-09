@@ -1,4 +1,8 @@
 ---
+import siteConfig from '../../site.config.js';
+import { i18n } from '@comparateur/config';
+const t = i18n(siteConfig.market);
+
 interface Props {
   score: number; // 0–10
   label?: string;
@@ -18,7 +22,7 @@ const s = sizes[size];
   <div
     class:list={["flex flex-col items-center justify-center rounded-lg font-bold text-white shadow-sm", s.box]}
     style={`background-color: ${color}`}
-    aria-label={`Note : ${rounded} sur 10`}
+    aria-label={t.scoreAria(rounded)}
   >
     <span>{rounded}</span>
     <span class="text-[0.6em] font-normal opacity-90">/10</span>

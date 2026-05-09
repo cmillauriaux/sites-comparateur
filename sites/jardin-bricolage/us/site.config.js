@@ -11,6 +11,9 @@ export default {
   shortDescription: 'Independent reviews and buying guides for garden tools and DIY equipment.',
   longDescription: 'GardenGuide is an independent buyer\'s guide that tests and compares the most popular garden tools and DIY equipment in the United States. All recommendations are grounded in verified sources (Wirecutter, Consumer Reports, Home Depot, Lowe\'s).',
 
+  heroTitle: ['The independent buying guide', 'for garden and DIY tools'],
+  heroBlurb: 'Hands-on reviews, opinionated roundups, and buying guides — every recommendation is grounded in verified sources (Wirecutter, Consumer Reports, Home Depot, Lowe\'s).',
+
   keywords: {
     minVolume: 1000,                // US has higher volume baseline than FR
     maxKD: 50,

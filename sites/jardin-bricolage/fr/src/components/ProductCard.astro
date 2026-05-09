@@ -1,6 +1,9 @@
 ---
 import AffiliateButton from './AffiliateButton.astro';
 import ScoreBadge from './ScoreBadge.astro';
+import siteConfig from '../../site.config.js';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
 
 interface Props {
   name: string;
@@ -24,16 +27,16 @@ const showImage = image && !image.startsWith('auto:');
       <img src={image} alt={imageAlt ?? name} loading="lazy" class="w-40 h-40 object-contain rounded-md bg-[var(--color-hero-bg)]" />
     ) : (
       <div class="w-40 h-40 rounded-md bg-[var(--color-hero-bg)] flex items-center justify-center text-[var(--color-text-muted)] text-xs text-center px-2">
-        Image produit indisponible
+        {siteConfig.market === 'fr' ? 'Image produit indisponible' : 'Product image unavailable'}
       </div>
     )}
     <div class="flex-1 min-w-[260px]">
       <h3 class="text-xl font-semibold text-[var(--color-primary-dark)] m-0">{name}</h3>
       <div class="mt-2 flex flex-wrap items-center gap-4">
-        {score !== undefined && <ScoreBadge score={score} size="sm" label="Note globale" />}
+        {score !== undefined && <ScoreBadge score={score} size="sm" label={s.scoreLabel} />}
         {price && (
           <div>
-            <p class="text-xs uppercase tracking-wide text-[var(--color-text-muted)] m-0">Prix Amazon</p>
+            <p class="text-xs uppercase tracking-wide text-[var(--color-text-muted)] m-0">{siteConfig.market === 'fr' ? 'Prix Amazon' : 'Amazon price'}</p>
             <p class="text-lg font-semibold text-[var(--color-primary-dark)] m-0">{price}</p>
           </div>
         )}
@@ -46,13 +49,13 @@ const showImage = image && !image.startsWith('auto:');
     <div class="grid gap-4 sm:grid-cols-2 mt-4 text-sm">
       {pros.length > 0 && (
         <div>
-          <p class="font-semibold text-[var(--color-good)] mb-1">Points forts</p>
+          <p class="font-semibold text-[var(--color-good)] mb-1">{s.pros}</p>
           <ul class="space-y-1">{pros.map(p => <li>✓ {p}</li>)}</ul>
         </div>
       )}
       {cons.length > 0 && (
         <div>
-          <p class="font-semibold text-[var(--color-bad)] mb-1">Points faibles</p>
+          <p class="font-semibold text-[var(--color-bad)] mb-1">{s.cons}</p>
           <ul class="space-y-1">{cons.map(c => <li>✗ {c}</li>)}</ul>
         </div>
       )}

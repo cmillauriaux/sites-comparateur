@@ -1,11 +1,14 @@
 ---
 import siteConfig from '../../site.config.js';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
+const homeLabel = siteConfig.market === 'fr' ? 'Accueil' : 'Home';
 
 const navItems = [
-  { label: 'Accueil',     href: '/' },
-  { label: 'Tests',       href: '/avis/' },
-  { label: 'Comparatifs', href: '/comparatifs/' },
-  { label: 'Guides',      href: '/guides/' },
+  { label: homeLabel,      href: '/' },
+  { label: s.navReviews,   href: '/avis/' },
+  { label: s.navComparisons, href: '/comparatifs/' },
+  { label: s.navGuides,    href: '/guides/' },
 ];
 ---
 <header class="border-b border-[var(--color-border)] bg-white sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/85">

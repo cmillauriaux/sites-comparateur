@@ -4,12 +4,21 @@ import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
 import SourceList from '../components/SourceList.astro';
 import ScoreBadge from '../components/ScoreBadge.astro';
 import siteConfig from '../../site.config.js';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
 
 const { article } = Astro.props;
 const data = article.data;
 
-const intentLabel = { avis: 'Test', comparatif: 'Comparatif', guide: 'Guide d\'achat', informational: 'Article' }[data.intent] ?? 'Article';
-const fmt = (d: Date) => d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+const intentLabels: Record<string, Record<string, string>> = {
+  fr: { avis: 'Test', comparatif: 'Comparatif', guide: "Guide d'achat", informational: 'Article' },
+  us: { avis: 'Review', comparatif: 'Roundup', guide: 'Buying guide', informational: 'Article' },
+  gb: { avis: 'Review', comparatif: 'Comparison', guide: 'Buying guide', informational: 'Article' },
+};
+const intentLabel = intentLabels[siteConfig.market]?.[data.intent] ?? 'Article';
+const fmt = (d: Date) => d.toLocaleDateString(siteConfig.locale ?? 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+const sourcesLabel = siteConfig.market === 'fr' ? 'sources vérifiées' : 'verified sources';
+const finalScoreLabel = siteConfig.market === 'fr' ? 'Note finale' : 'Final score';
 
 // JSON-LD structured data
 const isReview = data.intent === 'avis' && data.product;
@@ -20,7 +29,7 @@ const jsonLd = {
   description: data.description,
   datePublished: data.publishedAt.toISOString(),
   dateModified: data.updatedAt.toISOString(),
-  inLanguage: 'fr-FR',
+  inLanguage: siteConfig.locale ?? 'fr-FR',
   publisher: {
     '@type': 'Organization',
     name: siteConfig.name,
@@ -43,9 +52,9 @@ const jsonLd = {
     <p class="text-xs uppercase tracking-wide text-[var(--color-primary)] font-semibold mb-2">{intentLabel}</p>
     <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-3">{data.title}</h1>
     <p class="text-[var(--color-text-muted)] text-sm flex flex-wrap gap-3 mb-6">
-      <span>Publié le {fmt(data.publishedAt)}</span>
-      {data.updatedAt > data.publishedAt && <span>· Mis à jour le {fmt(data.updatedAt)}</span>}
-      {data.sources?.length && <span>· {data.sources.length} sources vérifiées</span>}
+      <span>{s.publishedOn} {fmt(data.publishedAt)}</span>
+      {data.updatedAt > data.publishedAt && <span>· {s.updatedOn} {fmt(data.updatedAt)}</span>}
+      {data.sources?.length && <span>· {data.sources.length} {sourcesLabel}</span>}
     </p>
 
     {data.heroImage && (
@@ -56,8 +65,8 @@ const jsonLd = {
       <div class="not-prose flex items-center gap-4 p-4 my-4 rounded-lg bg-[var(--color-hero-bg)] border border-[var(--color-accent-light)]">
         <ScoreBadge score={data.finalScore} size="lg" />
         <div>
-          <p class="font-semibold text-[var(--color-primary-dark)] m-0">Note finale</p>
-          <p class="text-sm text-[var(--color-text-muted)] m-0">Moyenne pondérée des notes par critère.</p>
+          <p class="font-semibold text-[var(--color-primary-dark)] m-0">{finalScoreLabel}</p>
+          <p class="text-sm text-[var(--color-text-muted)] m-0">{s.weightedAvg}</p>
         </div>
       </div>
     )}

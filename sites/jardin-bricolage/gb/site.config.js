@@ -11,6 +11,9 @@ export default {
   shortDescription: 'Independent reviews and buying guides for garden tools and DIY equipment.',
   longDescription: 'GardenGuide UK is an independent buyer\'s guide that tests and compares the most popular garden tools and DIY equipment in the United Kingdom. All recommendations are grounded in verified sources (Which?, Trusted Reviews, B&Q, Screwfix).',
 
+  heroTitle: ['The independent buying guide', 'for garden and DIY tools'],
+  heroBlurb: 'Hands-on reviews, opinionated comparisons, and buying guides — every recommendation is grounded in verified sources (Which?, Trusted Reviews, B&Q, Screwfix).',
+
   keywords: {
     minVolume: 500,
     maxKD: 50,

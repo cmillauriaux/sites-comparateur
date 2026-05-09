@@ -11,6 +11,10 @@ export default {
   shortDescription: 'Tests, comparatifs et guides d\'achat pour le jardin et le bricolage.',
   longDescription: 'JardinGuide est un guide d\'achat indépendant qui teste et compare les outils de jardin et de bricolage les plus populaires en France. Tous nos avis sont étayés par des sources vérifiées (Que Choisir, Les Numériques, retailers officiels).',
 
+  // Niche-specific marketing copy used on the homepage hero (line break = <br/>).
+  heroTitle: ['Le guide d\'achat indépendant', 'du jardin et du bricolage'],
+  heroBlurb: 'Tests détaillés, comparatifs argumentés et guides d\'achat — tous nos avis sont étayés par des sources vérifiées (Que Choisir, Les Numériques, retailers officiels).',
+
   keywords: {
     minVolume: 500,
     maxKD: 50,                         // applied only when DataForSEO has KD data; FR long-tail often returns KD=0 (unknown)

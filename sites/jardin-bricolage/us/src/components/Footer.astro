@@ -1,6 +1,10 @@
 ---
 import siteConfig from '../../site.config.js';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
 const year = new Date().getFullYear();
+const navHeading  = siteConfig.market === 'fr' ? 'Navigation'   : 'Navigation';
+const infoHeading = siteConfig.market === 'fr' ? 'Informations' : 'Information';
 ---
 <footer class="mt-20 border-t border-[var(--color-border)] bg-[var(--color-hero-bg)]">
   <div class="mx-auto max-w-[var(--max-w-page)] px-4 py-10 text-sm text-[var(--color-text-muted)] grid gap-6 md:grid-cols-3">
@@ -9,23 +13,23 @@ const year = new Date().getFullYear();
       <p>{siteConfig.shortDescription}</p>
     </div>
     <div>
-      <p class="font-semibold text-[var(--color-primary-dark)] mb-2">Navigation</p>
+      <p class="font-semibold text-[var(--color-primary-dark)] mb-2">{navHeading}</p>
       <ul class="space-y-1">
-        <li><a href="/avis/">Tests</a></li>
-        <li><a href="/comparatifs/">Comparatifs</a></li>
-        <li><a href="/guides/">Guides d'achat</a></li>
+        <li><a href="/avis/">{s.navReviews}</a></li>
+        <li><a href="/comparatifs/">{s.navComparisons}</a></li>
+        <li><a href="/guides/">{s.navGuides}</a></li>
       </ul>
     </div>
     <div>
-      <p class="font-semibold text-[var(--color-primary-dark)] mb-2">Informations</p>
+      <p class="font-semibold text-[var(--color-primary-dark)] mb-2">{infoHeading}</p>
       <ul class="space-y-1">
-        <li><a href="/mentions-legales/">Mentions légales</a></li>
-        <li><a href="/politique-confidentialite/">Politique de confidentialité</a></li>
-        <li><a href="/affiliation/">Politique d'affiliation</a></li>
+        <li><a href="/mentions-legales/">{s.legalNotice}</a></li>
+        <li><a href="/politique-confidentialite/">{s.privacyPolicy}</a></li>
+        <li><a href="/affiliation/">{s.affiliatePolicy}</a></li>
       </ul>
     </div>
   </div>
   <div class="border-t border-[var(--color-border)] py-4 text-xs text-center text-[var(--color-text-muted)]">
-    © {year} {siteConfig.name} — {siteConfig.domain}. Guide d'achat indépendant.
+    © {year} {siteConfig.name} — {siteConfig.domain}. {s.footerTagline}
   </div>
 </footer>
