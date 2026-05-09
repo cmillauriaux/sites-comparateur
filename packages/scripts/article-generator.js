@@ -95,14 +95,29 @@ async function generateOne(siteConfig) {
 
     console.log(`  🤖 Invoking Claude Code CLI…`);
     const oauthToken = requireEnv('CLAUDE_CODE_OAUTH_TOKEN');
-    const result = spawnSync('claude', ['-p', '--dangerously-skip-permissions', prompt], {
-      stdio: ['ignore', 'inherit', 'inherit'],
+    // Pipe prompt via stdin: argv has a ~128KB ARG_MAX cap on Linux that long
+    // scrape blocks would blow up. Stdin has no such limit.
+    const result = spawnSync('claude', ['-p', '--dangerously-skip-permissions'], {
+      input: prompt,
+      stdio: ['pipe', 'inherit', 'inherit'],
       env: { ...process.env, CLAUDE_CODE_OAUTH_TOKEN: oauthToken },
       cwd: REPO_ROOT,
     });
 
     if (result.status !== 0) {
       throw new Error(`claude CLI exited with status ${result.status}`);
+    }
+
+    // Post-flight: refuse anything Claude touched outside the article output
+    // path. Defends against prompt-injection from scraped sources steering the
+    // CLI to write elsewhere (settings, secrets, scripts).
+    const gitStatus = spawnSync('git', ['status', '--porcelain'], { cwd: REPO_ROOT, encoding: 'utf-8' }).stdout || '';
+    const expectedDir = `sites/${niche}/${market}/`;
+    const offendingPaths = gitStatus.split('\n')
+      .map(l => l.slice(3).trim())
+      .filter(p => p && !p.startsWith(expectedDir) && !p.startsWith('data/'));
+    if (offendingPaths.length > 0) {
+      throw new Error(`Claude touched files outside ${expectedDir}: ${offendingPaths.slice(0, 5).join(', ')}`);
     }
 
     // 4. Verify output

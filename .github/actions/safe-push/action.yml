@@ -1,0 +1,17 @@
+name: 'Safe push to main'
+description: 'git pull --rebase + push avec retry sur conflit, pour serialiser les writes des workflows concurrents.'
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        set -e
+        for i in 1 2 3; do
+          if git pull --rebase origin main && git push; then
+            exit 0
+          fi
+          echo "::warning::push attempt $i failed, retrying after $((i*5))s"
+          sleep $((i*5))
+        done
+        echo "::error::safe-push failed after 3 retries"
+        exit 1

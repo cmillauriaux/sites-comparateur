@@ -109,8 +109,9 @@ TASK:
 - Otherwise, use Write to rewrite the full file at: ${finalPath}`;
 
   const oauthToken = requireEnv('CLAUDE_CODE_OAUTH_TOKEN');
-  const r = spawnSync('claude', ['-p', '--dangerously-skip-permissions', prompt], {
-    stdio: ['ignore', 'inherit', 'inherit'],
+  const r = spawnSync('claude', ['-p', '--dangerously-skip-permissions'], {
+    input: prompt,
+    stdio: ['pipe', 'inherit', 'inherit'],
     env: { ...process.env, CLAUDE_CODE_OAUTH_TOKEN: oauthToken },
     cwd: REPO_ROOT,
   });

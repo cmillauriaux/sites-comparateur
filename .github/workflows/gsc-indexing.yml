@@ -37,4 +37,6 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add data/published-urls.json data/indexation-requests.json
           git diff --staged --quiet || git commit -m "chore: GSC indexation tracking"
-          git push
+
+      - name: Safe push (rebase + retry)
+        uses: ./.github/actions/safe-push
