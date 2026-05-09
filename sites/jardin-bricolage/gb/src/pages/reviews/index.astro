@@ -17,7 +17,7 @@ all.sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
       <p class="text-[var(--color-text-muted)]">{s.noReviews}</p>
     ) : (
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {all.map((a) => <ArticleCard href={`/avis/${a.id}/`} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} finalScore={a.data.finalScore} />)}
+        {all.map((a) => <ArticleCard href={`/${s.slugReviews}/${a.id}/`} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} finalScore={a.data.finalScore} />)}
       </div>
     )}
   </div>

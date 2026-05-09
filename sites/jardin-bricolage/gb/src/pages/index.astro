@@ -13,7 +13,7 @@ const tests = all.filter(a => a.data.intent === 'avis').slice(0, 4);
 const comparatifs = all.filter(a => a.data.intent === 'comparatif').slice(0, 4);
 const guides = all.filter(a => a.data.intent === 'guide' || a.data.intent === 'informational').slice(0, 4);
 
-const hrefFor = (a) => `/${a.data.intent === 'comparatif' ? 'comparatifs' : a.data.intent === 'avis' ? 'avis' : 'guides'}/${a.id}/`;
+const hrefFor = (a) => `/${a.data.intent === 'comparatif' ? s.slugComparisons : a.data.intent === 'avis' ? s.slugReviews : s.slugGuides}/${a.id}/`;
 
 // Section headings — niche-agnostic, use the i18n nav labels with a "Latest"
 // prefix for the FR side and "Latest" for EN.
@@ -33,8 +33,8 @@ const titleSuffix  = siteConfig.market === 'fr' ? "Tests, comparatifs et guides 
         {siteConfig.heroBlurb}
       </p>
       <div class="mt-8 flex flex-wrap gap-3 justify-center">
-        <a href="/comparatifs/" class="rounded-md bg-[var(--color-primary)] text-white px-5 py-3 font-semibold hover:bg-[var(--color-primary-dark)]">{s.ctaComparisons}</a>
-        <a href="/avis/" class="rounded-md border-2 border-[var(--color-primary)] text-[var(--color-primary)] px-5 py-3 font-semibold hover:bg-[var(--color-primary)] hover:text-white">{s.ctaReviews}</a>
+        <a href={`/${s.slugComparisons}/`} class="rounded-md bg-[var(--color-primary)] text-white px-5 py-3 font-semibold hover:bg-[var(--color-primary-dark)]">{s.ctaComparisons}</a>
+        <a href={`/${s.slugReviews}/`} class="rounded-md border-2 border-[var(--color-primary)] text-[var(--color-primary)] px-5 py-3 font-semibold hover:bg-[var(--color-primary)] hover:text-white">{s.ctaReviews}</a>
       </div>
     </div>
   </section>

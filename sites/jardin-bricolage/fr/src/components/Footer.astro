@@ -25,9 +25,9 @@ const slugs = legalSlugs[siteConfig.market] ?? legalSlugs.fr;
     <div>
       <p class="font-semibold text-[var(--color-primary-dark)] mb-2">{navHeading}</p>
       <ul class="space-y-1">
-        <li><a href="/avis/">{s.navReviews}</a></li>
-        <li><a href="/comparatifs/">{s.navComparisons}</a></li>
-        <li><a href="/guides/">{s.navGuides}</a></li>
+        <li><a href={`/${s.slugReviews}/`}>{s.navReviews}</a></li>
+        <li><a href={`/${s.slugComparisons}/`}>{s.navComparisons}</a></li>
+        <li><a href={`/${s.slugGuides}/`}>{s.navGuides}</a></li>
       </ul>
     </div>
     <div>

@@ -5,10 +5,10 @@ const s = i18n(siteConfig.market);
 const homeLabel = siteConfig.market === 'fr' ? 'Accueil' : 'Home';
 
 const navItems = [
-  { label: homeLabel,      href: '/' },
-  { label: s.navReviews,   href: '/avis/' },
-  { label: s.navComparisons, href: '/comparatifs/' },
-  { label: s.navGuides,    href: '/guides/' },
+  { label: homeLabel,        href: '/' },
+  { label: s.navReviews,     href: `/${s.slugReviews}/` },
+  { label: s.navComparisons, href: `/${s.slugComparisons}/` },
+  { label: s.navGuides,      href: `/${s.slugGuides}/` },
 ];
 ---
 <header class="border-b border-[var(--color-border)] bg-white sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/85">

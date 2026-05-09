@@ -12,6 +12,14 @@
 
 const strings = {
   fr: {
+    // URL slugs for the article subdirectories. The pipeline (article-
+    // generator.js) and the Astro routes (sites/<niche>/<market>/src/pages/
+    // <slug>/[...slug].astro) MUST stay in sync with these — search the
+    // codebase for `slugComparisons` to see every spot that consumes them.
+    slugComparisons: 'comparatifs',
+    slugReviews:     'avis',
+    slugGuides:      'guides',
+
     // ProductCard / ComparisonTable
     pros:           'Points forts',
     cons:           'Points faibles',
@@ -62,6 +70,10 @@ const strings = {
   },
 
   us: {
+    slugComparisons: 'comparisons',
+    slugReviews:     'reviews',
+    slugGuides:      'guides',
+
     pros:            'Pros',
     cons:            'Cons',
     scoreLabel:      'Score',
@@ -106,6 +118,10 @@ const strings = {
   },
 
   gb: {
+    slugComparisons: 'comparisons',
+    slugReviews:     'reviews',
+    slugGuides:      'guides',
+
     pros:            'Pros',
     cons:            'Cons',
     scoreLabel:      'Score',

@@ -139,12 +139,16 @@ async function generateOne(siteConfig) {
     }
 
     // 6. Promote in queue + register published URL. The URL subdirectory is
-    // currently hardcoded ('comparatifs' / 'avis' / 'guides') across markets
-    // because the Astro routes (sites/<niche>/<market>/src/pages/...) use
-    // those paths. Localizing the routes (e.g. /comparison/, /review/) is a
-    // content-launch task that should rename the page dirs in lockstep with
-    // this constant.
-    const subdir = next.intent === 'comparatif' ? 'comparatifs' : next.intent === 'avis' ? 'avis' : 'guides';
+    // localized per market (FR: comparatifs / avis / guides ; US/GB:
+    // comparisons / reviews / guides). Source of truth = packages/config/
+    // i18n.js#slugComparisons/slugReviews/slugGuides — must stay in lockstep
+    // with the Astro page directory names under src/pages/<slug>/.
+    const subdirByIntent = {
+      fr: { comparatif: 'comparatifs', avis: 'avis',     guide: 'guides' },
+      us: { comparatif: 'comparisons', avis: 'reviews',  guide: 'guides' },
+      gb: { comparatif: 'comparisons', avis: 'reviews',  guide: 'guides' },
+    };
+    const subdir = subdirByIntent[market]?.[next.intent] ?? 'guides';
     const publishedUrl = `https://${siteConfig.domain}/${subdir}/${articleSlug}/`;
 
     const fresh = readQueue();
