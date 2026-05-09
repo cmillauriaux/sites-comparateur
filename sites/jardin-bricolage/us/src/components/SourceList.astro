@@ -10,7 +10,6 @@ const fmt = (d: Date | string) => {
   const date = typeof d === 'string' ? new Date(d) : d;
   return date.toLocaleDateString(siteConfig.locale ?? 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
 };
-const consultedOn = siteConfig.market === 'fr' ? 'consulté le' : 'consulted on';
 ---
 <section class="mt-12 border-t border-[var(--color-border)] pt-6 not-prose">
   <h2 class="text-lg font-semibold text-[var(--color-primary-dark)] mb-3">{s.sourcesHeading}</h2>
@@ -23,7 +22,7 @@ const consultedOn = siteConfig.market === 'fr' ? 'consulté le' : 'consulted on'
         <a href={src.url} rel="nofollow noopener" target="_blank" class="text-[var(--color-primary)] hover:underline">
           {src.name}
         </a>
-        <span class="text-[var(--color-text-muted)]"> — {consultedOn} {fmt(src.scrapedAt)}</span>
+        <span class="text-[var(--color-text-muted)]"> — {s.consultedOn} {fmt(src.scrapedAt)}</span>
       </li>
     ))}
   </ul>

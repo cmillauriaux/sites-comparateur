@@ -10,15 +10,8 @@ const s = i18n(siteConfig.market);
 const { article } = Astro.props;
 const data = article.data;
 
-const intentLabels: Record<string, Record<string, string>> = {
-  fr: { avis: 'Test', comparatif: 'Comparatif', guide: "Guide d'achat", informational: 'Article' },
-  us: { avis: 'Review', comparatif: 'Roundup', guide: 'Buying guide', informational: 'Article' },
-  gb: { avis: 'Review', comparatif: 'Comparison', guide: 'Buying guide', informational: 'Article' },
-};
-const intentLabel = intentLabels[siteConfig.market]?.[data.intent] ?? 'Article';
+const intentLabel = (s.intentLabels as Record<string, string>)[data.intent] ?? 'Article';
 const fmt = (d: Date) => d.toLocaleDateString(siteConfig.locale ?? 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-const sourcesLabel = siteConfig.market === 'fr' ? 'sources vérifiées' : 'verified sources';
-const finalScoreLabel = siteConfig.market === 'fr' ? 'Note finale' : 'Final score';
 
 // JSON-LD structured data
 const isReview = data.intent === 'avis' && data.product;
@@ -54,7 +47,7 @@ const jsonLd = {
     <p class="text-[var(--color-text-muted)] text-sm flex flex-wrap gap-3 mb-6">
       <span>{s.publishedOn} {fmt(data.publishedAt)}</span>
       {data.updatedAt > data.publishedAt && <span>· {s.updatedOn} {fmt(data.updatedAt)}</span>}
-      {data.sources?.length && <span>· {data.sources.length} {sourcesLabel}</span>}
+      {data.sources?.length && <span>· {data.sources.length} {s.sourcesLabel}</span>}
     </p>
 
     {data.heroImage && (
@@ -65,7 +58,7 @@ const jsonLd = {
       <div class="not-prose flex items-center gap-4 p-4 my-4 rounded-lg bg-[var(--color-hero-bg)] border border-[var(--color-accent-light)]">
         <ScoreBadge score={data.finalScore} size="lg" />
         <div>
-          <p class="font-semibold text-[var(--color-primary-dark)] m-0">{finalScoreLabel}</p>
+          <p class="font-semibold text-[var(--color-primary-dark)] m-0">{s.finalScoreLabel}</p>
           <p class="text-sm text-[var(--color-text-muted)] m-0">{s.weightedAvg}</p>
         </div>
       </div>

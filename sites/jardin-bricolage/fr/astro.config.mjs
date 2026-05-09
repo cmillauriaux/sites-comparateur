@@ -20,7 +20,7 @@ export default defineConfig({
     envDir: '../../../',
   },
 
-  // Single-locale (French) — Polyglow's i18n machinery removed.
+  // Single-locale per build; multi-market = separate Astro builds per (niche, market).
   i18n: {
     defaultLocale: 'fr',
     locales: ['fr'],

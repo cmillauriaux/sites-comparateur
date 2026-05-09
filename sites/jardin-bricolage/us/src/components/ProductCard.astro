@@ -27,7 +27,7 @@ const showImage = image && !image.startsWith('auto:');
       <img src={image} alt={imageAlt ?? name} loading="lazy" class="w-40 h-40 object-contain rounded-md bg-[var(--color-hero-bg)]" />
     ) : (
       <div class="w-40 h-40 rounded-md bg-[var(--color-hero-bg)] flex items-center justify-center text-[var(--color-text-muted)] text-xs text-center px-2">
-        {siteConfig.market === 'fr' ? 'Image produit indisponible' : 'Product image unavailable'}
+        {s.productImageUnavailable}
       </div>
     )}
     <div class="flex-1 min-w-[260px]">
@@ -36,7 +36,7 @@ const showImage = image && !image.startsWith('auto:');
         {score !== undefined && <ScoreBadge score={score} size="sm" label={s.scoreLabel} />}
         {price && (
           <div>
-            <p class="text-xs uppercase tracking-wide text-[var(--color-text-muted)] m-0">{siteConfig.market === 'fr' ? 'Prix Amazon' : 'Amazon price'}</p>
+            <p class="text-xs uppercase tracking-wide text-[var(--color-text-muted)] m-0">{s.amazonPriceLabel}</p>
             <p class="text-lg font-semibold text-[var(--color-primary-dark)] m-0">{price}</p>
           </div>
         )}

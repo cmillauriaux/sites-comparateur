@@ -1,6 +1,5 @@
 /**
- * Multi-marketplace affiliate program registry + per-niche / per-market
- * product mapping.
+ * Multi-marketplace affiliate program registry.
  *
  * Amazon is split per market: amazon-fr → amazon.fr, amazon-us → amazon.com,
  * amazon-gb → amazon.co.uk. Each market has its own Associates tag (different
@@ -8,8 +7,7 @@
  *
  * Awin remains FR-centric for now; UK retailers are also on Awin and can be
  * wired in later. US affiliate networks (CJ, Impact, Skimlinks) are NOT
- * configured yet — `findAffiliateLinks` falls back to amazon-us when no
- * non-Amazon program is mapped for a (niche, market) pair.
+ * configured yet.
  */
 
 const affiliate = {
@@ -50,53 +48,6 @@ const affiliate = {
     'awin-fnac':         { advertiserId: process.env.AWIN_FNAC_ID,         baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '2-3%', cookieDays: 30 },
   },
 
-  // products[niche][market] → keyword-fragment → product spec.
-  // Searched via case-insensitive substring match on the keyword.
-  // ASINs and store fallback URLs are market-specific (e.g. Husqvarna 305 in FR
-  // is not the same SKU as Husqvarna 115H in US).
-  products: {
-    'jardin-bricolage': {
-      fr: {
-        'robot tondeuse husqvarna':         { asin: null, program: 'amazon-fr', fallbackUrl: 'https://www.leroymerlin.fr/recherche?q=robot+tondeuse+husqvarna' },
-        'nettoyeur haute pression karcher': { asin: null, program: 'amazon-fr', fallbackUrl: 'https://www.leroymerlin.fr/recherche?q=nettoyeur+karcher' },
-        'perceuse visseuse bosch':          { asin: null, program: 'amazon-fr', fallbackUrl: 'https://www.leroymerlin.fr/recherche?q=perceuse+bosch' },
-        'debroussailleuse stihl':           { asin: null, program: 'amazon-fr', fallbackUrl: 'https://www.leroymerlin.fr/recherche?q=debroussailleuse+stihl' },
-      },
-      us: {
-        // Populate once amazon-us tag + ASINs are validated.
-      },
-      gb: {
-        // Populate once amazon-gb tag + ASINs are validated.
-      },
-    },
-    'sport-fitness': {
-      fr: {
-        'velo elliptique domyos':        { asin: null, program: 'awin-decathlon', fallbackUrl: 'https://www.decathlon.fr/sport/cardio-fitness/velo-elliptique/' },
-        'tapis course nordictrack':      { asin: null, program: 'amazon-fr',      fallbackUrl: 'https://www.amazon.fr/s?k=tapis+course+nordictrack' },
-        'trottinette electrique xiaomi': { asin: null, program: 'amazon-fr',      fallbackUrl: 'https://www.amazon.fr/s?k=trottinette+xiaomi' },
-      },
-      us: {},
-      gb: {},
-    },
-    cuisine: {
-      fr: {
-        'air fryer ninja':         { asin: null, program: 'amazon-fr',  fallbackUrl: 'https://www.amazon.fr/s?k=air+fryer+ninja' },
-        'robot cuisine thermomix': { asin: null, program: 'amazon-fr',  fallbackUrl: 'https://www.amazon.fr/s?k=robot+cuisine' },
-        'cafetiere delonghi':      { asin: null, program: 'awin-darty', fallbackUrl: 'https://www.darty.com/nav/recherche/search?text=cafetiere+delonghi' },
-      },
-      us: {},
-      gb: {},
-    },
-    'maison-elec': {
-      fr: {
-        'aspirateur dyson':         { asin: null, program: 'amazon-fr', fallbackUrl: 'https://www.amazon.fr/s?k=aspirateur+dyson' },
-        'aspirateur robot irobot':  { asin: null, program: 'amazon-fr', fallbackUrl: 'https://www.amazon.fr/s?k=irobot+roomba' },
-        'purificateur air philips': { asin: null, program: 'amazon-fr', fallbackUrl: 'https://www.amazon.fr/s?k=purificateur+air+philips' },
-      },
-      us: {},
-      gb: {},
-    },
-  },
 };
 
 // Resolve the right Amazon program for a market. Single source of truth
@@ -176,20 +127,6 @@ export function buildAffiliateUrl(productData, programs = affiliate.programs) {
   }
 
   return fallbackUrl;
-}
-
-/**
- * Substring match a keyword against the product map for a (niche, market)
- * pair. Returns null if no entry matches. Case-insensitive.
- */
-export function findProduct(niche, market, keyword) {
-  const map = affiliate.products?.[niche]?.[market];
-  if (!map) return null;
-  const lower = keyword.toLowerCase();
-  for (const [key, spec] of Object.entries(map)) {
-    if (lower.includes(key.toLowerCase())) return { ...spec, key };
-  }
-  return null;
 }
 
 export default affiliate;

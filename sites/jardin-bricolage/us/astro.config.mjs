@@ -21,7 +21,7 @@ export default defineConfig({
     envDir: '../../../',
   },
 
-  // Single-locale (American English) — separate Astro build per market.
+  // Single-locale per build; multi-market = separate Astro builds per (niche, market).
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],

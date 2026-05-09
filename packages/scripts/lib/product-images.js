@@ -368,10 +368,6 @@ function extractImage(block) {
   return primary?.[1] ?? fallback?.[1] ?? null;
 }
 
-function extractAsin(block) {
-  return block.match(/data-asin="(B0[A-Z0-9]{8})"/)?.[1] ?? null;
-}
-
 async function downloadTo(url, outputPath) {
   mkdirSync(dirname(outputPath), { recursive: true });
   const res = await fetch(url, {

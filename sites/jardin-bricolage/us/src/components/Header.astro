@@ -2,10 +2,9 @@
 import siteConfig from '../../site.config.js';
 import { i18n } from '@comparateur/config';
 const s = i18n(siteConfig.market);
-const homeLabel = siteConfig.market === 'fr' ? 'Accueil' : 'Home';
 
 const navItems = [
-  { label: homeLabel,        href: '/' },
+  { label: s.home,           href: '/' },
   { label: s.navReviews,     href: `/${s.slugReviews}/` },
   { label: s.navComparisons, href: `/${s.slugComparisons}/` },
   { label: s.navGuides,      href: `/${s.slugGuides}/` },

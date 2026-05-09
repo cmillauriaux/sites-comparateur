@@ -55,10 +55,10 @@ const isLeaderScore = (p: Product) =>
     <thead class="bg-[var(--color-hero-bg)] text-[var(--color-primary-dark)]">
       <tr>
         <th class="px-2 py-2 text-left font-semibold w-20">&nbsp;</th>
-        <th class="px-2 py-2 text-left font-semibold">Produit</th>
+        <th class="px-2 py-2 text-left font-semibold">{s.productHeading}</th>
         {allCriteria.map(c => <th class="px-2 py-2 text-center font-semibold w-14 whitespace-nowrap">{labelFor(c)}</th>)}
         <th class="px-2 py-2 text-center font-semibold w-12 whitespace-nowrap">{s.scoreLabel}</th>
-        <th class="px-2 py-2 text-center font-semibold w-32 whitespace-nowrap">Prix</th>
+        <th class="px-2 py-2 text-center font-semibold w-32 whitespace-nowrap">{s.priceHeading}</th>
       </tr>
     </thead>
     <tbody>

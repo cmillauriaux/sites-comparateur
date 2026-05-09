@@ -8,6 +8,7 @@
  * `program="awin-..."` est passé sans advertiserId, on retombe sur Amazon.
  */
 import { buildAmazonUrl } from '@comparateur/config/affiliate';
+import { i18n } from '@comparateur/config';
 import siteConfig from '../../site.config.js';
 
 interface Props {
@@ -23,7 +24,7 @@ const { href, product, asin, program = `amazon-${market}`, variant = 'primary' }
 const tagEnvKey = `AMAZON_AFFILIATE_ID_${market.toUpperCase()}`;
 const amazonTag = import.meta.env[tagEnvKey] || process.env[tagEnvKey] || '';
 const finalHref = href || buildAmazonUrl({ asin, query: product, market, tag: amazonTag });
-const label = market === 'fr' ? 'Voir sur Amazon' : 'View on Amazon';
+const label = i18n(market).viewOnAmazon;
 ---
 <a
   href={finalHref}

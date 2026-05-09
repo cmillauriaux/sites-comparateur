@@ -28,14 +28,22 @@ const strings = {
     viewOffer:      "Voir l'offre",
     viewPrice:      'Voir le prix',
     viewOnAmazon:   'Voir sur Amazon',
+    productHeading:           'Produit',
+    priceHeading:             'Prix',
+    productImageUnavailable:  'Image produit indisponible',
+    amazonPriceLabel:         'Prix Amazon',
 
     // ArticleLayout
     publishedOn:    'Publié le',
     updatedOn:      'Mis à jour le',
     weightedAvg:    'Moyenne pondérée des notes par critère.',
+    sourcesLabel:    'sources vérifiées',
+    finalScoreLabel: 'Note finale',
+    intentLabels:    { avis: 'Test', comparatif: 'Comparatif', guide: "Guide d'achat", informational: 'Article' },
 
     // SourceList
     sourcesHeading: 'Sources consultées',
+    consultedOn:    'consulté le',
     sourcesBlurb:   (n, score) =>
       `Cet article s'appuie sur ${n} sources vérifiées${score ? ` (couverture : ${score})` : ''}. Toutes les informations factuelles (prix, specs, classements) en proviennent.`,
 
@@ -44,6 +52,9 @@ const strings = {
     disclosureBody:  "cette page contient des liens d'affiliation. Si vous achetez via ces liens, nous percevons une commission sans surcoût pour vous. Notre éditorial reste indépendant.",
 
     // Header / Footer / nav
+    home:            'Accueil',
+    navigation:      'Navigation',
+    information:     'Informations',
     navComparisons:  'Comparatifs',
     navReviews:      'Avis',
     navGuides:       'Guides',
@@ -51,6 +62,7 @@ const strings = {
     privacyPolicy:   'Politique de confidentialité',
     affiliatePolicy: "Politique d'affiliation",
     footerTagline:   "Guide d'achat indépendant.",
+    legalSlugs:      { legal: 'mentions-legales', privacy: 'politique-confidentialite', affiliate: 'affiliation' },
 
     // Index + list pages
     ctaComparisons:  'Voir les comparatifs',
@@ -60,6 +72,8 @@ const strings = {
     allComparisons:  'Tous les comparatifs',
     allReviews:      'Tous les tests',
     allGuides:       "Guides d'achat",
+    latestPrefix:     'Derniers',
+    homeTitleSuffix: "Tests, comparatifs et guides d'achat",
     pageComparisonsIntro:
       "Chaque comparatif commence par les critères de choix, présente brièvement chaque produit retenu, et se conclut par un tableau récapitulatif assorti d'une recommandation finale.",
     pageReviewsIntro:
@@ -81,18 +95,29 @@ const strings = {
     viewOffer:       'See the deal',
     viewPrice:       'Check price',
     viewOnAmazon:    'View on Amazon',
+    productHeading:           'Product',
+    priceHeading:             'Price',
+    productImageUnavailable:  'Product image unavailable',
+    amazonPriceLabel:         'Amazon price',
 
     publishedOn:     'Published',
     updatedOn:       'Updated',
     weightedAvg:     'Weighted average of per-criterion scores.',
+    sourcesLabel:    'verified sources',
+    finalScoreLabel: 'Final score',
+    intentLabels:    { avis: 'Review', comparatif: 'Roundup', guide: 'Buying guide', informational: 'Article' },
 
     sourcesHeading:  'Sources consulted',
+    consultedOn:     'consulted on',
     sourcesBlurb:    (n, score) =>
       `This article draws on ${n} verified sources${score ? ` (coverage: ${score})` : ''}. All factual claims (prices, specs, rankings) come from them.`,
 
     disclosureLabel: 'Affiliate disclosure',
     disclosureBody:  'this page contains affiliate links. If you purchase through these links we earn a commission at no extra cost to you. Our editorial coverage stays independent.',
 
+    home:            'Home',
+    navigation:      'Navigation',
+    information:     'Information',
     navComparisons:  'Roundups',
     navReviews:      'Reviews',
     navGuides:       'Guides',
@@ -100,6 +125,7 @@ const strings = {
     privacyPolicy:   'Privacy policy',
     affiliatePolicy: 'Affiliate disclosure',
     footerTagline:   'Independent buying guide.',
+    legalSlugs:      { legal: 'legal-notice', privacy: 'privacy-policy', affiliate: 'affiliate-disclosure' },
 
     ctaComparisons:  'See the roundups',
     ctaReviews:      'See the reviews',
@@ -108,6 +134,8 @@ const strings = {
     allComparisons:  'All roundups',
     allReviews:      'All reviews',
     allGuides:       'Buying guides',
+    latestPrefix:     'Latest',
+    homeTitleSuffix: 'Reviews, roundups, and buying guides',
     pageComparisonsIntro:
       'Each roundup opens with the buying criteria, briefly presents every product we kept, and closes with a summary table and our final pick.',
     pageReviewsIntro:
@@ -129,18 +157,29 @@ const strings = {
     viewOffer:       'See the offer',
     viewPrice:       'Check price',
     viewOnAmazon:    'View on Amazon',
+    productHeading:           'Product',
+    priceHeading:             'Price',
+    productImageUnavailable:  'Product image unavailable',
+    amazonPriceLabel:         'Amazon price',
 
     publishedOn:     'Published',
     updatedOn:       'Updated',
     weightedAvg:     'Weighted average of per-criterion scores.',
+    sourcesLabel:    'verified sources',
+    finalScoreLabel: 'Final score',
+    intentLabels:    { avis: 'Review', comparatif: 'Comparison', guide: 'Buying guide', informational: 'Article' },
 
     sourcesHeading:  'Sources consulted',
+    consultedOn:     'consulted on',
     sourcesBlurb:    (n, score) =>
       `This article draws on ${n} verified sources${score ? ` (coverage: ${score})` : ''}. All factual claims (prices, specs, rankings) come from them.`,
 
     disclosureLabel: 'Affiliate disclosure',
     disclosureBody:  'this page contains affiliate links. If you buy through these links we earn a commission at no extra cost to you. Our editorial coverage remains independent.',
 
+    home:            'Home',
+    navigation:      'Navigation',
+    information:     'Information',
     navComparisons:  'Comparisons',
     navReviews:      'Reviews',
     navGuides:       'Guides',
@@ -148,6 +187,7 @@ const strings = {
     privacyPolicy:   'Privacy policy',
     affiliatePolicy: 'Affiliate disclosure',
     footerTagline:   'Independent buying guide.',
+    legalSlugs:      { legal: 'legal-notice', privacy: 'privacy-policy', affiliate: 'affiliate-disclosure' },
 
     ctaComparisons:  'See the comparisons',
     ctaReviews:      'See the reviews',
@@ -156,6 +196,8 @@ const strings = {
     allComparisons:  'All comparisons',
     allReviews:      'All reviews',
     allGuides:       'Buying guides',
+    latestPrefix:     'Latest',
+    homeTitleSuffix: 'Reviews, comparisons, and buying guides',
     pageComparisonsIntro:
       'Each comparison opens with the buying criteria, briefly presents every product we kept, and closes with a summary table and our final pick.',
     pageReviewsIntro:
