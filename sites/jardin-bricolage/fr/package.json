@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@comparateur/config": "workspace:*",
+    "@comparateur/site-template": "workspace:*",
     "@astrojs/mdx": "^5.0.0",
     "github-slugger": "^2.0.0",
     "@astrojs/rss": "^4.0.14",

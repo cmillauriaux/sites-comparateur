@@ -4,20 +4,31 @@ import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
 import pagefind from 'astro-pagefind';
 import { defineConfig } from 'astro/config';
+import { SITE_TEMPLATE_SRC } from '@comparateur/site-template';
+import siteConfig from './site.config.js';
+
+const virtualSiteConfigPlugin = {
+  name: 'virtual-site-config',
+  resolveId(id) {
+    if (id === 'virtual:site-config') return '\0virtual:site-config';
+  },
+  load(id) {
+    if (id === '\0virtual:site-config') return `export default ${JSON.stringify(siteConfig)}`;
+  },
+};
 
 export default defineConfig({
   output: 'static',
-  // TODO: replace once the .com domain is confirmed (must match site.config.js domain).
-  site: 'https://TODO_US_DOMAIN',
+  site: `https://${siteConfig.domain}`,
   trailingSlash: 'always',
+  srcDir: SITE_TEMPLATE_SRC,
+  publicDir: './public',
   build: { concurrency: 6 },
 
   prefetch: { defaultStrategy: 'viewport' },
 
-  // Load .env from monorepo root so AMAZON_AFFILIATE_ID_* etc. are available
-  // to component code (`import.meta.env.AMAZON_AFFILIATE_ID_FR`).
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), virtualSiteConfigPlugin],
     envDir: '../../../',
   },
 

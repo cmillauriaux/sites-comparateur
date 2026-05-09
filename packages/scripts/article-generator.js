@@ -30,6 +30,7 @@ import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffi
 import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
 import { getSourcesFor } from '@comparateur/config/sources';
+import { i18n } from '@comparateur/config';
 
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '2', 10);
 const MIN_SOURCES = 2;
@@ -171,17 +172,17 @@ async function generateOne(siteConfig) {
       console.log(`  🖼  ${imgs}/${productList.length} images · 🔗 ${asins}/${productList.length} ASINs · 💶 ${prices}/${productList.length} prices`);
     }
 
-    // 6. Promote in queue + register published URL. The URL subdirectory is
-    // localized per market (FR: comparatifs / avis / guides ; US/GB:
-    // comparisons / reviews / guides). Source of truth = packages/config/
-    // i18n.js#slugComparisons/slugReviews/slugGuides — must stay in lockstep
-    // with the Astro page directory names under src/pages/<slug>/.
+    // 6. Promote in queue + register published URL. URL subdir comes from the
+    // SAME i18n source used by the Astro [type]/ dynamic route (single source
+    // of truth: packages/config/i18n.js#slug{Comparisons,Reviews,Guides}).
+    const slugs = i18n(market);
     const subdirByIntent = {
-      fr: { comparatif: 'comparatifs', avis: 'avis',     guide: 'guides' },
-      us: { comparatif: 'comparisons', avis: 'reviews',  guide: 'guides' },
-      gb: { comparatif: 'comparisons', avis: 'reviews',  guide: 'guides' },
+      comparatif:    slugs.slugComparisons,
+      avis:          slugs.slugReviews,
+      guide:         slugs.slugGuides,
+      informational: slugs.slugGuides,
     };
-    const subdir = subdirByIntent[market]?.[next.intent] ?? 'guides';
+    const subdir = subdirByIntent[next.intent] ?? slugs.slugGuides;
     const publishedUrl = `https://${siteConfig.domain}/${subdir}/${articleSlug}/`;
 
     const fresh = readQueue();

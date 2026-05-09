@@ -1,0 +1,43 @@
+---
+/**
+ * Single dynamic route serving every article — comparatif / avis / guide —
+ * under their localised path segment ("comparatifs" / "comparisons" /
+ * "avis" / "reviews" / "guides"). Replaces three near-identical
+ * `<intent>/[...slug].astro` files per market.
+ *
+ * Mapping (data.intent → URL segment) comes from i18n.js#slug{Comparisons,
+ * Reviews,Guides} for the site's market — same source of truth as
+ * article-generator.js subdirByIntent.
+ */
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import AffiliateButton from '../../components/AffiliateButton.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import ComparisonTable from '../../components/ComparisonTable.astro';
+import ScoreBadge from '../../components/ScoreBadge.astro';
+
+// NOTE: getStaticPaths runs in an isolated scope (Astro hoists it before the
+// frontmatter), so the i18n table must be redeclared inside it.
+export async function getStaticPaths() {
+  const cfg = (await import('virtual:site-config')).default;
+  const { i18n } = await import('@comparateur/config');
+  const s = i18n(cfg.market);
+  const segmentByIntent: Record<string, string> = {
+    comparatif:    s.slugComparisons,
+    avis:          s.slugReviews,
+    guide:         s.slugGuides,
+    informational: s.slugGuides,
+  };
+  const all = await getCollection('articles', ({ data }) => !data.draft);
+  return all.map(article => ({
+    params: { type: segmentByIntent[article.data.intent] ?? s.slugGuides, slug: article.id },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+---
+<ArticleLayout article={article}>
+  <Content components={{ AffiliateButton, ProductCard, ComparisonTable, ScoreBadge }} />
+</ArticleLayout>

@@ -4,19 +4,34 @@ import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
 import pagefind from 'astro-pagefind';
 import { defineConfig } from 'astro/config';
+import { SITE_TEMPLATE_SRC } from '@comparateur/site-template';
+import siteConfig from './site.config.js';
+
+// Inject site.config.js as `virtual:site-config` so the shared template
+// (under packages/site-template/src/) can import it without knowing where
+// the site lives on disk. Single source of truth = ./site.config.js.
+const virtualSiteConfigPlugin = {
+  name: 'virtual-site-config',
+  resolveId(id) {
+    if (id === 'virtual:site-config') return '\0virtual:site-config';
+  },
+  load(id) {
+    if (id === '\0virtual:site-config') return `export default ${JSON.stringify(siteConfig)}`;
+  },
+};
 
 export default defineConfig({
   output: 'static',
-  site: 'https://jardinguide.fr',
+  site: `https://${siteConfig.domain}`,
   trailingSlash: 'always',
+  srcDir: SITE_TEMPLATE_SRC,
+  publicDir: './public',
   build: { concurrency: 6 },
 
   prefetch: { defaultStrategy: 'viewport' },
 
-  // Load .env from monorepo root so AMAZON_AFFILIATE_ID_* etc. are available
-  // to component code (`import.meta.env.AMAZON_AFFILIATE_ID_FR`).
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), virtualSiteConfigPlugin],
     envDir: '../../../',
   },
 

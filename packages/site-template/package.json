@@ -1,0 +1,16 @@
+{
+  "name": "@comparateur/site-template",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./src/*": "./src/*"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.14",
+    "@comparateur/config": "workspace:*",
+    "astro": "^6.1.1"
+  }
+}

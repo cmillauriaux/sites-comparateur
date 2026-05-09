@@ -34,6 +34,18 @@ importers:
         specifier: ^2.6.0
         version: 2.8.4
 
+  packages/site-template:
+    dependencies:
+      '@astrojs/rss':
+        specifier: ^4.0.14
+        version: 4.0.18
+      '@comparateur/config':
+        specifier: workspace:*
+        version: link:../config
+      astro:
+        specifier: ^6.1.1
+        version: 6.3.1(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(yaml@2.8.4)
+
   sites/jardin-bricolage/fr:
     dependencies:
       '@astrojs/mdx':
@@ -48,6 +60,9 @@ importers:
       '@comparateur/config':
         specifier: workspace:*
         version: link:../../../packages/config
+      '@comparateur/site-template':
+        specifier: workspace:*
+        version: link:../../../packages/site-template
       '@tailwindcss/vite':
         specifier: ^4.1.12
         version: 4.2.4(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))
@@ -112,6 +127,9 @@ importers:
       '@comparateur/config':
         specifier: workspace:*
         version: link:../../../packages/config
+      '@comparateur/site-template':
+        specifier: workspace:*
+        version: link:../../../packages/site-template
       '@tailwindcss/vite':
         specifier: ^4.1.12
         version: 4.2.4(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))
@@ -176,6 +194,9 @@ importers:
       '@comparateur/config':
         specifier: workspace:*
         version: link:../../../packages/config
+      '@comparateur/site-template':
+        specifier: workspace:*
+        version: link:../../../packages/site-template
       '@tailwindcss/vite':
         specifier: ^4.1.12
         version: 4.2.4(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))

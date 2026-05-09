@@ -1,0 +1,84 @@
+---
+/**
+ * Unified listing for the three intent buckets, served at the localised
+ * segment of each:  /comparatifs/  /avis/  /guides/  on FR ;
+ * /comparisons/   /reviews/   /guides/  on US ;
+ * /comparisons/   /reviews/   /guides/  on GB.
+ *
+ * Replaces six near-identical *index.astro per market.
+ */
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import siteConfig from 'virtual:site-config';
+import { i18n } from '@comparateur/config';
+
+const s = i18n(siteConfig.market);
+
+type Bucket = 'comparatif' | 'avis' | 'guide';
+
+const buckets: Record<string, { intentMatch: (i: string) => boolean; heading: string; intro?: string; emptyText: string; titleLabel: string; showScore?: boolean }> = {
+  [s.slugComparisons]: {
+    intentMatch: (i) => i === 'comparatif',
+    heading: s.allComparisons,
+    intro: s.pageComparisonsIntro,
+    emptyText: s.noComparisons,
+    titleLabel: s.navComparisons,
+  },
+  [s.slugReviews]: {
+    intentMatch: (i) => i === 'avis',
+    heading: s.allReviews,
+    intro: s.pageReviewsIntro,
+    emptyText: s.noReviews,
+    titleLabel: s.navReviews,
+    showScore: true,
+  },
+  [s.slugGuides]: {
+    intentMatch: (i) => i === 'guide' || i === 'informational',
+    heading: s.allGuides,
+    emptyText: s.noGuides,
+    titleLabel: s.allGuides,
+  },
+};
+
+export async function getStaticPaths() {
+  const cfg = (await import('virtual:site-config')).default;
+  const strings = (await import('@comparateur/config')).i18n(cfg.market);
+  // Unique segments — guides slug may equal one of the others on some
+  // markets in the future; Set dedupes in that case.
+  const segments = [...new Set([strings.slugComparisons, strings.slugReviews, strings.slugGuides])];
+  return segments.map(type => ({ params: { type } }));
+}
+
+const { type } = Astro.params;
+const bucket = buckets[type as string];
+if (!bucket) throw new Error(`No listing bucket for segment: ${type}`);
+
+const all = await getCollection('articles', ({ data }) => !data.draft && bucket.intentMatch(data.intent));
+all.sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+
+const description = bucket.intro ?? siteConfig.shortDescription;
+---
+<SiteLayout title={`${bucket.titleLabel} — ${siteConfig.name}`} description={description}>
+  <div class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
+    <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-6">{bucket.heading}</h1>
+    {bucket.intro && <p class="text-[var(--color-text-muted)] mb-8 max-w-3xl">{bucket.intro}</p>}
+    {all.length === 0 ? (
+      <p class="text-[var(--color-text-muted)]">{bucket.emptyText}</p>
+    ) : (
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {all.map((a) => (
+          <ArticleCard
+            href={`/${type}/${a.id}/`}
+            title={a.data.title}
+            description={a.data.description}
+            intent={a.data.intent}
+            publishedAt={a.data.publishedAt}
+            heroImage={a.data.heroImage}
+            finalScore={bucket.showScore ? a.data.finalScore : undefined}
+          />
+        ))}
+      </div>
+    )}
+  </div>
+</SiteLayout>

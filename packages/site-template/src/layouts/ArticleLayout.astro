@@ -1,0 +1,75 @@
+---
+import SiteLayout from './SiteLayout.astro';
+import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
+import SourceList from '../components/SourceList.astro';
+import ScoreBadge from '../components/ScoreBadge.astro';
+import siteConfig from 'virtual:site-config';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
+
+const { article } = Astro.props;
+const data = article.data;
+
+const intentLabel = (s.intentLabels as Record<string, string>)[data.intent] ?? 'Article';
+const fmt = (d: Date) => d.toLocaleDateString(siteConfig.locale ?? 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+// JSON-LD structured data
+const isReview = data.intent === 'avis' && data.product;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': isReview ? 'Review' : 'Article',
+  headline: data.title,
+  description: data.description,
+  datePublished: data.publishedAt.toISOString(),
+  dateModified: data.updatedAt.toISOString(),
+  inLanguage: siteConfig.locale ?? 'fr-FR',
+  publisher: {
+    '@type': 'Organization',
+    name: siteConfig.name,
+    url: `https://${siteConfig.domain}`,
+  },
+  ...(isReview && data.product && data.finalScore !== undefined ? {
+    itemReviewed: { '@type': 'Product', name: data.product.name, brand: data.product.developer ?? data.product.name },
+    reviewRating: { '@type': 'Rating', ratingValue: data.finalScore, bestRating: 10, worstRating: 0 },
+    author: { '@type': 'Organization', name: siteConfig.name },
+  } : {}),
+};
+---
+<SiteLayout title={data.title} description={data.description} ogImage={data.heroImage}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <article class:list={[
+    "mx-auto px-4 py-8",
+    // Comparatifs need more horizontal space for their products table.
+    data.intent === 'comparatif' ? "max-w-5xl" : "max-w-3xl",
+  ]}>
+    <p class="text-xs uppercase tracking-wide text-[var(--color-primary)] font-semibold mb-2">{intentLabel}</p>
+    <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-3">{data.title}</h1>
+    <p class="text-[var(--color-text-muted)] text-sm flex flex-wrap gap-3 mb-6">
+      <span>{s.publishedOn} {fmt(data.publishedAt)}</span>
+      {data.updatedAt > data.publishedAt && <span>· {s.updatedOn} {fmt(data.updatedAt)}</span>}
+      {data.sources?.length && <span>· {data.sources.length} {s.sourcesLabel}</span>}
+    </p>
+
+    {data.heroImage && (
+      <img src={data.heroImage} alt={data.heroImageAlt ?? data.title} class="w-full aspect-[16/9] object-cover rounded-lg mb-6" loading="eager" />
+    )}
+
+    {isReview && data.finalScore !== undefined && (
+      <div class="not-prose flex items-center gap-4 p-4 my-4 rounded-lg bg-[var(--color-hero-bg)] border border-[var(--color-accent-light)]">
+        <ScoreBadge score={data.finalScore} size="lg" />
+        <div>
+          <p class="font-semibold text-[var(--color-primary-dark)] m-0">{s.finalScoreLabel}</p>
+          <p class="text-sm text-[var(--color-text-muted)] m-0">{s.weightedAvg}</p>
+        </div>
+      </div>
+    )}
+
+    <AffiliateDisclosure />
+
+    <div class="prose prose-lg max-w-none">
+      <slot />
+    </div>
+
+    <SourceList sources={data.sources} groundingScore={data.groundingScore} />
+  </article>
+</SiteLayout>

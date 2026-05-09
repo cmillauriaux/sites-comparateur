@@ -1,0 +1,73 @@
+---
+import AffiliateButton from './AffiliateButton.astro';
+import ScoreBadge from './ScoreBadge.astro';
+import siteConfig from 'virtual:site-config';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
+
+interface Props {
+  name: string;
+  score?: number;
+  description?: string;
+  image?: string;       // chemin local ; placeholder "auto:..." remplacé par le post-pass article-generator
+  imageAlt?: string;
+  affiliateUrl?: string;
+  asin?: string;
+  program?: string;
+  price?: string;       // injecté par le pipeline depuis Amazon (ex: "89,99 €")
+  pros?: string[];
+  cons?: string[];
+}
+const { name, score, description, image, imageAlt, affiliateUrl, asin, program, price, pros = [], cons = [] } = Astro.props;
+const showImage = image && !image.startsWith('auto:');
+---
+<article class="not-prose my-8 rounded-lg border border-[var(--color-border)] bg-white p-5 shadow-sm">
+  <div class="flex flex-wrap items-start gap-5">
+    {showImage ? (
+      <img src={image} alt={imageAlt ?? name} loading="lazy" class="w-40 h-40 object-contain rounded-md bg-[var(--color-hero-bg)]" />
+    ) : (
+      <div class="w-40 h-40 rounded-md bg-[var(--color-hero-bg)] flex items-center justify-center text-[var(--color-text-muted)] text-xs text-center px-2">
+        {s.productImageUnavailable}
+      </div>
+    )}
+    <div class="flex-1 min-w-[260px]">
+      <h3 class="text-xl font-semibold text-[var(--color-primary-dark)] m-0">{name}</h3>
+      <div class="mt-2 flex flex-wrap items-center gap-4">
+        {score !== undefined && <ScoreBadge score={score} size="sm" label={s.scoreLabel} />}
+        {price && (
+          <div>
+            <p class="text-xs uppercase tracking-wide text-[var(--color-text-muted)] m-0">{s.amazonPriceLabel}</p>
+            <p class="text-lg font-semibold text-[var(--color-primary-dark)] m-0">{price}</p>
+          </div>
+        )}
+      </div>
+      {description && <p class="mt-3 text-[var(--color-text)]">{description}</p>}
+    </div>
+  </div>
+
+  {(pros.length > 0 || cons.length > 0) && (
+    <div class="grid gap-4 sm:grid-cols-2 mt-4 text-sm">
+      {pros.length > 0 && (
+        <div>
+          <p class="font-semibold text-[var(--color-good)] mb-1">{s.pros}</p>
+          <ul class="space-y-1">{pros.map(p => <li>✓ {p}</li>)}</ul>
+        </div>
+      )}
+      {cons.length > 0 && (
+        <div>
+          <p class="font-semibold text-[var(--color-bad)] mb-1">{s.cons}</p>
+          <ul class="space-y-1">{cons.map(c => <li>✗ {c}</li>)}</ul>
+        </div>
+      )}
+    </div>
+  )}
+
+  <div class="mt-5">
+    <AffiliateButton
+      href={affiliateUrl}
+      product={name}
+      asin={asin}
+      program={program}
+    />
+  </div>
+</article>
