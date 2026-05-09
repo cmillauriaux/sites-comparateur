@@ -5,10 +5,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project status
 
 Monorepo skeleton + jardin-bricolage FR site are live (production daily pipeline runs). US/GB scaffolds for jardin-bricolage exist but need:
-- Real domains wired in `site.config.js` + `astro.config.mjs` (search `TODO_US_DOMAIN` / `TODO_GB_DOMAIN`).
+- Real domain in `site.config.js` (search `TODO_US_DOMAIN` / `TODO_GB_DOMAIN`). `astro.config.mjs` derives `site:` from `siteConfig.domain`, and `isLaunched()` in `lib/site-config.js` gates the pipeline so nothing publishes / submits to GSC / deploys until the placeholder is replaced.
 - Amazon Associates US/GB tags populated in `.env` (`AMAZON_AFFILIATE_ID_US` / `_GB`) and as GitHub Secrets.
 - Cloudflare Pages projects `jardin-bricolage-us` and `jardin-bricolage-gb` created and bound to the domains.
-- UI/content i18n pass on `src/` (see "EN sites — content-launch checklist" below).
+
+The Astro `src/` is shared across every (niche, market) site via [packages/site-template/](packages/site-template/) — components, layouts, pages, content schema all live there. Per-site folders (`sites/<niche>/<market>/`) only contain `site.config.js`, `astro.config.mjs`, `package.json`, `public/`, and `src/content/{articles,pages}/`. UI strings come from [packages/config/i18n.js](packages/config/i18n.js); URL slugs (`/comparatifs/` ↔ `/comparisons/`, `/avis/` ↔ `/reviews/`) are derived from the same bundle by the dynamic route `src/pages/[type]/[slug].astro`.
 
 The other three niches (sport-fitness, cuisine, maison-elec) have no `sites/<niche>/` directory yet. Bootstrap them by mirroring `sites/jardin-bricolage/` and adding the matching rows to `ENABLED_SITES`. The original master brief — [claude-code-guide-affiliation-sites.md](claude-code-guide-affiliation-sites.md) — is preserved as historical context but the current architecture supersedes it where they disagree (in particular: per-(niche, market) directories, `ENABLED_SITES` registry, multi-marketplace Amazon).
 
@@ -55,20 +56,32 @@ Spelling matters: en-US uses "color" / "tire" / "trash"; en-GB uses "colour" / "
 ### Adding a new (niche, market)
 
 1. Add the row to `ENABLED_SITES` in [packages/config/niches.js](packages/config/niches.js).
-2. Create `sites/<niche>/<market>/site.config.js` (copy from a sibling, adapt `domain`, `locale`, `language`, `seedKeywords`, `topicTokens`, `affiliatePrograms`, `editorialReference`).
+2. Create `sites/<niche>/<market>/` containing only:
+   - `site.config.js` (copy from a sibling, adapt `domain`, `locale`, `language`, `seedKeywords`, `topicTokens`, `affiliatePrograms`, `editorialReference`).
+   - `astro.config.mjs` (copy from a sibling, change only `defaultLocale` if FR vs EN — `site:` and `srcDir` are derived).
+   - `package.json` (rename to `@comparateur/<niche>-<market>`).
+   - `tsconfig.json` (copy from a sibling).
+   - `public/` (favicon + hero images).
+   - `src/content/{articles,pages}/` (legal pages now, articles get generated).
+   The Astro `src/` (components/layouts/pages) is consumed from `packages/site-template/` automatically — do NOT copy it per site.
 3. Add the matching matrix row in `.github/workflows/{daily-articles,update-articles,build-check}.yml`.
 4. Create the Cloudflare Pages project: `wrangler pages project create <niche>-<market>`.
 5. Wire the custom domain at OVH and add it in the Pages project.
 6. Add the Amazon Associates tag (`AMAZON_AFFILIATE_ID_<MARKET>`) to `.env` and to GitHub Secrets.
 
-### EN sites — content-launch checklist (NOT done by the architecture refactor)
+### Site template (shared `src/`)
 
-The US/GB scaffolds inherit the FR site's `src/` (layouts, components, static pages, content/pages). Before launching either, the following content i18n is needed:
+`packages/site-template/src/` is the only Astro `src/` checked in. Each site's `astro.config.mjs` sets `srcDir: SITE_TEMPLATE_SRC` and registers a Vite plugin that exposes `site.config.js` as the virtual module `virtual:site-config`. Components/layouts/pages all `import siteConfig from 'virtual:site-config'`.
 
-- Translate `src/components/{Header,Footer,ArticleCard}.astro` (page chrome, navigation labels, SEO titles).
-- Translate `src/layouts/{SiteLayout,ArticleLayout}.astro` and `src/pages/{index,404,comparatifs/index,avis/index,guides/index}.astro`.
-- Rewrite `src/content/pages/{mentions-legales,politique-confidentialite,affiliation}.md` for the target jurisdiction (US privacy / FTC affiliate disclosure / UK ICO + ASA rules) and rename to `legal-notice.md` / `privacy-policy.md` / `affiliate-disclosure.md`. Update the corresponding routes.
-- Decide whether to also localize URL slugs (`/comparatifs/` → `/comparison/`, `/avis/` → `/review/`, `/guides/` → `/guide/`). If yes, rename the matching `src/pages/<x>/[...slug].astro` directories AND update the subdir constant in [packages/scripts/article-generator.js](packages/scripts/article-generator.js).
+URL slug localisation is handled by a single dynamic route `src/pages/[type]/[slug].astro` that maps `data.intent` → `i18n(market).slug{Comparisons,Reviews,Guides}`. No per-market `comparatifs/` vs `comparisons/` directories. Same for the listing pages (`[type]/index.astro`).
+
+### EN sites — content-launch checklist
+
+UI strings + slugs are now driven by `i18n.js` so the FR/US/GB chrome is wired automatically. Remaining per-market work before launch:
+
+- Rewrite `sites/<niche>/<market>/src/content/pages/{legal-notice,privacy-policy,affiliate-disclosure}.md` for the target jurisdiction (FTC for US, ICO + ASA for GB). The slugs of the legal page filenames are referenced from `i18n.js#legalSlugs` — keep them in sync.
+- Buy + wire the real domain in `site.config.js`. Until then `isLaunched()` blocks the pipeline.
+- Add the Amazon Associates tag and create the Cloudflare Pages project (see "Adding a new (niche, market)" above).
 
 ## Hosting — Cloudflare Pages from a monorepo
 
