@@ -14,5 +14,21 @@
     "indexationStatus": "pending",
     "niche": "jardin-bricolage",
     "market": "fr"
+  },
+  {
+    "url": "https://TODO_US_DOMAIN/comparatifs/best-cordless-drill/",
+    "niche": "jardin-bricolage",
+    "market": "us",
+    "keyword": "best cordless drill",
+    "publishedAt": "2026-05-09T07:18:15.239Z",
+    "indexationStatus": "pending"
+  },
+  {
+    "url": "https://TODO_GB_DOMAIN/comparatifs/best-pressure-washer/",
+    "niche": "jardin-bricolage",
+    "market": "gb",
+    "keyword": "best pressure washer",
+    "publishedAt": "2026-05-09T07:38:09.544Z",
+    "indexationStatus": "pending"
   }
 ]

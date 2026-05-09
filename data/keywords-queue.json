@@ -1825,6 +1825,40 @@
         "niche": "jardin-bricolage",
         "market": "fr"
       }
+    ],
+    "us": [
+      {
+        "keyword": "best cordless drill",
+        "volume": 49500,
+        "kd": 35,
+        "cpc": 1.2,
+        "score": 1500,
+        "intent": "comparatif",
+        "status": "published",
+        "niche": "jardin-bricolage",
+        "market": "us",
+        "createdAt": "2026-05-09T07:13:36.822Z",
+        "publishedUrl": "https://TODO_US_DOMAIN/comparatifs/best-cordless-drill/",
+        "publishedAt": "2026-05-09T07:18:15.230Z",
+        "errorCount": 0
+      }
+    ],
+    "gb": [
+      {
+        "keyword": "best pressure washer",
+        "volume": 22200,
+        "kd": 30,
+        "cpc": 1.5,
+        "score": 1200,
+        "intent": "comparatif",
+        "status": "published",
+        "niche": "jardin-bricolage",
+        "market": "gb",
+        "createdAt": "2026-05-09T07:13:36.822Z",
+        "publishedUrl": "https://TODO_GB_DOMAIN/comparatifs/best-pressure-washer/",
+        "publishedAt": "2026-05-09T07:38:09.544Z",
+        "errorCount": 0
+      }
     ]
   },
   "sport-fitness": {

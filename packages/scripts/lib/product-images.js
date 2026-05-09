@@ -58,7 +58,11 @@ export async function findAmazonProduct(productName, { market = 'fr' } = {}) {
   if (!host) throw new Error(`findAmazonProduct: unknown market "${market}"`);
   const url = `https://${host}/s?k=${encodeURIComponent(productName)}`;
   try {
-    const { html } = await fetchWithBrowser(url, { waitFor: 'networkidle', timeoutMs: 30_000 });
+    // Pass `market` so the browser uses the matching locale + timezone:
+    // a fr-FR session on amazon.co.uk gets EUR prices, an en-GB session gets
+    // GBP. Without this the price extractor (which keys on £/$/€) misses
+    // every entry.
+    const { html } = await fetchWithBrowser(url, { waitFor: 'networkidle', timeoutMs: 30_000, market });
 
     // Collect unique ASINs in DOM order (first occurrence wins).
     const asinFirstSeen = new Map();
@@ -173,11 +177,17 @@ const parsePrice = (raw) => {
 // STRONG accessory signals — words that, when in the title's prefix, identify
 // the listing as an accessory rather than the headline product. Penalty is
 // large enough to push a perfect-match score below the acceptance threshold.
+//
+// Note on power-tool listings: "kit" / "set" / "pack" are excluded because on
+// amazon.com / .co.uk the legitimate bundled product is routinely titled e.g.
+// "DeWalt 20V MAX Cordless Drill/Driver Kit (DCD771C2)" — penalising those
+// would reject the headline product. Accessory-only listings still get caught
+// via STRONG signals like "compatible" / "remplacement" / "replacement" or
+// the cheap-price soft gate (PRICE_FLOOR).
 const STRONG_ACCESSORY_TOKENS = new Set([
   'compatible', 'compatibles',
-  'rechange', 'rechanges', 'remplacement', 'remplacements',
-  'kit', 'kits', 'lot', 'lots', 'pack', 'packs',
-  'set', 'sets', 'sachet', 'sachets',
+  'rechange', 'rechanges', 'remplacement', 'remplacements', 'replacement', 'replacements',
+  'lot', 'lots', 'sachet', 'sachets',
   'chiffon', 'chiffons', 'lingette', 'lingettes',
 ]);
 const STRONG_ACCESSORY_PENALTY = 0.6;
@@ -199,6 +209,81 @@ const WEAK_ACCESSORY_TOKENS = new Set([
 ]);
 const WEAK_ACCESSORY_PENALTY = 0.15;
 
+/**
+ * Build a focused fallback query when the full product name yields no Amazon
+ * match. Strategy: keep the brand and the SKU/model id, drop everything else.
+ *
+ * Crucially, the SKU is extracted from the ORIGINAL name (preserving case +
+ * spaces), not from `tokenize()` — the search engine on amazon.com / .co.uk
+ * is space-sensitive: "RE 100" and "RE100" return different result sets.
+ * `tokenize()` collapses "RE 100" → "re100" (good for matching title text,
+ * bad for constructing a search query).
+ *
+ *   "DeWalt DCD771C2 20V Max Cordless Drill Driver Set" → "DeWalt DCD771C2"
+ *   "Stihl RE 100 Plus Control"                         → "Stihl RE 100"
+ *   "Nilfisk Core 140-6 Power Control"                  → "Nilfisk Core 140-6"
+ *   "Aspirateur Dyson V15"                              → "Dyson V15"
+ */
+// Spec-value patterns ("40V", "1500W", "18Ah") that look like SKU suffixes
+// but are units. Excluded from SKU runs in buildModelIdQuery.
+const UNIT_SUFFIX_RE = /^[0-9.,]+(V|W|kW|A|Ah|mA|mAh|kg|lb|lbs|in|ft|hp|psi|bar|nm|cc)$/i;
+
+function buildModelIdFallbacks(productName) {
+  const withBrand = buildModelIdQuery(productName);
+  if (!withBrand) return [];
+  // Strip the leading brand word from `withBrand` to get the SKU-only form.
+  // We assume the brand is everything up to the first space (or the full
+  // string if there's no space).
+  const firstSpace = withBrand.indexOf(' ');
+  const skuOnly = firstSpace > 0 ? withBrand.slice(firstSpace + 1) : null;
+  // Keep both, deduping if they're identical.
+  return [withBrand, skuOnly].filter((v, i, a) => v && a.indexOf(v) === i);
+}
+
+function buildModelIdQuery(productName) {
+  // Find the longest contiguous "model id" run in the original string. A model
+  // id run is one of:
+  //   - "ABC123" (letter+digit token, possibly with hyphens like "140-6")
+  //   - "AB 123" (short letter prefix + digits)
+  //   - "AB 123-4" (combination)
+  // We scan tokens (split on whitespace) and absorb adjacent ones when they
+  // continue the pattern.
+  const words = productName.trim().split(/\s+/);
+  if (words.length === 0) return null;
+
+  let bestRun = null;
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    // Token must contain a digit AND look like a SKU (≤ 12 chars, not pure word).
+    if (!/\d/.test(w) || w.length > 12) continue;
+    if (/^\d+$/.test(w) && (i === 0 || !/^[A-Z]{1,4}$/i.test(words[i - 1]))) continue; // pure numeric without letter prefix is noise
+    if (UNIT_SUFFIX_RE.test(w)) continue;            // "1600W" / "18Ah" / "20V" are specs, not SKUs
+    // Absorb a preceding short letter prefix (e.g. "RE" before "100", "PW" before "235R")
+    let start = i;
+    if (i > 0 && /^[A-Z]{1,4}$/i.test(words[i - 1])) start = i - 1;
+    // Absorb a trailing numeric/dash continuation (e.g. "140-6", "140 6", "235R")
+    // but NOT a spec value disguised as one ("40V", "1500W", "18Ah") — those
+    // are unit-suffixed numbers and don't belong in a SKU search query.
+    let end = i;
+    while (
+      end + 1 < words.length &&
+      /^[0-9-]+[A-Z]?$/i.test(words[end + 1]) &&
+      words[end + 1].length <= 6 &&
+      !UNIT_SUFFIX_RE.test(words[end + 1])
+    ) {
+      end++;
+    }
+    const run = words.slice(start, end + 1).join(' ');
+    if (!bestRun || run.length > bestRun.length) bestRun = run;
+  }
+  if (!bestRun) return null;
+
+  // Prepend the brand (first word) when it isn't already part of the run.
+  const brand = words[0];
+  if (bestRun.toLowerCase().startsWith(brand.toLowerCase())) return bestRun;
+  return `${brand} ${bestRun}`;
+}
+
 // Tokenize for fuzzy product matching:
 //  - lowercase + accent strip (NFD)
 //  - collapse "<short letters> <digit>" → "<lettersdigit>" so "SC 3", "i 7",
@@ -218,12 +303,20 @@ function scoreTitleMatch(query, title) {
   if (qTokens.length === 0) return { score: 0, accessory: false };
 
   // Hard gate 1 — model identifier match. Tokens that mix letters AND digits
-  // (sc3, sv450, i7, m18) are model identifiers; ALL of them must appear as
-  // tokens in the title. Pure numeric tokens are not used as a gate because
-  // titles also contain spec values ("3,2 bar", "1 500 W") that match by chance.
+  // (sc3, sv450, i7, m18) are model identifiers; ALL of them must appear in
+  // the title — but as a substring inside any title token, not as an exact
+  // token. Amazon listings frequently append a SKU suffix to the bare model
+  // (DCD999 → DCD999B for the bare tool, XPH14 → XPH14T for the kit). Exact
+  // token matching would reject those legitimate hits; substring lets them
+  // through while still blocking unrelated products.
+  // Pure numeric tokens are not used as a gate because titles also contain
+  // spec values ("3,2 bar", "1 500 W") that match by chance.
   const qAlphanumMix = qTokens.filter(t => /[a-z]/.test(t) && /\d/.test(t));
   if (qAlphanumMix.length > 0) {
-    if (!qAlphanumMix.every(qt => tTokens.has(qt))) {
+    const allFound = qAlphanumMix.every(qt =>
+      tTokensArr.some(tt => tt.includes(qt))
+    );
+    if (!allFound) {
       return { score: 0, accessory: false, reason: 'model-id-mismatch' };
     }
   }
@@ -342,7 +435,24 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
     }
 
     try {
-      const result = await findAmazonProduct(productName, { market });
+      let result = await findAmazonProduct(productName, { market });
+      // Cascading fallback when the full name yields no match. The retries go
+      // narrower → narrower:
+      //   1. brand + sku (e.g. "Stihl RE 100" from "Stihl RE 100 Plus Control")
+      //   2. sku alone   (e.g. "DCD999" from "DeWalt DCD999")
+      // The narrower query forces Amazon's relevance ranker to put the SKU's
+      // own listing first instead of "drills compatible with DCD999" noise.
+      if (!result.asin) {
+        const fallbacks = buildModelIdFallbacks(productName).filter(q => q && q.toLowerCase() !== productName.toLowerCase());
+        for (const fallback of fallbacks) {
+          if (verbose) console.log(`    🔁 fallback query: "${fallback}"`);
+          const retry = await findAmazonProduct(fallback, { market });
+          if (retry.asin || (retry.matchScore ?? 0) > (result.matchScore ?? 0)) {
+            result = retry;
+            if (retry.asin) break;
+          }
+        }
+      }
       const { imageUrl, asin, price, title, matchScore, pickedIdx } = result;
 
       if (!imageUrl && !asin) {
