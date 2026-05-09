@@ -1,0 +1,31 @@
+---
+import siteConfig from '../../site.config.js';
+const year = new Date().getFullYear();
+---
+<footer class="mt-20 border-t border-[var(--color-border)] bg-[var(--color-hero-bg)]">
+  <div class="mx-auto max-w-[var(--max-w-page)] px-4 py-10 text-sm text-[var(--color-text-muted)] grid gap-6 md:grid-cols-3">
+    <div>
+      <p class="font-semibold text-[var(--color-primary-dark)] mb-2">{siteConfig.name}</p>
+      <p>{siteConfig.shortDescription}</p>
+    </div>
+    <div>
+      <p class="font-semibold text-[var(--color-primary-dark)] mb-2">Navigation</p>
+      <ul class="space-y-1">
+        <li><a href="/avis/">Tests</a></li>
+        <li><a href="/comparatifs/">Comparatifs</a></li>
+        <li><a href="/guides/">Guides d'achat</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-semibold text-[var(--color-primary-dark)] mb-2">Informations</p>
+      <ul class="space-y-1">
+        <li><a href="/mentions-legales/">Mentions légales</a></li>
+        <li><a href="/politique-confidentialite/">Politique de confidentialité</a></li>
+        <li><a href="/affiliation/">Politique d'affiliation</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-[var(--color-border)] py-4 text-xs text-center text-[var(--color-text-muted)]">
+    © {year} {siteConfig.name} — {siteConfig.domain}. Guide d'achat indépendant.
+  </div>
+</footer>

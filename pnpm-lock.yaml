@@ -34,7 +34,7 @@ importers:
         specifier: ^2.6.0
         version: 2.8.4
 
-  sites/jardin-bricolage:
+  sites/jardin-bricolage/fr:
     dependencies:
       '@astrojs/mdx':
         specifier: ^5.0.0
@@ -47,7 +47,135 @@ importers:
         version: 3.7.2
       '@comparateur/config':
         specifier: workspace:*
-        version: link:../../packages/config
+        version: link:../../../packages/config
+      '@tailwindcss/vite':
+        specifier: ^4.1.12
+        version: 4.2.4(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))
+      astro:
+        specifier: ^6.1.1
+        version: 6.3.1(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(yaml@2.8.4)
+      astro-icon:
+        specifier: ^1.1.5
+        version: 1.1.5
+      astro-pagefind:
+        specifier: ^1.8.6
+        version: 1.8.6(astro@6.3.1(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(yaml@2.8.4))
+      astro-seo:
+        specifier: ^1.0.0
+        version: 1.1.0(prettier-plugin-astro@0.14.1)(prettier@3.8.3)(typescript@5.7.3)
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.20
+      github-slugger:
+        specifier: ^2.0.0
+        version: 2.0.0
+      tailwindcss:
+        specifier: ^4.1.12
+        version: 4.2.4
+    devDependencies:
+      '@iconify-json/lucide':
+        specifier: ^1.2.81
+        version: 1.2.105
+      '@tailwindcss/typography':
+        specifier: ^0.5.16
+        version: 0.5.19(tailwindcss@4.2.4)
+      prettier:
+        specifier: 3.8.3
+        version: 3.8.3
+      prettier-plugin-astro:
+        specifier: 0.14.1
+        version: 0.14.1
+      prettier-plugin-tailwindcss:
+        specifier: 0.8.0
+        version: 0.8.0(prettier-plugin-astro@0.14.1)(prettier@3.8.3)
+      sharp:
+        specifier: ^0.34.5
+        version: 0.34.5
+      typescript:
+        specifier: 5.7.3
+        version: 5.7.3
+      wrangler:
+        specifier: ^4.77.0
+        version: 4.90.0
+
+  sites/jardin-bricolage/gb:
+    dependencies:
+      '@astrojs/mdx':
+        specifier: ^5.0.0
+        version: 5.0.4(astro@6.3.1(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(yaml@2.8.4))
+      '@astrojs/rss':
+        specifier: ^4.0.14
+        version: 4.0.18
+      '@astrojs/sitemap':
+        specifier: ^3.7.1
+        version: 3.7.2
+      '@comparateur/config':
+        specifier: workspace:*
+        version: link:../../../packages/config
+      '@tailwindcss/vite':
+        specifier: ^4.1.12
+        version: 4.2.4(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))
+      astro:
+        specifier: ^6.1.1
+        version: 6.3.1(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(yaml@2.8.4)
+      astro-icon:
+        specifier: ^1.1.5
+        version: 1.1.5
+      astro-pagefind:
+        specifier: ^1.8.6
+        version: 1.8.6(astro@6.3.1(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(yaml@2.8.4))
+      astro-seo:
+        specifier: ^1.0.0
+        version: 1.1.0(prettier-plugin-astro@0.14.1)(prettier@3.8.3)(typescript@5.7.3)
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.20
+      github-slugger:
+        specifier: ^2.0.0
+        version: 2.0.0
+      tailwindcss:
+        specifier: ^4.1.12
+        version: 4.2.4
+    devDependencies:
+      '@iconify-json/lucide':
+        specifier: ^1.2.81
+        version: 1.2.105
+      '@tailwindcss/typography':
+        specifier: ^0.5.16
+        version: 0.5.19(tailwindcss@4.2.4)
+      prettier:
+        specifier: 3.8.3
+        version: 3.8.3
+      prettier-plugin-astro:
+        specifier: 0.14.1
+        version: 0.14.1
+      prettier-plugin-tailwindcss:
+        specifier: 0.8.0
+        version: 0.8.0(prettier-plugin-astro@0.14.1)(prettier@3.8.3)
+      sharp:
+        specifier: ^0.34.5
+        version: 0.34.5
+      typescript:
+        specifier: 5.7.3
+        version: 5.7.3
+      wrangler:
+        specifier: ^4.77.0
+        version: 4.90.0
+
+  sites/jardin-bricolage/us:
+    dependencies:
+      '@astrojs/mdx':
+        specifier: ^5.0.0
+        version: 5.0.4(astro@6.3.1(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(yaml@2.8.4))
+      '@astrojs/rss':
+        specifier: ^4.0.14
+        version: 4.0.18
+      '@astrojs/sitemap':
+        specifier: ^3.7.1
+        version: 3.7.2
+      '@comparateur/config':
+        specifier: workspace:*
+        version: link:../../../packages/config
       '@tailwindcss/vite':
         specifier: ^4.1.12
         version: 4.2.4(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.8.4))
@@ -3812,11 +3940,10 @@ snapshots:
   '@types/node@25.6.1':
     dependencies:
       undici-types: 7.19.2
-    optional: true
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.1
 
   '@types/unist@2.0.11': {}
 
@@ -5906,8 +6033,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici-types@7.19.2:
-    optional: true
+  undici-types@7.19.2: {}
 
   undici@7.24.8: {}
 

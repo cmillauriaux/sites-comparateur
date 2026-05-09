@@ -1,16 +1,18 @@
 [
   {
     "url": "https://jardinguide.fr/comparatifs/nettoyeur-vapeur/",
-    "site": "jardin-bricolage",
     "keyword": "nettoyeur vapeur",
     "publishedAt": "2026-05-08T17:31:51.031Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "pending",
+    "niche": "jardin-bricolage",
+    "market": "fr"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/perceuse/",
-    "site": "jardin-bricolage",
     "keyword": "perceuse",
     "publishedAt": "2026-05-08T17:36:09.166Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "pending",
+    "niche": "jardin-bricolage",
+    "market": "fr"
   }
 ]

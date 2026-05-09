@@ -5,6 +5,16 @@ import { DATA_DIR } from './env.js';
 const QUEUE_PATH = resolve(DATA_DIR, 'keywords-queue.json');
 const PUBLISHED_PATH = resolve(DATA_DIR, 'published-urls.json');
 
+/**
+ * Schema:
+ *   keywords-queue.json   = { [niche]: { [market]: KeywordEntry[] } }
+ *   published-urls.json   = PublishedUrl[]   (entries carry { niche, market })
+ *
+ * The published list stays flat because it's append-only and queried by URL,
+ * but every entry MUST set both `niche` and `market` so we can scope GSC
+ * indexation requests, content refresh, and stats per market.
+ */
+
 export function readQueue() {
   if (!existsSync(QUEUE_PATH)) return {};
   return JSON.parse(readFileSync(QUEUE_PATH, 'utf-8'));
@@ -12,6 +22,15 @@ export function readQueue() {
 
 export function writeQueue(queue) {
   writeFileSync(QUEUE_PATH, JSON.stringify(queue, null, 2) + '\n');
+}
+
+/** Return the keyword bucket for a (niche, market). Creates the slot in
+ *  `queue` (mutates) if missing so callers can push into the returned array
+ *  and writeQueue without an intermediate "if (!queue[n][m])" branch. */
+export function getBucket(queue, niche, market) {
+  if (!queue[niche]) queue[niche] = {};
+  if (!queue[niche][market]) queue[niche][market] = [];
+  return queue[niche][market];
 }
 
 export function readPublished() {

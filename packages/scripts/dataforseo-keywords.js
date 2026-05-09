@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Refill keywords-queue.json[niche] from DataForSEO Labs API.
+ * Refill keywords-queue.json[niche][market] from DataForSEO Labs API.
  *
  * Two-pass pipeline:
  *  1. /keyword_ideas/live    — broad semantic expansion of all seed keywords
  *                              in one batch call (much higher yield than
  *                              /keyword_suggestions which is substring-only).
  *  2. /bulk_keyword_difficulty/live — optional best-effort KD enrichment in
- *                              chunks of 1000. FR long-tail often returns
+ *                              chunks of 1000. Long-tail often returns
  *                              KD=0 (= unknown, NOT easy); we treat 0 as
  *                              "no signal" and fall back to the default.
  *
@@ -16,20 +16,22 @@
  *  - topicTokens      — at least one must appear in the keyword (kills
  *                       semantic drift like "rideau thermique" from a
  *                       jardin seed)
- *  - normalized dedup — sort tokens to collapse "meilleur robot tondeuse"
- *                       and "robot tondeuse meilleur" into one entry
+ *  - normalized dedup — sort tokens to collapse "best robot mower" and
+ *                       "robot mower best" into one entry
  *
  * Usage:
- *   node packages/scripts/dataforseo-keywords.js --site jardin-bricolage
- *   node packages/scripts/dataforseo-keywords.js --site all
+ *   node packages/scripts/dataforseo-keywords.js --niche jardin-bricolage --market fr
+ *   node packages/scripts/dataforseo-keywords.js --site jardin-bricolage-us
+ *   node packages/scripts/dataforseo-keywords.js                  # all enabled sites
  */
 import { requireEnv } from './lib/env.js';
-import { readQueue, writeQueue } from './lib/queue.js';
-import { resolveSiteArg, loadSiteConfig, parseArgs } from './lib/site-config.js';
+import { readQueue, writeQueue, getBucket } from './lib/queue.js';
+import { resolveTargets, loadSiteConfig, parseArgs } from './lib/site-config.js';
 import { detectIntent } from './lib/intent.js';
+import { MARKET_DATAFORSEO } from '@comparateur/config/niches';
 
 const BASE_URL = 'https://api.dataforseo.com/v3';
-const KD_DEFAULT_WHEN_UNKNOWN = 30;     // realistic median for FR long-tail
+const KD_DEFAULT_WHEN_UNKNOWN = 30;     // realistic median for long-tail
 const KD_BATCH_SIZE = 700;              // bulk_keyword_difficulty accepts up to 1000/call
 const IDEAS_LIMIT = 700;                // per call; we want a wide net then filter
 
@@ -49,18 +51,25 @@ async function callDataForSEO(endpoint, payload) {
   return res.json();
 }
 
-const STOPWORDS = new Set([
-  'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'et', 'ou', 'à', 'a',
-  'pour', 'avec', 'sur', 'par', 'en', 'au', 'aux', 'ce', 'cet', 'cette',
-]);
+const STOPWORDS_BY_LANG = {
+  fr: new Set([
+    'le', 'la', 'les', 'un', 'une', 'des', 'du', 'de', 'et', 'ou', 'à', 'a',
+    'pour', 'avec', 'sur', 'par', 'en', 'au', 'aux', 'ce', 'cet', 'cette',
+  ]),
+  en: new Set([
+    'the', 'a', 'an', 'and', 'or', 'to', 'of', 'for', 'with', 'on', 'in', 'at',
+    'by', 'from', 'is', 'are', 'this', 'that', 'these', 'those',
+  ]),
+};
 
-function normalize(keyword) {
+function normalize(keyword, lang = 'fr') {
+  const stopwords = STOPWORDS_BY_LANG[lang] ?? STOPWORDS_BY_LANG.fr;
   return keyword
     .toLowerCase()
     .normalize('NFD').replace(/[̀-ͯ]/g, '') // strip accents
     .replace(/[^a-z0-9 ]/g, ' ')
     .split(/\s+/)
-    .filter(t => t && !STOPWORDS.has(t))
+    .filter(t => t && !stopwords.has(t))
     .sort()
     .join(' ');
 }
@@ -78,13 +87,14 @@ function scoreKeyword({ volume, kd, cpc }) {
 }
 
 async function fetchKeywordIdeas(siteConfig) {
-  const { niche, keywords: kwConfig } = siteConfig;
-  console.log(`\n📊 ${niche}: querying keyword_ideas with ${kwConfig.seedKeywords.length} seeds`);
+  const { niche, market, keywords: kwConfig } = siteConfig;
+  const dfsLoc = MARKET_DATAFORSEO[market];
+  console.log(`\n📊 ${niche}/${market}: querying keyword_ideas with ${kwConfig.seedKeywords.length} seeds (location=${dfsLoc.location_name}, lang=${dfsLoc.language_name})`);
 
   const data = await callDataForSEO('/dataforseo_labs/google/keyword_ideas/live', [{
     keywords: kwConfig.seedKeywords,
-    location_name: 'France',
-    language_name: 'French',
+    location_code: dfsLoc.location_code,
+    language_code: dfsLoc.language_code,
     limit: IDEAS_LIMIT,
     filters: [
       ['keyword_info.search_volume', '>', kwConfig.minVolume],
@@ -110,7 +120,7 @@ async function fetchKeywordIdeas(siteConfig) {
 
     if (!passesTopicFilter(kw, kwConfig.topicTokens)) continue;
 
-    const norm = normalize(kw);
+    const norm = normalize(kw, dfsLoc.language_code);
     if (seenNormalized.has(norm)) continue;
     seenNormalized.add(norm);
 
@@ -127,8 +137,9 @@ async function fetchKeywordIdeas(siteConfig) {
   return candidates;
 }
 
-async function enrichWithKD(candidates) {
+async function enrichWithKD(candidates, market) {
   if (candidates.length === 0) return candidates;
+  const dfsLoc = MARKET_DATAFORSEO[market];
   console.log(`  📐 Enriching ${candidates.length} keywords with KD data…`);
 
   const byKeyword = new Map(candidates.map(c => [c.keyword, c]));
@@ -139,8 +150,8 @@ async function enrichWithKD(candidates) {
     try {
       const data = await callDataForSEO('/dataforseo_labs/google/bulk_keyword_difficulty/live', [{
         keywords: batch,
-        location_name: 'France',
-        language_name: 'French',
+        location_code: dfsLoc.location_code,
+        language_code: dfsLoc.language_code,
       }]);
       if (data.status_code !== 20000) {
         console.warn(`  ⚠️  KD batch ${i}: ${data.status_message}`);
@@ -166,13 +177,13 @@ async function enrichWithKD(candidates) {
 
 function applyKDFilter(candidates, maxKD) {
   return candidates.filter(c => {
-    // Keep if no KD signal (otherwise we'd kill all FR long-tail).
+    // Keep if no KD signal (otherwise we'd kill all long-tail).
     if (c.kd == null) return true;
     return c.kd <= maxKD;
   });
 }
 
-function toQueueEntry(c, niche) {
+function toQueueEntry(c, niche, market) {
   return {
     keyword: c.keyword,
     volume: c.volume,
@@ -181,7 +192,8 @@ function toQueueEntry(c, niche) {
     score: scoreKeyword(c),
     intent: detectIntent(c.keyword, { cpc: c.cpc }),
     status: 'pending',
-    site: niche,
+    niche,
+    market,
     createdAt: new Date().toISOString(),
     publishedUrl: null,
     publishedAt: null,
@@ -192,21 +204,22 @@ function toQueueEntry(c, niche) {
 async function refillQueue(targets) {
   const queue = readQueue();
 
-  for (const niche of targets) {
-    const siteConfig = await loadSiteConfig(niche);
+  for (const { niche, market } of targets) {
+    const siteConfig = await loadSiteConfig(niche, market);
     let candidates = await fetchKeywordIdeas(siteConfig);
-    candidates = await enrichWithKD(candidates);
+    candidates = await enrichWithKD(candidates, market);
     candidates = applyKDFilter(candidates, siteConfig.keywords.maxKD);
 
-    const fresh = candidates.map(c => toQueueEntry(c, niche));
+    const fresh = candidates.map(c => toQueueEntry(c, niche, market));
     fresh.sort((a, b) => b.score - a.score);
 
-    if (!queue[niche]) queue[niche] = [];
-    const existingNorms = new Set(queue[niche].map(k => normalize(k.keyword)));
-    const toAdd = fresh.filter(k => !existingNorms.has(normalize(k.keyword)));
+    const bucket = getBucket(queue, niche, market);
+    const lang = MARKET_DATAFORSEO[market].language_code;
+    const existingNorms = new Set(bucket.map(k => normalize(k.keyword, lang)));
+    const toAdd = fresh.filter(k => !existingNorms.has(normalize(k.keyword, lang)));
 
-    queue[niche].push(...toAdd);
-    console.log(`  ➕ ${toAdd.length} new keywords queued for ${niche} (total: ${queue[niche].length})`);
+    bucket.push(...toAdd);
+    console.log(`  ➕ ${toAdd.length} new keywords queued for ${niche}/${market} (total: ${bucket.length})`);
 
     if (toAdd.length > 0) {
       console.log(`     sample top 5:`);
@@ -222,7 +235,7 @@ async function refillQueue(targets) {
 }
 
 const args = parseArgs(process.argv.slice(2));
-const targets = resolveSiteArg(args.site);
+const targets = resolveTargets(args);
 refillQueue(targets).catch(err => {
   console.error(err);
   process.exit(1);

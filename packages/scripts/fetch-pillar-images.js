@@ -3,15 +3,19 @@
  * Download free-license category images for a site's pillar pages.
  * Uses Pexels by default (PEXELS_API_KEY).
  *
+ * Image queries are niche-keyed but produced files end up in the per-market
+ * site directory so each domain serves its own copies.
+ *
  * Usage:
- *   node packages/scripts/fetch-pillar-images.js --site jardin-bricolage
+ *   node packages/scripts/fetch-pillar-images.js --niche jardin-bricolage --market fr
+ *   node packages/scripts/fetch-pillar-images.js --site jardin-bricolage-us
  */
 import { createWriteStream, mkdirSync, existsSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { SITES_DIR, requireEnv } from './lib/env.js';
-import { parseArgs, resolveSiteArg } from './lib/site-config.js';
+import { parseArgs, resolveTargets } from './lib/site-config.js';
 import { IMAGE_SOURCES, IMAGE_QUERIES } from '@comparateur/config/images';
 
 async function searchPexels(query) {
@@ -37,14 +41,14 @@ async function downloadImage(url, outputPath) {
   return true;
 }
 
-async function fetchForSite(niche) {
+async function fetchForSite(niche, market) {
   const queries = IMAGE_QUERIES[niche];
   if (!queries) throw new Error(`Unknown niche: ${niche}`);
 
-  const outputDir = resolve(SITES_DIR, niche, 'public/images');
+  const outputDir = resolve(SITES_DIR, niche, market, 'public/images');
   mkdirSync(outputDir, { recursive: true });
 
-  console.log(`\n📷 ${niche}`);
+  console.log(`\n📷 ${niche}/${market}`);
 
   // Hero
   try {
@@ -67,9 +71,9 @@ async function fetchForSite(niche) {
 }
 
 const args = parseArgs(process.argv.slice(2));
-const targets = resolveSiteArg(args.site);
+const targets = resolveTargets(args);
 (async () => {
-  for (const n of targets) await fetchForSite(n);
+  for (const { niche, market } of targets) await fetchForSite(niche, market);
 })().catch(err => {
   console.error(err);
   process.exit(1);

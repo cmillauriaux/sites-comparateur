@@ -11,10 +11,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        site:
-          - jardin-bricolage
+        include:
+          - { niche: jardin-bricolage, market: fr }
+          - { niche: jardin-bricolage, market: us }
+          - { niche: jardin-bricolage, market: gb }
     env:
-      SITE: ${{ matrix.site }}
+      NICHE:  ${{ matrix.niche }}
+      MARKET: ${{ matrix.market }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -24,4 +27,4 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter "./sites/$SITE" build
+      - run: pnpm --filter "./sites/$NICHE/$MARKET" build

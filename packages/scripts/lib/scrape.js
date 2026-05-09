@@ -7,6 +7,7 @@ const TIMEOUT_MS = 15_000;
 const MIN_CONTENT_CHARS = 300;
 
 const SEARCH_URLS = {
+  // FR
   'www.quechoisir.org':       q => `https://www.quechoisir.org/recherche/?query=${encodeURIComponent(q)}`,
   'www.lesnumeriques.com':    q => `https://www.lesnumeriques.com/recherche?q=${encodeURIComponent(q)}`,
   'www.60millions-mag.com':   q => `https://www.60millions-mag.com/recherche?search_text=${encodeURIComponent(q)}`,
@@ -23,6 +24,26 @@ const SEARCH_URLS = {
   'www.sport2000.fr':         q => `https://www.sport2000.fr/recherche?q=${encodeURIComponent(q)}`,
   'www.fitnessdigital.fr':    q => `https://www.fitnessdigital.fr/search?text=${encodeURIComponent(q)}`,
   'www.cdiscount.com':        q => `https://www.cdiscount.com/search/10/${encodeURIComponent(q).replace(/%20/g, '+')}.html`,
+
+  // US
+  'www.amazon.com':           q => `https://www.amazon.com/s?k=${encodeURIComponent(q)}`,
+  'www.homedepot.com':        q => `https://www.homedepot.com/s/${encodeURIComponent(q)}`,
+  'www.lowes.com':            q => `https://www.lowes.com/search?searchTerm=${encodeURIComponent(q)}`,
+  'www.nytimes.com':          q => `https://www.nytimes.com/search?query=${encodeURIComponent(q)}&dropmab=true&types=wirecutter`,
+  'www.consumerreports.org':  q => `https://www.consumerreports.org/cro/search.htm?searchTerm=${encodeURIComponent(q)}`,
+  'www.popularmechanics.com': q => `https://www.popularmechanics.com/search/?q=${encodeURIComponent(q)}`,
+  'www.familyhandyman.com':   q => `https://www.familyhandyman.com/?s=${encodeURIComponent(q)}`,
+  'www.thespruce.com':        q => `https://www.thespruce.com/search?q=${encodeURIComponent(q)}`,
+
+  // GB
+  'www.amazon.co.uk':         q => `https://www.amazon.co.uk/s?k=${encodeURIComponent(q)}`,
+  'www.which.co.uk':          q => `https://www.which.co.uk/search?q=${encodeURIComponent(q)}`,
+  'www.trustedreviews.com':   q => `https://www.trustedreviews.com/?s=${encodeURIComponent(q)}`,
+  'www.expertreviews.co.uk':  q => `https://www.expertreviews.co.uk/search?keywords=${encodeURIComponent(q)}`,
+  'www.techradar.com':        q => `https://www.techradar.com/search?searchTerm=${encodeURIComponent(q)}`,
+  'www.diy.com':              q => `https://www.diy.com/search?term=${encodeURIComponent(q)}`,
+  'www.screwfix.com':         q => `https://www.screwfix.com/search?search=${encodeURIComponent(q)}`,
+  'www.wickes.co.uk':         q => `https://www.wickes.co.uk/search?text=${encodeURIComponent(q)}`,
 };
 
 export function buildSearchUrl(baseUrl, keyword) {

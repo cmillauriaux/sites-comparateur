@@ -1,0 +1,23 @@
+---
+import siteConfig from '../../site.config.js';
+
+const navItems = [
+  { label: 'Accueil',     href: '/' },
+  { label: 'Tests',       href: '/avis/' },
+  { label: 'Comparatifs', href: '/comparatifs/' },
+  { label: 'Guides',      href: '/guides/' },
+];
+---
+<header class="border-b border-[var(--color-border)] bg-white sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+  <div class="mx-auto max-w-[var(--max-w-page)] px-4 h-14 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2 font-semibold text-lg text-[var(--color-primary-dark)]">
+      <span aria-hidden="true">🌿</span>
+      <span>{siteConfig.name}</span>
+    </a>
+    <nav class="flex items-center gap-6 text-sm">
+      {navItems.map((item) => (
+        <a href={item.href} class="text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors">{item.label}</a>
+      ))}
+    </nav>
+  </div>
+</header>

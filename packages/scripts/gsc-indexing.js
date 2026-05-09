@@ -4,8 +4,15 @@
  * Indexing API. Tracks daily quota in data/indexation-requests.json (cap 200/day).
  *
  * Prereq: GSC_SERVICE_ACCOUNT_KEY env var = JSON of a service account with
- * Indexing API access, added as Owner on each GSC property.
+ * Indexing API access, added as Owner on each GSC property — one property per
+ * (niche, market) since each site is a distinct domain.
+ *
+ * Optional flags: --niche, --market (or --site <niche>-<market>) restrict
+ * submissions to one bucket. Without flags every pending URL is submitted up
+ * to the daily quota.
  */
+import { parseArgs } from './lib/site-config.js';
+import { isValidNiche, isValidMarket, parseSiteId } from '@comparateur/config/niches';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { google } from 'googleapis';
@@ -25,7 +32,28 @@ function writeRequests(r) {
   writeFileSync(REQUESTS_PATH, JSON.stringify(r, null, 2) + '\n');
 }
 
+function resolveFilter(args) {
+  if (args.site && args.site !== 'all') {
+    const parsed = parseSiteId(args.site);
+    if (parsed) return parsed;
+    if (isValidNiche(args.site)) return { niche: args.site };
+  }
+  const filter = {};
+  if (args.niche) {
+    if (!isValidNiche(args.niche)) throw new Error(`Unknown niche: ${args.niche}`);
+    filter.niche = args.niche;
+  }
+  if (args.market) {
+    if (!isValidMarket(args.market)) throw new Error(`Unknown market: ${args.market}`);
+    filter.market = args.market;
+  }
+  return filter;
+}
+
 async function main() {
+  const args = parseArgs(process.argv.slice(2));
+  const filter = resolveFilter(args);
+
   const credentials = JSON.parse(requireEnv('GSC_SERVICE_ACCOUNT_KEY'));
   const auth = new google.auth.GoogleAuth({
     credentials,
@@ -41,6 +69,8 @@ async function main() {
 
   const pending = urls
     .filter(u => u.indexationStatus === 'pending')
+    .filter(u => !filter.niche || u.niche === filter.niche)
+    .filter(u => !filter.market || u.market === filter.market)
     .slice(0, Math.min(MAX_PER_RUN, remaining));
 
   if (pending.length === 0) {

@@ -4,33 +4,71 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-The repository currently contains only [claude-code-guide-affiliation-sites.md](claude-code-guide-affiliation-sites.md) — the master brief. **No code, no `package.json`, no monorepo skeleton has been created yet.** Treat that brief as the source of truth for architecture decisions; this file captures editorial rules, deltas, and operational shortcuts that aren't in the brief.
+Monorepo skeleton + jardin-bricolage FR site are live (production daily pipeline runs). US/GB scaffolds for jardin-bricolage exist but need:
+- Real domains wired in `site.config.js` + `astro.config.mjs` (search `TODO_US_DOMAIN` / `TODO_GB_DOMAIN`).
+- Amazon Associates US/GB tags populated in `.env` (`AMAZON_AFFILIATE_ID_US` / `_GB`) and as GitHub Secrets.
+- Cloudflare Pages projects `jardin-bricolage-us` and `jardin-bricolage-gb` created and bound to the domains.
+- UI/content i18n pass on `src/` (see "EN sites — content-launch checklist" below).
 
-When asked to "start" or "bootstrap", follow the Phase 1 → Phase 5 checklist in [section 9 of the brief](claude-code-guide-affiliation-sites.md). Do not invent an alternative structure.
+The other three niches (sport-fitness, cuisine, maison-elec) have no `sites/<niche>/` directory yet. Bootstrap them by mirroring `sites/jardin-bricolage/` and adding the matching rows to `ENABLED_SITES`. The original master brief — [claude-code-guide-affiliation-sites.md](claude-code-guide-affiliation-sites.md) — is preserved as historical context but the current architecture supersedes it where they disagree (in particular: per-(niche, market) directories, `ENABLED_SITES` registry, multi-marketplace Amazon).
 
 ## Reference projects (read these before improvising)
 
 - **[/Users/cedric/projects/perso/adult-visual-novel](/Users/cedric/projects/perso/adult-visual-novel)** — production Astro + Cloudflare Pages site that runs daily content generation via GitHub Actions calling the Claude Code CLI (`@anthropic-ai/claude-code`) with `CLAUDE_CODE_OAUTH_TOKEN`. Use its [scripts/generate-review.sh](/Users/cedric/projects/perso/adult-visual-novel/scripts/generate-review.sh) and [.github/workflows/generate-review.yml](/Users/cedric/projects/perso/adult-visual-novel/.github/workflows/generate-review.yml) as the canonical pattern: scrape sources first → build a `mktemp` prompt file with grounded data → invoke `claude_retry -p --dangerously-skip-permissions` → commit only `src/content/` and `public/images/`. The brief shows the Anthropic SDK approach (`article-generator.js` calling `client.messages.create`); **prefer the Claude Code CLI pattern from adult-visual-novel** unless explicitly asked otherwise — it inherits tool use (Write, Bash, scrapers) and is what the user already operates.
 - **[/Users/cedric/projects/perso/seo-analyzer](/Users/cedric/projects/perso/seo-analyzer)** — Python pipeline for DataForSEO + GSC. Reuse its scoring logic and DataForSEO call patterns ([seo_analyzer/fetch](/Users/cedric/projects/perso/seo-analyzer/seo_analyzer/fetch), [seo_analyzer/score](/Users/cedric/projects/perso/seo-analyzer/seo_analyzer/score)) rather than reimplementing. The brief's [`packages/scripts/dataforseo-keywords.js`](claude-code-guide-affiliation-sites.md) is a JS rewrite of the same idea — keep them aligned.
 
-## Architecture (from the brief, summarised)
+## Architecture — multi-niche × multi-market
 
-Monorepo with one shared `packages/` dir and four Astro sites built from the same Polyglow theme but visually differentiated via CSS custom properties:
+Monorepo with one shared `packages/` dir and one Astro site per **(niche, market)** pair under `sites/<niche>/<market>/`. The four niches are mirrored across three markets (FR / US / GB); each pair gets its own domain, its own Amazon Associates tag, and its own Cloudflare Pages project.
 
-| Site | Niche | Domain |
-|---|---|---|
-| `sites/jardin-bricolage` | Jardin & Bricolage | jardinguide.fr |
-| `sites/sport-fitness` | Sport & Fitness | sportmachine.fr |
-| `sites/cuisine` | Cuisine | cuisineexpert.fr |
-| `sites/maison-elec` | Maison & Électroménager | guideelectromenager.fr |
+```
+sites/
+  jardin-bricolage/
+    fr/   → jardinguide.fr        (Amazon FR, Awin FR, Que Choisir / Les Numériques sources)
+    us/   → TODO_US_DOMAIN        (Amazon US, Wirecutter / Consumer Reports sources)
+    gb/   → TODO_GB_DOMAIN        (Amazon UK, Which? / Trusted Reviews sources)
+  sport-fitness/{fr,us,gb}/   ← niches not yet scaffolded
+  cuisine/{fr,us,gb}/
+  maison-elec/{fr,us,gb}/
+```
 
-Daily pipeline (per site, GitHub Actions matrix, `max-parallel: 1` to serialize writes to `data/keywords-queue.json`):
-1. `dataforseo-keywords.js` fills `data/keywords-queue.json[niche]` with `{keyword, volume, kd, cpc, score, intent, status}`.
-2. `article-generator.js` picks the highest-score `pending` keyword, scrapes the niche's whitelisted sources from [`packages/config/sources.config.js`](claude-code-guide-affiliation-sites.md), grounds Claude's writing in the scraped text, writes `sites/<niche>/src/content/articles/<slug>.md`, flips status to `published`, and appends to `data/published-urls.json`.
-3. `gsc-indexing.js` submits `pending` URLs to the GSC Indexing API (200/day cap tracked in `data/indexation-requests.json`).
-4. Weekly `update-articles.yml` refills the queue if empty, then refreshes the oldest published articles.
+The single source of truth for what is actually wired up is [`packages/config/niches.js#ENABLED_SITES`](packages/config/niches.js). Pipelines, workflows, and `loadSiteConfig()` all gate off this list — adding a `(niche, market)` row is what turns a market on. Search `TODO_US_DOMAIN` / `TODO_GB_DOMAIN` to find every spot that still needs the real domain wired.
 
-Shared state lives in `data/*.json` at the repo root and **must be committed by the workflow** so the next run sees it. The site-level `content-queue/keywords.json` is a symlink into `data/`.
+Daily pipeline (per ENABLED_SITES row, GitHub Actions matrix, `max-parallel: 1` to serialize writes to `data/keywords-queue.json`):
+1. `dataforseo-keywords.js --niche <n> --market <m>` fills `data/keywords-queue.json[niche][market]` with `{keyword, volume, kd, cpc, score, intent, status, niche, market}`. DataForSEO `location_code` + `language_code` come from `MARKET_DATAFORSEO` in `niches.js`.
+2. `article-generator.js --niche <n> --market <m>` picks the highest-score `pending` keyword, scrapes the (niche, market) whitelist from [`packages/config/sources.config.js`](packages/config/sources.config.js), builds a per-market grounded prompt (Les Numériques voice for FR, Wirecutter voice for US, Which?/TechRadar voice for GB — see [`packages/scripts/lib/prompts.js`](packages/scripts/lib/prompts.js)), writes `sites/<niche>/<market>/src/content/articles/<slug>.mdx`, then post-fetches Amazon image+ASIN+price from the **correct marketplace** (`amazon.fr` / `amazon.com` / `amazon.co.uk`) and injects them.
+3. `gsc-indexing.js` submits `pending` URLs to the GSC Indexing API (200/day cap tracked in `data/indexation-requests.json`). Use `--niche` / `--market` (or `--site <niche>-<market>`) to scope. Each (niche, market) is a separate GSC property since the domains differ.
+4. Weekly `update-articles.yml` refills the queue if empty, then refreshes the oldest published articles per (niche, market).
+
+Shared state lives in `data/*.json` at the repo root and **must be committed by the workflow** so the next run sees it. The schema is `keywords-queue.json = { [niche]: { [market]: KeywordEntry[] } }` and `published-urls.json = PublishedUrl[]` where each entry carries `niche` and `market`.
+
+### Editorial voice per market
+
+| Market | Locale  | Voice / Reference     | Sources whitelist (jardin-bricolage)                        |
+|--------|---------|-----------------------|-------------------------------------------------------------|
+| `fr`   | fr-FR   | Les Numériques        | Que Choisir, Les Numériques, Leroy Merlin, Castorama, ...   |
+| `us`   | en-US   | Wirecutter            | Wirecutter, Consumer Reports, Home Depot, Lowe's, ...       |
+| `gb`   | en-GB   | Which?, TechRadar     | Which?, Trusted Reviews, B&Q, Screwfix, ...                 |
+
+Spelling matters: en-US uses "color" / "tire" / "trash"; en-GB uses "colour" / "tyre" / "rubbish". The prompt template in `prompts.js` is split (`buildPromptFr` / `buildPromptEn` with a `market` branch) precisely so the LLM cannot drift between en-US and en-GB.
+
+### Adding a new (niche, market)
+
+1. Add the row to `ENABLED_SITES` in [packages/config/niches.js](packages/config/niches.js).
+2. Create `sites/<niche>/<market>/site.config.js` (copy from a sibling, adapt `domain`, `locale`, `language`, `seedKeywords`, `topicTokens`, `affiliatePrograms`, `editorialReference`).
+3. Add the matching matrix row in `.github/workflows/{daily-articles,update-articles,build-check}.yml`.
+4. Create the Cloudflare Pages project: `wrangler pages project create <niche>-<market>`.
+5. Wire the custom domain at OVH and add it in the Pages project.
+6. Add the Amazon Associates tag (`AMAZON_AFFILIATE_ID_<MARKET>`) to `.env` and to GitHub Secrets.
+
+### EN sites — content-launch checklist (NOT done by the architecture refactor)
+
+The US/GB scaffolds inherit the FR site's `src/` (layouts, components, static pages, content/pages). Before launching either, the following content i18n is needed:
+
+- Translate `src/components/{Header,Footer,ArticleCard}.astro` (page chrome, navigation labels, SEO titles).
+- Translate `src/layouts/{SiteLayout,ArticleLayout}.astro` and `src/pages/{index,404,comparatifs/index,avis/index,guides/index}.astro`.
+- Rewrite `src/content/pages/{mentions-legales,politique-confidentialite,affiliation}.md` for the target jurisdiction (US privacy / FTC affiliate disclosure / UK ICO + ASA rules) and rename to `legal-notice.md` / `privacy-policy.md` / `affiliate-disclosure.md`. Update the corresponding routes.
+- Decide whether to also localize URL slugs (`/comparatifs/` → `/comparison/`, `/avis/` → `/review/`, `/guides/` → `/guide/`). If yes, rename the matching `src/pages/<x>/[...slug].astro` directories AND update the subdir constant in [packages/scripts/article-generator.js](packages/scripts/article-generator.js).
 
 ## Hosting — Cloudflare Pages from a monorepo
 
@@ -64,14 +102,22 @@ Two options, pick one and stay consistent across the four domains:
 1. **Delegate nameservers to Cloudflare** (recommended) — add the domain as a Cloudflare site, copy the assigned NS records into OVH's domain manager. Gives full DNS + CDN + analytics control. Cloudflare Pages then auto-provisions the apex and `www` records when you add a Custom Domain in the project.
 2. **Keep DNS at OVH** — add a `CNAME` from `www.<domain>` → `<niche>.pages.dev` and use OVH's CNAME flattening / `ALIAS` for the apex. Simpler short-term, loses Cloudflare CDN/WAF features.
 
-### Required GitHub Secrets (Cloudflare)
+### Required GitHub Secrets
 
+Cloudflare:
 ```
 CLOUDFLARE_API_TOKEN     # scoped: Account → Cloudflare Pages → Edit
 CLOUDFLARE_ACCOUNT_ID    # from dash.cloudflare.com URL
 ```
 
-Add these to the brief's [section 8](claude-code-guide-affiliation-sites.md) secrets list.
+Amazon Associates — one tag per marketplace (separate accounts):
+```
+AMAZON_AFFILIATE_ID_FR
+AMAZON_AFFILIATE_ID_US
+AMAZON_AFFILIATE_ID_GB
+```
+
+Add these to the brief's [section 8](claude-code-guide-affiliation-sites.md) secrets list. The legacy `AMAZON_AFFILIATE_ID` (no suffix) is retired — `buildAmazonUrl` only reads `AMAZON_AFFILIATE_ID_<MARKET>`.
 
 ## Editorial line — non-negotiable
 
@@ -131,29 +177,33 @@ products: [ { name, score, asin?, awinId?, criteria: {...} } ]
 
 ## CLI / commands cheatsheet
 
-Once the monorepo exists (after Phase 1):
-
 ```bash
-# Refill the keyword queue for one site or all of them
-node packages/scripts/dataforseo-keywords.js --site jardin-bricolage
-node packages/scripts/dataforseo-keywords.js --site all
+# Refill the keyword queue for one (niche, market), or every ENABLED_SITES row
+node packages/scripts/dataforseo-keywords.js --niche jardin-bricolage --market fr
+node packages/scripts/dataforseo-keywords.js --site jardin-bricolage-us
+node packages/scripts/dataforseo-keywords.js                              # all enabled
 
-# Generate the next article(s) — env MAX_ARTICLES_PER_RUN limits it
-node packages/scripts/article-generator.js --site jardin-bricolage
+# Generate the next article(s) — env MAX_ARTICLES_PER_RUN limits per (niche, market)
+node packages/scripts/article-generator.js --niche jardin-bricolage --market fr
 
-# Submit pending URLs to GSC (rate-limited to 1/s, daily cap 200)
+# Submit pending URLs to GSC (rate-limited to 1/s, daily cap 200). Optional scoping flags.
 node packages/scripts/gsc-indexing.js
+node packages/scripts/gsc-indexing.js --niche jardin-bricolage --market us
 
-# Per-site Astro dev / build (cwd matters)
-cd sites/jardin-bricolage && npm run dev
-cd sites/jardin-bricolage && npm run build
+# Per-site Astro dev / build
+pnpm --filter ./sites/jardin-bricolage/fr dev
+pnpm --filter ./sites/jardin-bricolage/fr build
+pnpm --filter ./sites/jardin-bricolage/us build
+pnpm --filter ./sites/jardin-bricolage/gb build
+# (or via the convenience scripts: `pnpm dev:jardin:fr`, `pnpm build:jardin:us`, ...)
 
 # Trigger a workflow manually instead of waiting for cron
-gh workflow run daily-articles.yml -f site=jardin-bricolage
+gh workflow run daily-articles.yml -f site=jardin-bricolage-fr
+gh workflow run daily-articles.yml -f site=all
 
 # Manual one-off deploy to Cloudflare Pages (after a local build)
-cd sites/jardin-bricolage && npm run build && \
-  npx wrangler pages deploy dist --project-name=jardin-bricolage --branch=main
+pnpm --filter ./sites/jardin-bricolage/fr build && \
+  npx wrangler pages deploy sites/jardin-bricolage/fr/dist --project-name=jardin-bricolage-fr --branch=main
 ```
 
 Local dev requires `.env` at the repo root with the variables listed in [section 8 of the brief](claude-code-guide-affiliation-sites.md). Never commit `.env`. The same keys must exist as GitHub Secrets.

@@ -18,9 +18,24 @@ import { SITES_DIR } from './env.js';
 
 const slug = new slugger();
 
+// Amazon search hostname per market.
+const AMAZON_HOST = {
+  fr: 'www.amazon.fr',
+  us: 'www.amazon.com',
+  gb: 'www.amazon.co.uk',
+};
+
+// Currency-symbol pattern for price extraction per market. Amazon uses a
+// trailing "€" on .fr and a leading "$" / "£" on .com / .co.uk.
+const PRICE_PATTERN = {
+  fr: /<span\s+class="a-offscreen">\s*([^<]*?€[^<]*?)<\/span>/,
+  us: /<span\s+class="a-offscreen">\s*(\$[^<]*?)<\/span>/,
+  gb: /<span\s+class="a-offscreen">\s*(£[^<]*?)<\/span>/,
+};
+
 /**
- * Returns `{ imageUrl, asin, price }` for the Amazon.fr search result that
- * best matches `productName`. Strategy:
+ * Returns `{ imageUrl, asin, price }` for the best matching Amazon search
+ * result on the given market's marketplace. Strategy:
  *
  *   1. Walk the first MAX_BLOCKS_TO_INSPECT product blocks. Amazon's HTML
  *      structure changes regularly (used to be `data-component-type=
@@ -38,8 +53,10 @@ const slug = new slugger();
  * `waitFor: 'networkidle'` is required: Amazon now hydrates results client-
  * side, so 'domcontentloaded' returns the shell HTML without ASINs.
  */
-export async function findAmazonProduct(productName) {
-  const url = `https://www.amazon.fr/s?k=${encodeURIComponent(productName)}`;
+export async function findAmazonProduct(productName, { market = 'fr' } = {}) {
+  const host = AMAZON_HOST[market];
+  if (!host) throw new Error(`findAmazonProduct: unknown market "${market}"`);
+  const url = `https://${host}/s?k=${encodeURIComponent(productName)}`;
   try {
     const { html } = await fetchWithBrowser(url, { waitFor: 'networkidle', timeoutMs: 30_000 });
 
@@ -71,15 +88,15 @@ export async function findAmazonProduct(productName) {
       const title = extractTitle(block);
       if (!title) continue;
       const { score, accessory } = scoreTitleMatch(productName, title);
-      const price = extractPrice(block);
+      const price = extractPrice(block, market);
 
       // Cheap-price soft-gate: a high title-match with a price below the
       // "headline product" floor (e.g. 19,99 € for an SV450 hit) is almost
       // certainly an accessory whose listing happens to contain the product
       // name. Apply an extra penalty to drop it below better-priced candidates.
-      const priceValue = price ? parsePriceEur(price) : NaN;
+      const priceValue = price ? parsePrice(price) : NaN;
       let adjusted = score;
-      if (Number.isFinite(priceValue) && priceValue < PRICE_FLOOR_EUR) {
+      if (Number.isFinite(priceValue) && priceValue < PRICE_FLOOR[market]) {
         adjusted -= PRICE_LOW_PENALTY;
       }
 
@@ -121,13 +138,34 @@ const MIN_TITLE_MATCH = 0.5;
 
 // Below this price, a listing is treated as "almost certainly an accessory"
 // and gets a heavy soft penalty in the candidate ranking. Tuned for the
-// jardin/electro/sport niches where headline products are ≥ ~50 €.
-const PRICE_FLOOR_EUR = 40;
+// jardin/electro/sport niches where headline products are at the lower bound
+// of these floors. Same magnitude across markets — currency conversion is
+// approximate enough that finer tuning is not warranted.
+const PRICE_FLOOR = { fr: 40, us: 40, gb: 35 };
 const PRICE_LOW_PENALTY = 0.4;
 
-const parsePriceEur = (raw) => {
-  // "1 234,56 €" → 1234.56 ; returns NaN on garbage.
-  const cleaned = raw.replace(/\s|€/g, '').replace(',', '.');
+const parsePrice = (raw) => {
+  // "1 234,56 €" / "$1,234.56" / "£1,234.56" → 1234.56. Returns NaN on garbage.
+  // Strategy: strip currency symbols and spaces; if the string contains both
+  // "," and "." treat the LAST of them as the decimal separator and the other
+  // as a thousands separator. Otherwise treat "," as decimal (FR) when no ".".
+  const noSym = raw.replace(/[\s$£€]/g, '');
+  let cleaned;
+  const hasComma = noSym.includes(',');
+  const hasDot = noSym.includes('.');
+  if (hasComma && hasDot) {
+    const lastComma = noSym.lastIndexOf(',');
+    const lastDot = noSym.lastIndexOf('.');
+    if (lastDot > lastComma) {
+      cleaned = noSym.replace(/,/g, '');           // "$1,234.56" → "1234.56"
+    } else {
+      cleaned = noSym.replace(/\./g, '').replace(',', '.'); // "1.234,56" → "1234.56"
+    }
+  } else if (hasComma) {
+    cleaned = noSym.replace(',', '.');             // "1234,56" → "1234.56"
+  } else {
+    cleaned = noSym;
+  }
   const n = parseFloat(cleaned);
   return Number.isFinite(n) ? n : NaN;
 };
@@ -225,8 +263,9 @@ function extractTitle(block) {
   return null;
 }
 
-function extractPrice(block) {
-  const raw = block.match(/<span\s+class="a-offscreen">\s*([^<]*?€[^<]*?)<\/span>/)?.[1];
+function extractPrice(block, market = 'fr') {
+  const re = PRICE_PATTERN[market] ?? PRICE_PATTERN.fr;
+  const raw = block.match(re)?.[1];
   return raw ? raw.replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim() : null;
 }
 
@@ -269,20 +308,20 @@ function readSidecar(jsonPath, asinPath) {
 }
 
 /**
- * Fetches images + ASINs + prices for every entry in `products[]`. Returns
- * `{ imageMap, asinMap, priceMap }`:
+ * Fetches images + ASINs + prices for every entry in `products[]` from the
+ * marketplace matching `market`. Returns `{ imageMap, asinMap, priceMap }`:
  *   - imageMap[name] = "/images/products/<slug>/<product-slug>.jpg" | null
  *   - asinMap[name]  = "B0XXXXXXXX" | null
- *   - priceMap[name] = "89,99 €"   | null
+ *   - priceMap[name] = "89,99 €" / "$89.99" / "£79.99" | null
  *
  * Already-existing files are skipped; metadata is recovered from a
  * `<product-slug>.json` sidecar so links + prices survive re-runs.
  */
-export async function fetchProductImages({ niche, articleSlug, products, verbose = true }) {
+export async function fetchProductImages({ niche, market = 'fr', articleSlug, products, verbose = true }) {
   const imageMap = {};
   const asinMap = {};
   const priceMap = {};
-  const publicDir = resolve(SITES_DIR, niche, 'public/images/products', articleSlug);
+  const publicDir = resolve(SITES_DIR, niche, market, 'public/images/products', articleSlug);
 
   for (const productName of products) {
     const productSlug = slug.slug(productName);
@@ -303,7 +342,7 @@ export async function fetchProductImages({ niche, articleSlug, products, verbose
     }
 
     try {
-      const result = await findAmazonProduct(productName);
+      const result = await findAmazonProduct(productName, { market });
       const { imageUrl, asin, price, title, matchScore, pickedIdx } = result;
 
       if (!imageUrl && !asin) {

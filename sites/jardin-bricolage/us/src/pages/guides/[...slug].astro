@@ -1,0 +1,19 @@
+---
+import { getCollection, render } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import AffiliateButton from '../../components/AffiliateButton.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import ComparisonTable from '../../components/ComparisonTable.astro';
+import ScoreBadge from '../../components/ScoreBadge.astro';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles', ({ data }) => !data.draft && (data.intent === 'guide' || data.intent === 'informational'));
+  return all.map(article => ({ params: { slug: article.id }, props: { article } }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+---
+<ArticleLayout article={article}>
+  <Content components={{ AffiliateButton, ProductCard, ComparisonTable, ScoreBadge }} />
+</ArticleLayout>
