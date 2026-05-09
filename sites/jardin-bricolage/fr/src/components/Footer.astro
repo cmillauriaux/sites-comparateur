@@ -5,6 +5,16 @@ const s = i18n(siteConfig.market);
 const year = new Date().getFullYear();
 const navHeading  = siteConfig.market === 'fr' ? 'Navigation'   : 'Navigation';
 const infoHeading = siteConfig.market === 'fr' ? 'Informations' : 'Information';
+
+// Slugs of the static legal pages diverge per market because the .md
+// filenames in src/content/pages/ are localised (mentions-legales.md vs
+// legal-notice.md). Source of truth here ↔ the actual file ids in that dir.
+const legalSlugs = {
+  fr: { legal: 'mentions-legales',  privacy: 'politique-confidentialite', affiliate: 'affiliation' },
+  us: { legal: 'legal-notice',      privacy: 'privacy-policy',            affiliate: 'affiliate-disclosure' },
+  gb: { legal: 'legal-notice',      privacy: 'privacy-policy',            affiliate: 'affiliate-disclosure' },
+};
+const slugs = legalSlugs[siteConfig.market] ?? legalSlugs.fr;
 ---
 <footer class="mt-20 border-t border-[var(--color-border)] bg-[var(--color-hero-bg)]">
   <div class="mx-auto max-w-[var(--max-w-page)] px-4 py-10 text-sm text-[var(--color-text-muted)] grid gap-6 md:grid-cols-3">
@@ -23,9 +33,9 @@ const infoHeading = siteConfig.market === 'fr' ? 'Informations' : 'Information';
     <div>
       <p class="font-semibold text-[var(--color-primary-dark)] mb-2">{infoHeading}</p>
       <ul class="space-y-1">
-        <li><a href="/mentions-legales/">{s.legalNotice}</a></li>
-        <li><a href="/politique-confidentialite/">{s.privacyPolicy}</a></li>
-        <li><a href="/affiliation/">{s.affiliatePolicy}</a></li>
+        <li><a href={`/${slugs.legal}/`}>{s.legalNotice}</a></li>
+        <li><a href={`/${slugs.privacy}/`}>{s.privacyPolicy}</a></li>
+        <li><a href={`/${slugs.affiliate}/`}>{s.affiliatePolicy}</a></li>
       </ul>
     </div>
   </div>
