@@ -48,8 +48,45 @@ COMPONENTS / COMPOSANTS
 - <SourceList /> — DO NOT write it yourself; the layout adds it automatically.
 `;
 
+function buildSecondaryKeywordsBlockFr(secondaryKeywords) {
+  if (!secondaryKeywords?.length) return '';
+  return `\n==========================================
+MOTS-CLÉS SECONDAIRES — À COUVRIR DANS L'ARTICLE
+==========================================
+Cet article cible un cluster sémantique. Le mot-clé principal est dans la
+section "KEYWORD CIBLE". En plus, l'article doit naturellement couvrir les
+variations ci-dessous (variantes de longue traîne, intentions adjacentes) —
+au moins une fois chacune dans le corps, idéalement dans des sous-titres ou
+des questions de FAQ. NE PAS bourrer artificiellement, NE PAS lister ces
+mots-clés en bloc. Les insérer là où ils complètent le propos.
+${secondaryKeywords.map(k => `  - ${k}`).join('\n')}
+
+AJOUTE également ces mots-clés au frontmatter sous la clé \`secondaryKeywords\` :
+secondaryKeywords:
+${secondaryKeywords.map(k => `  - "${k}"`).join('\n')}
+`;
+}
+
+function buildSecondaryKeywordsBlockEn(secondaryKeywords) {
+  if (!secondaryKeywords?.length) return '';
+  return `\n==========================================
+SECONDARY KEYWORDS — TO COVER IN THE ARTICLE
+==========================================
+This article targets a semantic cluster. The primary keyword is in the
+"TARGET KEYWORD" section. The article must also naturally cover the long-tail
+variations below — each at least once in the body, ideally inside subheadings
+or FAQ questions. DO NOT keyword-stuff. DO NOT list these as a block. Weave
+them in where they fit the argument.
+${secondaryKeywords.map(k => `  - ${k}`).join('\n')}
+
+ALSO add these to the frontmatter under the \`secondaryKeywords\` key:
+secondaryKeywords:
+${secondaryKeywords.map(k => `  - "${k}"`).join('\n')}
+`;
+}
+
 // ───────────────────────────────────────────────────────────── FR
-function buildPromptFr({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, clusterBlock = '' }) {
+function buildPromptFr({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, clusterBlock = '', secondaryBlock = '' }) {
   const intentBrief = intent === 'comparatif'
     ? `INTENT = COMPARATIF (multi-produit). Structure REQUISE:
 1. H1 contenant le keyword
@@ -174,7 +211,7 @@ que tes sources te permettent de défendre solidement.
 KEYWORD CIBLE
 ==========================================
 "${keyword}"
-
+${secondaryBlock}
 ==========================================
 STRUCTURE
 ==========================================
@@ -208,7 +245,7 @@ Si les sources sont insuffisantes, écris UNIQUEMENT le mot ERROR_INSUFFICIENT_S
 }
 
 // ───────────────────────────────────────────────────────────── EN (US/GB)
-function buildPromptEn({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, market, clusterBlock = '' }) {
+function buildPromptEn({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, market, clusterBlock = '', secondaryBlock = '' }) {
   const isUS = market === 'us';
   const spelling = isUS ? 'American English' : 'British English';
   const editorial = siteConfig.editorialReference || (isUS ? 'Wirecutter' : 'Which?');
@@ -338,7 +375,7 @@ data is missing, simply pick products + criteria your sources let you defend.
 TARGET KEYWORD
 ==========================================
 "${keyword}"
-
+${secondaryBlock}
 ==========================================
 STRUCTURE
 ==========================================
@@ -404,8 +441,12 @@ ${existingArticles.map(a => `- [${a.title}](${a.url})`).join('\n')}
 `);
 
   const today = new Date().toISOString();
-  const ctx = { ...opts, today, sourcesBlock, clusterBlock };
+  const isFrMarket = opts.market === 'fr';
+  const secondaryBlock = isFrMarket
+    ? buildSecondaryKeywordsBlockFr(opts.secondaryKeywords)
+    : buildSecondaryKeywordsBlockEn(opts.secondaryKeywords);
+  const ctx = { ...opts, today, sourcesBlock, clusterBlock, secondaryBlock };
 
-  if (opts.market === 'fr') return buildPromptFr(ctx);
+  if (isFrMarket) return buildPromptFr(ctx);
   return buildPromptEn(ctx);
 }

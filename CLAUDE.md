@@ -142,7 +142,7 @@ Voice and depth: **Les Numériques** (lesnumeriques.com). Tone: expert, factual,
 - **Minimum 2 distinct sources** scraped before writing — this is anti-plagiarism, not a soft target. If only one source is reachable, abort the article (write `ERROR_INSUFFICIENT_SOURCES`, leave status `pending`, increment `errorCount`). Never paraphrase a single source.
 - Required structure: H1 → intro → **specs/fiche technique** → sections per criterion (each with an **intermediate score `/10`**: e.g. *Performance*, *Ergonomie*, *Rapport qualité-prix*, *Autonomie/Bruit/whatever fits the niche*) → verdict with **a single final score `/10`** computed as a weighted average → pros/cons → conclusion.
 - The final score must be derived from the intermediate scores in frontmatter (`subscores: { performance: 8, ergonomie: 7, ... }`, `finalScore: 7.6`). Document the weighting once in the frontmatter so reviewers can audit. **Never invent a score** — anchor each one in a sourced statement.
-- **Affiliate placement**: the affiliate CTA must appear at least **3 times**: (1) right after the intro ("Voir le prix actuel"), (2) inside the specs/verdict block, (3) in the conclusion. Use the `<AffiliateButton>` component, not raw links.
+- **Affiliate placement**: the affiliate CTA must appear at least **3 times**: (1) right after the intro ("Voir le prix actuel"), (2) inside the specs/verdict block, (3) in the conclusion. Use the `<AffiliateButton>` component, not raw links. Each `<ProductCard>` counts as one affiliate button (it embeds one at render time) — `article-validator.js` enforces this.
 
 ### Type 2 — Comparatif (intent: `comparatif`, multi-product)
 
@@ -166,6 +166,7 @@ Both article types share this base — `article-generator.js` and the Astro Zod 
 title: "..."                 # contains the keyword, ≤60 chars total with site suffix
 description: "..."           # 150-160 chars, contains keyword
 keyword: "..."
+secondaryKeywords: [...]     # OPTIONAL — present only on cluster-generated articles
 intent: "avis" | "comparatif" | "guide"
 publishedAt: ISO8601
 updatedAt:   ISO8601
@@ -189,6 +190,64 @@ products: [ { name, score, asin?, awinId?, criteria: {...} } ]
 - Affiliation disclosure block (RGPD + Amazon/Awin TOS) must be present on every article — render it once via the `ArticleLayout`, don't ask the model to repeat it.
 - All four sites must each include `/mentions-legales` and `/politique-confidentialite` pages. Do not deploy a site missing these.
 
+## Manual editorial flow — Semrush cluster priorities
+
+Two parallel sources feed the writer:
+
+| Pipeline                | Source         | Registry                       | Trigger          | Article shape           |
+|-------------------------|----------------|--------------------------------|------------------|-------------------------|
+| Daily auto              | DataForSEO     | `data/keywords-queue.json`     | GitHub Actions   | 1 keyword → 1 article   |
+| Manual cluster (Semrush)| Semrush API    | `data/semrush-priorities.json` | User (this repo) | 1 cluster → 1 article (primary + 4-7 secondaries) |
+
+Use the manual cluster flow when you want to hand-pick high-ROI Easy/Very-Easy
+opportunities (KD ≤ 29, vol ≥ 200) across a topical cluster — these articles
+typically capture 3-5× the addressable volume of a single-keyword piece.
+
+```bash
+# 1. Mine Semrush + cluster + score (writes data/semrush-priorities.json)
+node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market fr
+node packages/scripts/semrush-prioritize.js                # all enabled sites
+
+# 2. Pick a cluster id from the printed top-N (or from the JSON), then:
+node packages/scripts/article-generator.js --cluster jardin-bricolage-fr-meilleur-robot-tondeuse-2026
+```
+
+Mining is cached on disk (`data/semrush-cache/`, 14-day TTL) so iterating on
+the same scope is free. `phrase_fullsearch` costs 20 API units per row
+returned — push as many filters server-side as possible (the script does).
+The `/semrush-prioritize` skill in [.claude/skills/](.claude/skills/) wraps
+this flow so it can be invoked conversationally.
+
+When `--cluster` succeeds, the article-generator:
+1. Writes the .mdx with `secondaryKeywords:` in the frontmatter (cluster-aware)
+2. Marks the opportunity `generated` in `data/semrush-priorities.json`
+3. **Absorbs** any matching keyword in `data/keywords-queue.json` (status →
+   `absorbed-by-cluster`) so the daily pipeline doesn't double-publish.
+
+Three invocation modes:
+
+| Mode                                     | Behaviour                                                       |
+|------------------------------------------|-----------------------------------------------------------------|
+| `--cluster <id>`                         | Generate that exact opportunity by id                           |
+| `--cluster --count N` (+ optional scope) | Pick top N pending by score across resolved targets, stop on 1st failure |
+| (no `--cluster` flag)                    | Daily-pipeline mode — pulls from `keywords-queue.json`          |
+
+**Intent promotion is allowed.** `semrush-prioritize.js` classifies the cluster
+intent heuristically from the primary keyword (CPC + pattern match in
+`lib/intent.js`). Claude is then free to write the article with a different
+intent in the frontmatter — e.g., a cluster classified `informational` may
+come back as a single-product `avis` if the source material naturally
+supports that structure. The published URL is computed from the **frontmatter
+intent**, not the cluster intent (`generateArticle()` re-reads the YAML at
+the end via `readFrontmatterIntent`). This keeps the URL consistent with what
+Astro builds from `data.intent` — otherwise GSC would receive 404 URLs.
+
+**Post-flight check** uses a pre/post `git status` snapshot diff so locally
+dirty files don't trip the safety net. The check still rejects anything
+Claude newly wrote outside `sites/<niche>/<market>/` or `data/`.
+
+Required env: `SEMRUSH_API_KEY` in `.env` (Semrush Business plan or higher).
+
 ## CLI / commands cheatsheet
 
 ```bash
@@ -197,8 +256,19 @@ node packages/scripts/dataforseo-keywords.js --niche jardin-bricolage --market f
 node packages/scripts/dataforseo-keywords.js --site jardin-bricolage-us
 node packages/scripts/dataforseo-keywords.js                              # all enabled
 
+# Mine Semrush for cluster opportunities (manual editorial flow)
+node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market fr
+node packages/scripts/semrush-prioritize.js --top 30                      # bigger leaderboard
+node packages/scripts/semrush-prioritize.js --no-cache                    # bypass disk cache
+
 # Generate the next article(s) — env MAX_ARTICLES_PER_RUN limits per (niche, market)
 node packages/scripts/article-generator.js --niche jardin-bricolage --market fr
+node packages/scripts/article-generator.js --cluster <id-from-priorities-json>
+
+# Auto-pick top N pending clusters from data/semrush-priorities.json (score-desc).
+# Stops early on first failure to avoid burning credits on a broken pipeline.
+node packages/scripts/article-generator.js --cluster --count 5
+node packages/scripts/article-generator.js --cluster --niche jardin-bricolage --market fr --count 3
 
 # Submit pending URLs to GSC (rate-limited to 1/s, daily cap 200). Optional scoping flags.
 node packages/scripts/gsc-indexing.js

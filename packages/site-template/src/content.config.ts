@@ -26,6 +26,10 @@ const articles = defineCollection({
     title: z.string().max(70),
     description: z.string().min(120).max(180),
     keyword: z.string(),
+    // Secondary keywords from a Semrush cluster (semrush-prioritize.js).
+    // Optional — single-keyword articles from the daily DataForSEO pipeline
+    // don't carry this field.
+    secondaryKeywords: z.array(z.string()).optional(),
     intent: z.enum(['avis', 'comparatif', 'guide', 'informational']),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date(),

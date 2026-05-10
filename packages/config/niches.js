@@ -63,3 +63,11 @@ export const MARKET_DATAFORSEO = {
   us: { location_code: 2840, location_name: 'United States',  language_code: 'en', language_name: 'English' },
   gb: { location_code: 2826, location_name: 'United Kingdom', language_code: 'en', language_name: 'English' },
 };
+
+// Semrush database codes per market. Used by semrush-prioritize.js.
+// Semrush uses `uk` (not `gb`) for the United Kingdom database.
+export const MARKET_SEMRUSH = {
+  fr: { database: 'fr', language: 'fr' },
+  us: { database: 'us', language: 'en' },
+  gb: { database: 'uk', language: 'en' },
+};

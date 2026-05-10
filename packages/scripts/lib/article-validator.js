@@ -19,9 +19,14 @@ export function validateGeneratedArticle(content) {
     errors.push('missing YAML frontmatter');
   }
 
-  const affiliateButtons = (content.match(/<AffiliateButton\b/g) || []).length;
+  // Each <ProductCard> embeds its own AffiliateButton at render time, so it
+  // contributes to the visible affiliate-button count even though the literal
+  // <AffiliateButton> tag isn't in the source.
+  const standaloneButtons = (content.match(/<AffiliateButton\b/g) || []).length;
+  const productCards = (content.match(/<ProductCard\b/g) || []).length;
+  const affiliateButtons = standaloneButtons + productCards;
   if (affiliateButtons < MIN_AFFILIATE_BUTTONS) {
-    errors.push(`only ${affiliateButtons} <AffiliateButton>, need ${MIN_AFFILIATE_BUTTONS}+`);
+    errors.push(`only ${affiliateButtons} affiliate buttons (${standaloneButtons} standalone + ${productCards} ProductCard), need ${MIN_AFFILIATE_BUTTONS}+`);
   }
 
   // Strip frontmatter then strip every Astro/JSX-style component tag, then
