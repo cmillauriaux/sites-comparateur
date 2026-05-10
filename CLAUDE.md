@@ -57,7 +57,7 @@ Spelling matters: en-US uses "color" / "tire" / "trash"; en-GB uses "colour" / "
 
 1. Add the row to `ENABLED_SITES` in [packages/config/niches.js](packages/config/niches.js).
 2. Create `sites/<niche>/<market>/` containing only:
-   - `site.config.js` (copy from a sibling, adapt `domain`, `locale`, `language`, `seedKeywords`, `topicTokens`, `affiliatePrograms`, `editorialReference`).
+   - `site.config.js` (copy from a sibling, adapt `domain`, `locale`, `language`, `seedKeywords`, `topicTokens`, `affiliatePrograms`, `editorialReference`, `umami.{host,websiteId}`).
    - `astro.config.mjs` (copy from a sibling, change only `defaultLocale` if FR vs EN — `site:` and `srcDir` are derived).
    - `package.json` (rename to `@comparateur/<niche>-<market>`).
    - `tsconfig.json` (copy from a sibling).
@@ -68,6 +68,7 @@ Spelling matters: en-US uses "color" / "tire" / "trash"; en-GB uses "colour" / "
 4. Create the Cloudflare Pages project: `wrangler pages project create <niche>-<market>`.
 5. Wire the custom domain at OVH and add it in the Pages project.
 6. Add the Amazon Associates tag (`AMAZON_AFFILIATE_ID_<MARKET>`) to `.env` and to GitHub Secrets.
+7. Create the Umami "Website" entry (one per site) and paste the generated `websiteId` into `site.config.js#umami`. Outbound clicks are tracked client-side as `affiliate-click` (with `program`, `product`, `target_host`, `target_url`, `source_path` properties) and `outbound-click` (target host/url + source path) — wired automatically by [`UmamiAnalytics.astro`](packages/site-template/src/components/UmamiAnalytics.astro) inside `SiteLayout`.
 
 ### Site template (shared `src/`)
 

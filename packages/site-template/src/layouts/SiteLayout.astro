@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import UmamiAnalytics from '../components/UmamiAnalytics.astro';
 import siteConfig from 'virtual:site-config';
 
 interface Props {
@@ -54,6 +55,7 @@ const xDefault = siblings.find(s => s.market === 'fr') ?? siblings[0] ?? null;
     {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
     <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} — RSS`} href="/rss.xml" />
+    <UmamiAnalytics />
   </head>
   <body class="min-h-screen flex flex-col">
     <Header />

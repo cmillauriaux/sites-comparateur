@@ -63,4 +63,11 @@ export default {
   },
 
   affiliatePrograms: ['amazon-fr', 'awin-leroy-merlin', 'awin-mr-bricolage', 'awin-castorama'],
+
+  // Umami analytics — leave host/websiteId empty to disable on this site.
+  // host = base URL of your Umami instance (no trailing slash, no /script.js).
+  umami: {
+    host: 'https://vps-4db95b47.vps.ovh.net',
+    websiteId: '48b02c61-0116-4b99-9202-4feeb1957cd9',
+  },
 };

@@ -53,4 +53,10 @@ export default {
   },
 
   affiliatePrograms: ['amazon-us'],   // add CJ/Impact merchants when wired
+
+  // Umami analytics — see jardin-bricolage/fr/site.config.js for the contract.
+  umami: {
+    host: '',                          // TODO: shared Umami host
+    websiteId: '',                     // TODO: UUID from Umami for the US site
+  },
 };
