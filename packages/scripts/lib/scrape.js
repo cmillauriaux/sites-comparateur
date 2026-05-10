@@ -67,6 +67,69 @@ function extractText(html, maxChars) {
   return text.replace(/\s+/g, ' ').trim().slice(0, maxChars);
 }
 
+const STOP_PATH_RE = /\/(recherche|search|tag|tags|categorie|categories|category)(\/|$)/i;
+const REVIEW_PATH_RE = /\/(test|tests|avis|review|reviews|comparatif|comparatifs|comparison|comparisons|guide|guide-d-achat|buying-guide)(\/|-|_|$)/i;
+
+function tokenizeKeyword(s) {
+  return new Set(
+    s.toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .split(/[^a-z0-9]+/)
+      .filter(t => t.length >= 3),
+  );
+}
+
+/**
+ * From a SERP page on an editorial source, locate up to 3 same-domain links
+ * whose anchor text best matches the keyword. Returned candidates are deep
+ * URLs (≥ 8 chars in pathname) and exclude index/category pages.
+ *
+ * Scoring: Jaccard(keyword tokens, anchor tokens) + 0.3 boost when the URL
+ * path contains review-typed segments (test/avis/comparatif/...). The boost
+ * is large enough that an anchor with two of the keyword's tokens AND a
+ * review-typed path beats a five-token-overlap anchor on a category page.
+ */
+function extractArticleLinks(html, baseUrl, keyword) {
+  let $;
+  try { $ = cheerio.load(html); } catch { return []; }
+  const baseHost = new URL(baseUrl).hostname;
+  const kwTokens = tokenizeKeyword(keyword);
+  if (kwTokens.size === 0) return [];
+
+  const seen = new Set();
+  const candidates = [];
+
+  $('a[href]').each((_, el) => {
+    const href = $(el).attr('href');
+    if (!href) return;
+    let abs;
+    try { abs = new URL(href, baseUrl).toString().split('#')[0]; } catch { return; }
+    if (seen.has(abs)) return;
+    seen.add(abs);
+
+    let u;
+    try { u = new URL(abs); } catch { return; }
+    if (u.hostname !== baseHost) return;
+    if (STOP_PATH_RE.test(u.pathname)) return;
+    if (u.pathname.length < 8) return;
+
+    const anchor = $(el).text().replace(/\s+/g, ' ').trim();
+    if (!anchor || anchor.length < 8) return;
+
+    const aTokens = tokenizeKeyword(anchor);
+    let inter = 0;
+    for (const t of kwTokens) if (aTokens.has(t)) inter++;
+    const similarity = inter / kwTokens.size;
+    if (similarity < 0.5) return;
+
+    const pathBoost = REVIEW_PATH_RE.test(u.pathname) ? 0.3 : 0;
+    candidates.push({ url: abs, anchor, score: similarity + pathBoost });
+  });
+
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates.slice(0, 3);
+}
+
 async function tryFetch(searchUrl) {
   const ctrl = new AbortController();
   const timeout = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
@@ -154,34 +217,82 @@ export async function scrapeSource(source, keyword, { maxChars = 4000, verbose =
     return null;
   }
 
+  // 2-hop: editorial sources (`type: 'reviews'`) get their SERP parsed for
+  // article links, and the best matching link is fetched as the actual
+  // grounding content. This pulls real review prose into the prompt instead
+  // of search-page snippets — a structural fix to the editorial credibility
+  // gap (the model can no longer fabricate "Que Choisir says X" from a
+  // listing page that only mentions X by title).
+  //
+  // Retailers stay at SERP level (their search pages already carry pricing,
+  // stock, ratings — that's what we want from them). Editorial 2-hop is
+  // best-effort: if no qualifying link is found or the fetch fails, the
+  // SERP text is kept rather than aborting the source.
+  let finalUrl = searchUrl;
+  let finalText = text;
+  let hop = 1;
+  if (source.type === 'reviews') {
+    const links = extractArticleLinks(response.html, searchUrl, keyword);
+    for (const link of links) {
+      const deepResp = source.useBrowser ? await tryBrowser(link.url) : await tryFetch(link.url);
+      if (!deepResp.ok) continue;
+      if (deepResp.status && deepResp.status >= 500 && deepResp.status !== 503) continue;
+      const deepText = extractText(deepResp.html, maxChars);
+      if (!deepText || deepText.length < MIN_CONTENT_CHARS) continue;
+      // Accept the deep content only when it's substantively richer than
+      // the SERP — an article body should comfortably beat the SERP listing
+      // text. 1.2× guards against picking a same-domain link that resolves
+      // to another listing of similar size.
+      if (deepText.length < text.length * 1.2) continue;
+      finalUrl = link.url;
+      finalText = deepText;
+      hop = 2;
+      if (verbose) console.log(`    🔗 ${source.name}: 2-hop → ${link.anchor.slice(0, 60)} (${deepText.length} chars)`);
+      break;
+    }
+  }
+
   return {
     name: source.name,
     domain,
-    url: searchUrl,
-    content: text,
+    url: finalUrl,
+    content: finalText,
     trust: source.trust,
     httpStatus: response.status,
     fetchedVia: route,
+    fetchHops: hop,
     scrapedAt: new Date().toISOString(),
   };
 }
 
-export async function scrapeSourcesForKeyword(sources, keyword, { maxConcurrent = 3, minSuccess = 2, verbose = true } = {}) {
+export async function scrapeSourcesForKeyword(sources, keyword, { maxConcurrent = 3, minSuccess = 2, minEditorial = 1, verbose = true } = {}) {
   const scrapeable = sources.filter(s => s.scrape);
   const results = [];
   // Lower concurrency than fetch-only — Chromium pages are heavier; 3 in flight is plenty.
   for (let i = 0; i < scrapeable.length; i += maxConcurrent) {
     const batch = scrapeable.slice(i, i + maxConcurrent);
-    const batchResults = await Promise.all(batch.map(s => scrapeSource(s, keyword, { verbose })));
+    // The source's `type` is preserved on the result so callers can apply
+    // editorial-only thresholds without having to re-zip with the input.
+    const batchResults = await Promise.all(batch.map(async (s) => {
+      const r = await scrapeSource(s, keyword, { verbose });
+      if (r && !r.error) r.type = s.type;
+      return r;
+    }));
     results.push(...batchResults);
   }
   const successful = results.filter(r => r && !r.error);
+  const editorialCount = successful.filter(r => r.type === 'reviews').length;
   // Browser is launched lazily; close it once we're done with this keyword.
   await closeBrowser();
   return {
     sources: successful,
     failed: results.filter(r => !r || r.error),
-    enough: successful.length >= minSuccess,
+    // `enough` now requires BOTH a numeric floor AND at least one editorial
+    // (reviews-type) source. A keyword backed only by retailer SERPs +
+    // Amazon listings cannot pass anti-plagiarism by aggregating product
+    // titles — the LLM has no real review prose to synthesise from.
+    enough: successful.length >= minSuccess && editorialCount >= minEditorial,
+    editorialCount,
     requestedCount: scrapeable.length,
   };
 }

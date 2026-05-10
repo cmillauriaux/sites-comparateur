@@ -21,6 +21,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import slugger from 'github-slugger';
+import YAML from 'yaml';
 
 import { REPO_ROOT, SITES_DIR, requireEnv } from './lib/env.js';
 import { readQueue, writeQueue, appendPublished, getBucket, readPublished } from './lib/queue.js';
@@ -29,12 +30,35 @@ import { scrapeSourcesForKeyword } from './lib/scrape.js';
 import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices } from './lib/product-images.js';
 import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
+import { extractFaqFromBody } from './lib/faq-extract.js';
 import { getSourcesFor } from '@comparateur/config/sources';
 import { i18n } from '@comparateur/config';
 
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '2', 10);
 const MIN_SOURCES = 2;
 const slug = new slugger();
+
+/**
+ * Parse the article's `## FAQ` section and persist it as `faq: [{ q, a }]` in
+ * frontmatter so ArticleLayout can emit the FAQPage JSON-LD at build time.
+ * Silent no-op when no FAQ section is found or already present.
+ */
+function injectFaqFrontmatter(path) {
+  const content = readFileSync(path, 'utf-8');
+  const m = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!m) return;
+  let frontmatter;
+  try { frontmatter = YAML.parse(m[1]) ?? {}; } catch { return; }
+  if (Array.isArray(frontmatter.faq) && frontmatter.faq.length > 0) return;
+  const faq = extractFaqFromBody(m[2]);
+  if (faq.length === 0) return;
+  frontmatter.faq = faq;
+  // lineWidth: 0 prevents YAML from re-flowing long Q/A strings into folded
+  // blocks that re-render unpredictably.
+  const yamlText = YAML.stringify(frontmatter, { lineWidth: 0 }).trimEnd();
+  writeFileSync(path, `---\n${yamlText}\n---\n${m[2]}`);
+  console.log(`  ❓ FAQ extracted: ${faq.length} Q&A`);
+}
 
 function pickNextPending(queue, niche, market) {
   const bucket = queue?.[niche]?.[market] || [];
@@ -66,11 +90,11 @@ async function generateOne(siteConfig) {
       throw new Error(`no sources configured for (${niche}, ${market}) — add entries to sources.config.js`);
     }
     console.log(`  🔍 Scraping ${sources.filter(s => s.scrape).length} sources…`);
-    const { sources: scraped, failed, enough } = await scrapeSourcesForKeyword(sources, next.keyword, { minSuccess: MIN_SOURCES });
-    console.log(`  📥 ${scraped.length} sources collected (${failed.length} failed)`);
+    const { sources: scraped, failed, enough, editorialCount } = await scrapeSourcesForKeyword(sources, next.keyword, { minSuccess: MIN_SOURCES, minEditorial: 1 });
+    console.log(`  📥 ${scraped.length} sources collected (${failed.length} failed) — ${editorialCount} editorial`);
 
     if (!enough) {
-      throw new Error(`only ${scraped.length} sources collected, need ${MIN_SOURCES} minimum (anti-plagiarism)`);
+      throw new Error(`insufficient sources: ${scraped.length} total / ${editorialCount} editorial (need ${MIN_SOURCES} total + 1 editorial)`);
     }
 
     // 2. Compute slug + output path. Articles are .mdx so they can embed
@@ -121,10 +145,16 @@ async function generateOne(siteConfig) {
     // Post-flight: refuse anything Claude touched outside the article output
     // path. Defends against prompt-injection from scraped sources steering the
     // CLI to write elsewhere (settings, secrets, scripts).
-    const gitStatus = spawnSync('git', ['status', '--porcelain'], { cwd: REPO_ROOT, encoding: 'utf-8' }).stdout || '';
+    // `--porcelain=v1 -z` uses NUL separators and never quotes paths — safer
+    // than the default newline format which quotes paths with spaces and
+    // would defeat the prefix-check below.
+    const gitStatus = spawnSync('git', ['status', '--porcelain=v1', '-z'], { cwd: REPO_ROOT, encoding: 'utf-8' }).stdout || '';
     const expectedDir = `sites/${niche}/${market}/`;
-    const offendingPaths = gitStatus.split('\n')
-      .map(l => l.slice(3).trim())
+    // Each record is "XY <path>" terminated by NUL. Renames have a second
+    // NUL-terminated path (the original name) — drop empties to skip those.
+    const offendingPaths = gitStatus.split('\0')
+      .filter(Boolean)
+      .map(record => record.length > 3 ? record.slice(3) : '')
       .filter(p => p && !p.startsWith(expectedDir) && !p.startsWith('data/'));
     if (offendingPaths.length > 0) {
       throw new Error(`Claude touched files outside ${expectedDir}: ${offendingPaths.slice(0, 5).join(', ')}`);
@@ -171,6 +201,11 @@ async function generateOne(siteConfig) {
       const prices = Object.values(priceMap).filter(Boolean).length;
       console.log(`  🖼  ${imgs}/${productList.length} images · 🔗 ${asins}/${productList.length} ASINs · 💶 ${prices}/${productList.length} prices`);
     }
+
+    // FAQ extraction → frontmatter injection. Reads the just-written file
+    // (or the original Claude output when no products were processed) so this
+    // step is independent of the product-injection branch.
+    injectFaqFrontmatter(outputPath);
 
     // 6. Promote in queue + register published URL. URL subdir comes from the
     // SAME i18n source used by the Astro [type]/ dynamic route (single source

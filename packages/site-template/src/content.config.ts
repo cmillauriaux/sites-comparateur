@@ -36,6 +36,10 @@ const articles = defineCollection({
     groundingScore: z.string().optional(),
     draft: z.boolean().default(false),
 
+    // Extracted from the body's `## FAQ` section by article-generator.js
+    // post-pass; consumed by ArticleLayout to emit FAQPage JSON-LD.
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
+
     // Test (intent=avis) only
     product: z.object({ name: z.string(), developer: z.string().optional() }).optional(),
     subscores: z.record(z.string(), z.number().min(0).max(10)).optional(),

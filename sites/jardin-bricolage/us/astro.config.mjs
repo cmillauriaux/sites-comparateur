@@ -4,8 +4,11 @@ import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
 import pagefind from 'astro-pagefind';
 import { defineConfig } from 'astro/config';
-import { SITE_TEMPLATE_SRC } from '@comparateur/site-template';
+import { SITE_TEMPLATE_SRC, loadHreflangSiblings } from '@comparateur/site-template';
 import siteConfig from './site.config.js';
+
+const hreflangSiblings = await loadHreflangSiblings(siteConfig.niche);
+const fullSiteConfig = { ...siteConfig, hreflangSiblings };
 
 const virtualSiteConfigPlugin = {
   name: 'virtual-site-config',
@@ -13,7 +16,7 @@ const virtualSiteConfigPlugin = {
     if (id === 'virtual:site-config') return '\0virtual:site-config';
   },
   load(id) {
-    if (id === '\0virtual:site-config') return `export default ${JSON.stringify(siteConfig)}`;
+    if (id === '\0virtual:site-config') return `export default ${JSON.stringify(fullSiteConfig)}`;
   },
 };
 

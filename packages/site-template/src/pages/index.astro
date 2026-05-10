@@ -14,11 +14,33 @@ const comparatifs = all.filter(a => a.data.intent === 'comparatif').slice(0, 4);
 const guides = all.filter(a => a.data.intent === 'guide' || a.data.intent === 'informational').slice(0, 4);
 
 const hrefFor = (a) => `/${a.data.intent === 'comparatif' ? s.slugComparisons : a.data.intent === 'avis' ? s.slugReviews : s.slugGuides}/${a.id}/`;
+
+// Organization + WebSite schema for E-E-A-T signals on the home page only.
+// Two distinct nodes (not nested) so they can be picked up independently
+// by Google's parser and Rich Results Test.
+const baseUrl = `https://${siteConfig.domain}`;
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: siteConfig.name,
+  url: baseUrl,
+  description: siteConfig.longDescription ?? siteConfig.shortDescription,
+};
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: siteConfig.name,
+  url: baseUrl,
+  inLanguage: siteConfig.locale ?? 'fr-FR',
+  publisher: { '@type': 'Organization', name: siteConfig.name, url: baseUrl },
+};
 ---
 <SiteLayout
   title={`${siteConfig.name} — ${s.homeTitleSuffix}`}
   description={siteConfig.longDescription}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   <section class="bg-[var(--color-hero-bg)] py-16">
     <div class="mx-auto max-w-[var(--max-w-page)] px-4 text-center">
       <h1 class="text-4xl md:text-5xl font-bold text-[var(--color-primary-dark)] mb-4">

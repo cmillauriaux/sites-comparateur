@@ -14,9 +14,24 @@ interface Props {
 const { title, description, canonicalPath = Astro.url.pathname, ogImage, noindex = false } = Astro.props;
 const canonical = new URL(canonicalPath, Astro.site).toString();
 const fullTitle = title.endsWith(siteConfig.name) ? title : `${title} — ${siteConfig.name}`;
+
+// Locale propagated from site.config.js so US/GB sites don't ship `lang="fr"`.
+// `locale` is "fr-FR" / "en-US" / "en-GB"; HTML wants the language code only,
+// while OpenGraph wants the underscore form.
+const siteLocale: string = siteConfig.locale ?? 'fr-FR';
+const htmlLang = siteLocale.split('-')[0];
+const ogLocale = siteLocale.replace('-', '_');
+
+// Hreflang on the home page only — inner article pages don't have validated
+// cross-market equivalents (no translation map yet). x-default points at the
+// FR site when present, otherwise the first sibling, so Google has a fallback
+// for unmapped locales.
+const isHome = canonicalPath === '/' || canonicalPath === '';
+const siblings = (siteConfig.hreflangSiblings ?? []) as Array<{ market: string; locale: string; domain: string }>;
+const xDefault = siblings.find(s => s.market === 'fr') ?? siblings[0] ?? null;
 ---
 <!doctype html>
-<html lang="fr">
+<html lang={htmlLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,11 +39,17 @@ const fullTitle = title.endsWith(siteConfig.name) ? title : `${title} — ${site
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex,nofollow" />}
+    {isHome && siblings.map(s => (
+      <link rel="alternate" hreflang={s.locale} href={`https://${s.domain}/`} />
+    ))}
+    {isHome && xDefault && (
+      <link rel="alternate" hreflang="x-default" href={`https://${xDefault.domain}/`} />
+    )}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale" content={ogLocale} />
     <meta property="og:site_name" content={siteConfig.name} />
     {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />

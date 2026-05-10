@@ -14,12 +14,9 @@ interface Props {
 }
 const { href, title, description, intent, publishedAt, finalScore, heroImage } = Astro.props;
 const pub = typeof publishedAt === 'string' ? new Date(publishedAt) : publishedAt;
-const intentLabels: Record<string, Record<string, string>> = {
-  fr: { avis: 'Test', comparatif: 'Comparatif', guide: 'Guide', informational: 'Article' },
-  us: { avis: 'Review', comparatif: 'Roundup', guide: 'Guide', informational: 'Article' },
-  gb: { avis: 'Review', comparatif: 'Comparison', guide: 'Guide', informational: 'Article' },
-};
-const intentLabel = intentLabels[siteConfig.market]?.[intent] ?? 'Article';
+// Reuse the i18n dictionary so re-labeling (e.g. "Comparatif" → "Sélection
+// comparée") only happens in one place.
+const intentLabel = (s.intentLabels as Record<string, string>)[intent] ?? 'Article';
 const dateLocale = siteConfig.locale ?? 'fr-FR';
 ---
 <a href={href} class="block rounded-lg border border-[var(--color-border)] bg-white p-5 shadow-sm hover:shadow-md transition-shadow no-underline">

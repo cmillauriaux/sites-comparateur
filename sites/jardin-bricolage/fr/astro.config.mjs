@@ -4,8 +4,14 @@ import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
 import pagefind from 'astro-pagefind';
 import { defineConfig } from 'astro/config';
-import { SITE_TEMPLATE_SRC } from '@comparateur/site-template';
+import { SITE_TEMPLATE_SRC, loadHreflangSiblings } from '@comparateur/site-template';
 import siteConfig from './site.config.js';
+
+// Resolve sibling launched markets for the same niche so SiteLayout can emit
+// `<link rel="alternate" hreflang>` on the home page. Computed once at config
+// load — cheap (3 file reads) and avoids fs access at runtime.
+const hreflangSiblings = await loadHreflangSiblings(siteConfig.niche);
+const fullSiteConfig = { ...siteConfig, hreflangSiblings };
 
 // Inject site.config.js as `virtual:site-config` so the shared template
 // (under packages/site-template/src/) can import it without knowing where
@@ -16,7 +22,7 @@ const virtualSiteConfigPlugin = {
     if (id === 'virtual:site-config') return '\0virtual:site-config';
   },
   load(id) {
-    if (id === '\0virtual:site-config') return `export default ${JSON.stringify(siteConfig)}`;
+    if (id === '\0virtual:site-config') return `export default ${JSON.stringify(fullSiteConfig)}`;
   },
 };
 

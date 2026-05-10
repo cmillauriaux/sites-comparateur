@@ -36,10 +36,12 @@ const strings = {
     // ArticleLayout
     publishedOn:    'Publié le',
     updatedOn:      'Mis à jour le',
-    weightedAvg:    'Moyenne pondérée des notes par critère.',
+    weightedAvg:    'Note pondérée selon nos critères de sélection.',
     sourcesLabel:    'sources vérifiées',
-    finalScoreLabel: 'Note finale',
-    intentLabels:    { avis: 'Test', comparatif: 'Comparatif', guide: "Guide d'achat", informational: 'Article' },
+    finalScoreLabel: 'Note éditoriale',
+    intentLabels:    { avis: 'Notre sélection', comparatif: 'Sélection comparée', guide: "Guide d'achat", informational: 'Article' },
+    methodologyNote: 'Méthodologie : sélection éditoriale fondée sur la synthèse de sources vérifiées, sans prise en main physique des produits.',
+    methodologyReadMore: 'Lire notre méthodologie complète →',
 
     // SourceList
     sourcesHeading: 'Sources consultées',
@@ -61,8 +63,9 @@ const strings = {
     legalNotice:     'Mentions légales',
     privacyPolicy:   'Politique de confidentialité',
     affiliatePolicy: "Politique d'affiliation",
+    methodologyLink: 'Méthodologie',
     footerTagline:   "Guide d'achat indépendant.",
-    legalSlugs:      { legal: 'mentions-legales', privacy: 'politique-confidentialite', affiliate: 'affiliation' },
+    legalSlugs:      { legal: 'mentions-legales', privacy: 'politique-confidentialite', affiliate: 'affiliation', methodology: 'methodologie' },
 
     // Index + list pages
     ctaComparisons:  'Voir les comparatifs',
@@ -77,7 +80,7 @@ const strings = {
     pageComparisonsIntro:
       "Chaque comparatif commence par les critères de choix, présente brièvement chaque produit retenu, et se conclut par un tableau récapitulatif assorti d'une recommandation finale.",
     pageReviewsIntro:
-      'Chaque test est appuyé par au minimum 2 sources vérifiées. Note finale = moyenne pondérée des notes par critère.',
+      'Chaque sélection est appuyée par au minimum 2 sources vérifiées. La note éditoriale est une moyenne pondérée selon nos critères de sélection.',
     noComparisons:   'Aucun comparatif publié pour le moment.',
     noReviews:       'Aucun test publié pour le moment.',
     noGuides:        'Aucun guide publié pour le moment.',
@@ -102,10 +105,12 @@ const strings = {
 
     publishedOn:     'Published',
     updatedOn:       'Updated',
-    weightedAvg:     'Weighted average of per-criterion scores.',
+    weightedAvg:     'Weighted average across our selection criteria.',
     sourcesLabel:    'verified sources',
-    finalScoreLabel: 'Final score',
-    intentLabels:    { avis: 'Review', comparatif: 'Roundup', guide: 'Buying guide', informational: 'Article' },
+    finalScoreLabel: 'Editorial score',
+    intentLabels:    { avis: "Editor's pick", comparatif: 'Roundup', guide: 'Buying guide', informational: 'Article' },
+    methodologyNote: 'Methodology: editorial pick synthesised from verified sources, without hands-on physical testing of the products.',
+    methodologyReadMore: 'Read our full methodology →',
 
     sourcesHeading:  'Sources consulted',
     consultedOn:     'consulted on',
@@ -124,8 +129,9 @@ const strings = {
     legalNotice:     'Legal notice',
     privacyPolicy:   'Privacy policy',
     affiliatePolicy: 'Affiliate disclosure',
+    methodologyLink: 'Methodology',
     footerTagline:   'Independent buying guide.',
-    legalSlugs:      { legal: 'legal-notice', privacy: 'privacy-policy', affiliate: 'affiliate-disclosure' },
+    legalSlugs:      { legal: 'legal-notice', privacy: 'privacy-policy', affiliate: 'affiliate-disclosure', methodology: 'methodology' },
 
     ctaComparisons:  'See the roundups',
     ctaReviews:      'See the reviews',
@@ -139,7 +145,7 @@ const strings = {
     pageComparisonsIntro:
       'Each roundup opens with the buying criteria, briefly presents every product we kept, and closes with a summary table and our final pick.',
     pageReviewsIntro:
-      'Every review is backed by at least 2 verified sources. The final score is a weighted average of per-criterion scores.',
+      'Every editor’s pick is backed by at least 2 verified sources. The editorial score is a weighted average across our selection criteria.',
     noComparisons:   'No roundups published yet.',
     noReviews:       'No reviews published yet.',
     noGuides:        'No guides published yet.',
@@ -164,10 +170,12 @@ const strings = {
 
     publishedOn:     'Published',
     updatedOn:       'Updated',
-    weightedAvg:     'Weighted average of per-criterion scores.',
+    weightedAvg:     'Weighted average across our selection criteria.',
     sourcesLabel:    'verified sources',
-    finalScoreLabel: 'Final score',
-    intentLabels:    { avis: 'Review', comparatif: 'Comparison', guide: 'Buying guide', informational: 'Article' },
+    finalScoreLabel: 'Editorial score',
+    intentLabels:    { avis: "Editor's pick", comparatif: 'Comparison', guide: 'Buying guide', informational: 'Article' },
+    methodologyNote: 'Methodology: editorial pick synthesised from verified sources, without hands-on physical testing of the products.',
+    methodologyReadMore: 'Read our full methodology →',
 
     sourcesHeading:  'Sources consulted',
     consultedOn:     'consulted on',
@@ -186,8 +194,9 @@ const strings = {
     legalNotice:     'Legal notice',
     privacyPolicy:   'Privacy policy',
     affiliatePolicy: 'Affiliate disclosure',
+    methodologyLink: 'Methodology',
     footerTagline:   'Independent buying guide.',
-    legalSlugs:      { legal: 'legal-notice', privacy: 'privacy-policy', affiliate: 'affiliate-disclosure' },
+    legalSlugs:      { legal: 'legal-notice', privacy: 'privacy-policy', affiliate: 'affiliate-disclosure', methodology: 'methodology' },
 
     ctaComparisons:  'See the comparisons',
     ctaReviews:      'See the reviews',
@@ -201,7 +210,7 @@ const strings = {
     pageComparisonsIntro:
       'Each comparison opens with the buying criteria, briefly presents every product we kept, and closes with a summary table and our final pick.',
     pageReviewsIntro:
-      'Every review is backed by at least 2 verified sources. The final score is a weighted average of per-criterion scores.',
+      'Every editor’s pick is backed by at least 2 verified sources. The editorial score is a weighted average across our selection criteria.',
     noComparisons:   'No comparisons published yet.',
     noReviews:       'No reviews published yet.',
     noGuides:        'No guides published yet.',

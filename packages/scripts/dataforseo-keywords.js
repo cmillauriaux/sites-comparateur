@@ -25,9 +25,10 @@
  *   node packages/scripts/dataforseo-keywords.js                  # all enabled sites
  */
 import { requireEnv } from './lib/env.js';
-import { readQueue, writeQueue, getBucket } from './lib/queue.js';
+import { readQueue, writeQueue, getBucket, readPublished } from './lib/queue.js';
 import { resolveTargets, loadSiteConfig, parseArgs, isLaunched } from './lib/site-config.js';
 import { detectIntent } from './lib/intent.js';
+import { buildGscFeedbackScorer } from './lib/gsc-feedback.js';
 import { MARKET_DATAFORSEO } from '@comparateur/config/niches';
 
 const BASE_URL = 'https://api.dataforseo.com/v3';
@@ -183,13 +184,19 @@ function applyKDFilter(candidates, maxKD) {
   });
 }
 
-function toQueueEntry(c, niche, market) {
+function toQueueEntry(c, niche, market, gscScorer) {
+  const baseScore = scoreKeyword(c);
+  // GSC feedback multiplier rerouts effort away from clusters Google has
+  // already shown disinterest in. 1.0 by default (no signal / cold start).
+  const gscMultiplier = gscScorer ? gscScorer(c.keyword) : 1.0;
   return {
     keyword: c.keyword,
     volume: c.volume,
     kd: c.kd,                       // null when DataForSEO has no signal
     cpc: c.cpc,
-    score: scoreKeyword(c),
+    score: Math.round(baseScore * gscMultiplier),
+    rawScore: baseScore,            // pre-feedback for audit
+    gscMultiplier,
     intent: detectIntent(c.keyword, { cpc: c.cpc }),
     status: 'pending',
     niche,
@@ -203,6 +210,7 @@ function toQueueEntry(c, niche, market) {
 
 async function refillQueue(targets) {
   const queue = readQueue();
+  const published = readPublished();
 
   for (const { niche, market } of targets) {
     const siteConfig = await loadSiteConfig(niche, market);
@@ -214,7 +222,15 @@ async function refillQueue(targets) {
     candidates = await enrichWithKD(candidates, market);
     candidates = applyKDFilter(candidates, siteConfig.keywords.maxKD);
 
-    const fresh = candidates.map(c => toQueueEntry(c, niche, market));
+    // GSC feedback: build a (keyword → multiplier) scorer from published
+    // URLs in this (niche, market). Returns the neutral 1.0 closure when
+    // the bucket has fewer than 3 mature URLs (cold start).
+    const { scorer: gscScorer, sampleSize: gscSampleSize } = buildGscFeedbackScorer(published, niche, market);
+    if (gscSampleSize > 0) {
+      console.log(`  🎯 GSC feedback: ${gscSampleSize} published URLs in scope for cluster scoring`);
+    }
+
+    const fresh = candidates.map(c => toQueueEntry(c, niche, market, gscScorer));
     fresh.sort((a, b) => b.score - a.score);
 
     const bucket = getBucket(queue, niche, market);

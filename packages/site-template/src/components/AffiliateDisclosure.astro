@@ -3,12 +3,19 @@ import siteConfig from 'virtual:site-config';
 import { i18n } from '@comparateur/config';
 const s = i18n(siteConfig.market);
 const { compact = false } = Astro.props;
+const methodologyHref = `/${s.legalSlugs.methodology}/`;
 ---
 <aside class:list={[
-  "rounded-md border border-[var(--color-accent-light)] bg-[var(--color-hero-bg)] text-sm text-[var(--color-text-muted)]",
+  "rounded-md border border-[var(--color-accent-light)] bg-[var(--color-hero-bg)] text-sm text-[var(--color-text-muted)] space-y-1",
   compact ? "px-3 py-2" : "px-4 py-3 my-6"
 ]}>
   <p class="m-0">
     <strong>{s.disclosureLabel}</strong> — {s.disclosureBody}
   </p>
+  {!compact && s.methodologyNote && (
+    <p class="m-0 text-xs">
+      {s.methodologyNote}{' '}
+      <a href={methodologyHref} class="underline hover:text-[var(--color-primary)]">{s.methodologyReadMore}</a>
+    </p>
+  )}
 </aside>
