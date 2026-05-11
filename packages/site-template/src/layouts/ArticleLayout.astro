@@ -26,6 +26,7 @@ const { article } = Astro.props;
 const data = article.data;
 
 const intentLabel = (s.intentLabels as Record<string, string>)[data.intent] ?? 'Article';
+const bundleSlotLabels = (s.bundleSlotLabels as Record<string, string>) ?? {};
 const fmt = (d: Date) => d.toLocaleDateString(siteConfig.locale ?? 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
 
 // ─── JSON-LD ──────────────────────────────────────────────────────────
@@ -161,6 +162,24 @@ const faqSchema = (Array.isArray(data.faq) && data.faq.length > 0) ? {
     <div class="prose prose-lg max-w-none">
       <slot />
     </div>
+
+    {Array.isArray(data.bundleSiblings) && data.bundleSiblings.length > 0 && (
+      <aside class="not-prose mt-10 p-5 rounded-lg border border-[var(--color-accent-light)] bg-[var(--color-hero-bg)]">
+        <h2 class="text-lg font-semibold text-[var(--color-primary-dark)] m-0 mb-3">{s.relatedArticlesLabel}</h2>
+        <ul class="m-0 p-0 list-none space-y-2">
+          {data.bundleSiblings.map(sibling => (
+            <li class="m-0">
+              <a href={sibling.url} class="text-[var(--color-primary)] hover:underline">
+                <span class="text-xs uppercase tracking-wide text-[var(--color-text-muted)] mr-2">
+                  {bundleSlotLabels[sibling.slot] ?? sibling.slot}
+                </span>
+                {sibling.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )}
 
     <SourceList sources={data.sources} />
 

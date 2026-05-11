@@ -40,6 +40,8 @@ const strings = {
     sourcesLabel:    'sources vérifiées',
     finalScoreLabel: 'Note éditoriale',
     intentLabels:    { avis: 'Notre sélection', comparatif: 'Sélection comparée', guide: "Guide d'achat", informational: 'Article' },
+    relatedArticlesLabel: 'Articles liés',
+    bundleSlotLabels: { comparatif: 'Comparatif', pillar: 'Guide', avis: 'Avis' },
     methodologyNote: 'Méthodologie : sélection éditoriale fondée sur la synthèse de sources vérifiées, sans prise en main physique des produits.',
     methodologyReadMore: 'Lire notre méthodologie complète →',
 
@@ -112,6 +114,8 @@ const strings = {
     sourcesLabel:    'verified sources',
     finalScoreLabel: 'Editorial score',
     intentLabels:    { avis: "Editor's pick", comparatif: 'Roundup', guide: 'Buying guide', informational: 'Article' },
+    relatedArticlesLabel: 'Related articles',
+    bundleSlotLabels: { comparatif: 'Roundup', pillar: 'Buying guide', avis: 'Editor\'s pick' },
     methodologyNote: 'Methodology: editorial pick synthesised from verified sources, without hands-on physical testing of the products.',
     methodologyReadMore: 'Read our full methodology →',
 
@@ -179,6 +183,8 @@ const strings = {
     sourcesLabel:    'verified sources',
     finalScoreLabel: 'Editorial score',
     intentLabels:    { avis: "Editor's pick", comparatif: 'Comparison', guide: 'Buying guide', informational: 'Article' },
+    relatedArticlesLabel: 'Related articles',
+    bundleSlotLabels: { comparatif: 'Comparison', pillar: 'Buying guide', avis: 'Editor\'s pick' },
     methodologyNote: 'Methodology: editorial pick synthesised from verified sources, without hands-on physical testing of the products.',
     methodologyReadMore: 'Read our full methodology →',
 

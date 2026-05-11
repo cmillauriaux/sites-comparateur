@@ -70,6 +70,21 @@ const articles = defineCollection({
         }),
       )
       .optional(),
+
+    // Sibling articles from the same topical bundle (pillar + comparatif +
+    // avis, see packages/scripts/lib/bundle.js). Maintained by the generator
+    // — each article in the bundle gets the full sibling list re-injected
+    // whenever the bundle progresses, so the layout's "Articles liés"
+    // section always reflects the current state.
+    bundleSiblings: z
+      .array(
+        z.object({
+          slot: z.enum(['comparatif', 'pillar', 'avis']),
+          title: z.string(),
+          url: z.string().url(),
+        }),
+      )
+      .optional(),
   }),
 });
 

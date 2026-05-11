@@ -63,6 +63,49 @@ function buildPublishedUrlSet(niche, market) {
   return set;
 }
 
+/**
+ * Refresh the `bundleSiblings` frontmatter field on every already-shipped
+ * slot of a bundle so the "Articles liés" block in the layout always
+ * reflects the current bundle state.
+ *
+ * Called from runBundle() right after markBundleSlotShipped() — at that
+ * point the newly-shipped article exists on disk and the bundle's roll-up
+ * state is current. We iterate all generated slots, compute their .mdx
+ * paths from slug, and overwrite the frontmatter field with the current
+ * siblings list (excluding the slot itself so an article never lists
+ * itself among its "related" siblings).
+ */
+function refreshBundleSiblings(siteConfig, opp) {
+  if (!opp?.bundle) return;
+  const { niche, market } = siteConfig;
+  const articlesDir = resolve(SITES_DIR, niche, market, 'src/content/articles');
+
+  // All generated slots — these are the URLs we'll cross-reference.
+  const generated = [];
+  for (const slot of ['comparatif', 'pillar', 'avis']) {
+    const s = opp.bundle[slot];
+    if (s?.status === 'generated' && s.url && s.slug && s.keyword) {
+      generated.push({ slot, title: s.keyword, url: s.url, slug: s.slug });
+    }
+  }
+  if (generated.length === 0) return;
+
+  for (const target of generated) {
+    const path = `${articlesDir}/${target.slug}.mdx`;
+    if (!existsSync(path)) continue;
+    const siblings = generated
+      .filter(g => g.slug !== target.slug)
+      .map(({ slot, title, url }) => ({ slot, title, url }));
+    try {
+      const original = readFileSync(path, 'utf-8');
+      const updated = setFrontmatterField(original, 'bundleSiblings', siblings);
+      if (updated !== original) writeFileSync(path, updated);
+    } catch (err) {
+      console.warn(`  ⚠️  refreshBundleSiblings(${target.slug}): ${err.message}`);
+    }
+  }
+}
+
 /** Best-effort intent reconstruction from a published URL, for the
  *  internal-linking input. Falls back to 'comparatif' (the most common
  *  intent in this codebase) when the path matches nothing. */
@@ -1044,6 +1087,13 @@ async function runBundle(targets) {
           topProductAsin,
         });
         writePriorities(fresh);
+
+        // Retro-link previously-shipped siblings of this bundle. After the
+        // comparatif ships there's nothing to update; after the pillar
+        // ships the comparatif gains a sibling link; after the avis ships
+        // both the comparatif and the pillar gain the final sibling. The
+        // layout's "Articles liés" section consumes the frontmatter field.
+        refreshBundleSiblings(siteConfig, target);
       }
 
       appendPublished({
