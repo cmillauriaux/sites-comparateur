@@ -20,6 +20,11 @@ on:
         description: 'Force a specific slot for testing (0-3, leave empty for auto)'
         required: false
         default: ''
+      bypass_cadence:
+        description: 'Bypass cadence gate (manual test runs only — ignores activeToday + slot election)'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write     # commit data/ updates back to main
@@ -95,13 +100,19 @@ jobs:
       # heavy Claude generation step — rejected slots short-circuit early.
       - if: env.SKIP != '1'
         name: Cadence gate
+        env:
+          BYPASS_CADENCE: ${{ github.event.inputs.bypass_cadence }}
         run: |
           DECISION=$(node packages/scripts/cadence-cli.js \
             --niche "$NICHE" --market "$MARKET" \
             --workflow daily-articles --slot "$SLOT" --num-slots 4)
           if [ "$DECISION" = "skip" ]; then
-            echo "Cadence gate: skip for $SITE (slot=$SLOT)"
-            echo "SKIP=1" >> "$GITHUB_ENV"
+            if [ "$BYPASS_CADENCE" = "true" ]; then
+              echo "Cadence says skip but bypass_cadence=true — proceeding anyway"
+            else
+              echo "Cadence gate: skip for $SITE (slot=$SLOT)"
+              echo "SKIP=1" >> "$GITHUB_ENV"
+            fi
           fi
 
       - if: env.SKIP != '1'
