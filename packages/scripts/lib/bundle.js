@@ -163,38 +163,54 @@ export function markBundleSlotFailed(opp, slot, reason) {
 export function pickNextBundleSlot(priorities, niche, market) {
   const opps = priorities?.[niche]?.[market] || [];
 
-  // Pre-rank by score descending so each slot loop picks the highest-value
-  // candidate first. Otherwise migration-seeded bundles would all share
-  // status='pending' and the first array slot would win regardless of score.
+  // Pre-rank by score descending so equal-priority comparisons fall back
+  // to the higher-value bundle.
   const ranked = [...opps].sort((a, b) => (b.score || 0) - (a.score || 0));
 
-  // 1) Resume partial bundles in slot order. Pillars only become eligible
-  //    once their comparatif sibling is live; avis only once the comparatif
-  //    has set the top product (which seeds avis.keyword).
-  for (const slot of BUNDLE_SLOTS) {
-    for (const opp of ranked) {
-      if (!opp.bundle) continue;
-      const s = opp.bundle[slot];
-      if (!s || s.status !== 'pending') continue;
-      if ((s.errorCount || 0) >= 3) continue;
-      if (slot === 'pillar' && opp.bundle.comparatif.status !== 'generated') continue;
-      if (slot === 'avis'   && opp.bundle.comparatif.status !== 'generated') continue;
-      if (slot === 'avis'   && !opp.bundle.avis.keyword) continue;
-      return { kind: 'bundle-resume', opp, slot };
+  // 1) FINISH PARTIAL BUNDLES FIRST. The user-facing intent is "ship pillar
+  //    + comparatif + avis adossés" — a half-done bundle without its pillar
+  //    or its avis is a weaker SEO cluster than a brand-new comparatif on
+  //    its own. So we prioritise the NEXT eligible slot of any partial
+  //    bundle over starting a fresh one. Within partial bundles, we still
+  //    rank by score (highest-value cluster gets completed first).
+  for (const opp of ranked) {
+    if (!opp.bundle) continue;
+    const b = opp.bundle;
+    // avis comes after comparatif + after we know its keyword (seeded by
+    // the comparatif's top product), so check pillar before avis.
+    if (b.comparatif.status === 'generated') {
+      if (b.pillar.status === 'pending' && (b.pillar.errorCount || 0) < 3) {
+        return { kind: 'bundle-resume', opp, slot: 'pillar' };
+      }
+      if (b.avis.status === 'pending' && b.avis.keyword && (b.avis.errorCount || 0) < 3) {
+        return { kind: 'bundle-resume', opp, slot: 'avis' };
+      }
     }
   }
 
-  // 2) Start a new bundle from the next-best fresh opp. Comparatif intent
-  //    only — guide and avis intents from legacy seeds will be folded by
-  //    migrateBundleFromLegacy() before we get here.
-  const fresh = ranked
-    .filter(o => !o.bundle)
-    .filter(o => o.intent === 'comparatif')
-    .filter(o => o.status !== 'rejected' && o.status !== 'generated')
-    .filter(o => (o.errorCount || 0) < 3);
+  // 2) No partial bundle to finish — pick the next-best opp that still
+  //    needs its comparatif. This includes both already-migrated bundles
+  //    (status='pending' across all 3 slots) and brand-new fresh opps
+  //    (no bundle field yet).
+  for (const opp of ranked) {
+    if ((opp.errorCount || 0) >= 3) continue;
+    if (opp.status === 'rejected' || opp.status === 'generated') continue;
 
-  if (fresh.length === 0) return null;
-  return { kind: 'bundle-fresh', opp: fresh[0], slot: 'comparatif' };
+    if (opp.bundle) {
+      const c = opp.bundle.comparatif;
+      if (c.status === 'pending' && (c.errorCount || 0) < 3) {
+        return { kind: 'bundle-resume', opp, slot: 'comparatif' };
+      }
+      continue;   // partial-completed but no slots eligible from here
+    }
+
+    // Fresh opp (no bundle). Only comparatif intent seeds a new bundle;
+    // legacy guide/avis intents are folded by migrateBundleFromLegacy().
+    if (opp.intent !== 'comparatif') continue;
+    return { kind: 'bundle-fresh', opp, slot: 'comparatif' };
+  }
+
+  return null;
 }
 
 /**
