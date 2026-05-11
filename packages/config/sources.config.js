@@ -32,9 +32,11 @@ const sources = {
     us: [
       { name: 'Wirecutter',           url: 'https://www.nytimes.com/wirecutter',  scrape: true,  useBrowser: true, trust: 'high',   type: 'reviews' },
       { name: 'Consumer Reports',     url: 'https://www.consumerreports.org',     scrape: true,  useBrowser: true, trust: 'high',   type: 'reviews' },
+      { name: 'Bob Vila',             url: 'https://www.bobvila.com',             scrape: true,  trust: 'high',   type: 'reviews' },
+      { name: 'This Old House',       url: 'https://www.thisoldhouse.com',        scrape: true,  trust: 'high',   type: 'reviews' },
       { name: 'Popular Mechanics',    url: 'https://www.popularmechanics.com',    scrape: true,  trust: 'high',   type: 'reviews' },
       { name: 'Family Handyman',      url: 'https://www.familyhandyman.com',      scrape: true,  trust: 'medium', type: 'reviews' },
-      { name: 'The Spruce',           url: 'https://www.thespruce.com',           scrape: true,  trust: 'medium', type: 'reviews' },
+      { name: 'The Spruce',           url: 'https://www.thespruce.com',           scrape: true,  trust: 'high',   type: 'reviews' },
       { name: 'Home Depot',           url: 'https://www.homedepot.com',           scrape: true,  useBrowser: true, trust: 'high',   type: 'specs+avis' },
       { name: 'Lowe\'s',              url: 'https://www.lowes.com',               scrape: true,  useBrowser: true, trust: 'high',   type: 'specs+avis' },
       { name: 'Husqvarna',            url: 'https://www.husqvarna.com/us',        scrape: false, trust: 'high',  type: 'brand-specs' },
@@ -44,6 +46,8 @@ const sources = {
     ],
     gb: [
       { name: 'Which?',              url: 'https://www.which.co.uk',             scrape: true,  useBrowser: true, trust: 'high',   type: 'reviews' },
+      { name: 'Gardeners\' World',   url: 'https://www.gardenersworld.com',      scrape: true,  trust: 'high',   type: 'reviews' },
+      { name: 'My Green Shed',       url: 'https://www.mygreenshed.co.uk',       scrape: true,  trust: 'medium', type: 'reviews' },
       { name: 'Trusted Reviews',     url: 'https://www.trustedreviews.com',      scrape: true,  trust: 'high',   type: 'reviews' },
       { name: 'Expert Reviews',      url: 'https://www.expertreviews.co.uk',     scrape: true,  trust: 'high',   type: 'reviews' },
       { name: 'TechRadar',           url: 'https://www.techradar.com',           scrape: true,  trust: 'high',   type: 'reviews' },
