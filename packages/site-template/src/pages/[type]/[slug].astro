@@ -15,6 +15,12 @@ import AffiliateButton from '../../components/AffiliateButton.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import ComparisonTable from '../../components/ComparisonTable.astro';
 import ScoreBadge from '../../components/ScoreBadge.astro';
+// SourceList is normally rendered by the layout (the prompt tells Claude not
+// to write it inline), but the model occasionally does anyway — especially on
+// guide articles. Expose it via the components map so the build doesn't blow
+// up; the duplicate render at most reads as a redundant section, never a
+// 500 page.
+import SourceList from '../../components/SourceList.astro';
 
 // NOTE: getStaticPaths runs in an isolated scope (Astro hoists it before the
 // frontmatter), so the i18n table must be redeclared inside it.
@@ -39,5 +45,5 @@ const { article } = Astro.props;
 const { Content } = await render(article);
 ---
 <ArticleLayout article={article}>
-  <Content components={{ AffiliateButton, ProductCard, ComparisonTable, ScoreBadge }} />
+  <Content components={{ AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList }} />
 </ArticleLayout>
