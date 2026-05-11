@@ -33,6 +33,7 @@ import { validateGeneratedArticle } from './lib/article-validator.js';
 import { remediateLlmTics, isRemediableErrorSet } from './lib/article-remediator.js';
 import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
+import { scrubInlineSourceList, stripBrokenInternalLinks } from './lib/article-postprocess.js';
 import { fetchArticleHero } from './lib/hero-image.js';
 import { tokenize } from './lib/cluster.js';
 import { extractTopicFromKeyword } from './lib/intent.js';
@@ -42,6 +43,24 @@ import { i18n } from '@comparateur/config';
 import { MARKET_SEMRUSH } from '@comparateur/config/niches';
 
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '2', 10);
+
+/** Build the canonical set of internal URLs already published for a
+ *  (niche, market) — used by stripBrokenInternalLinks to reject any
+ *  markdown link Claude invented that doesn't resolve on the live site. */
+function buildPublishedUrlSet(niche, market) {
+  const set = new Set();
+  for (const e of readPublished()) {
+    if (e?.niche === niche && e?.market === market && typeof e.url === 'string') {
+      // Normalise to trailing-slash form so callers don't have to.
+      try {
+        const u = new URL(e.url);
+        const path = u.pathname.endsWith('/') ? u.pathname : `${u.pathname}/`;
+        set.add(`${u.origin}${path}`);
+      } catch { /* skip malformed entry */ }
+    }
+  }
+  return set;
+}
 
 /** Best-effort intent reconstruction from a published URL, for the
  *  internal-linking input. Falls back to 'comparatif' (the most common
@@ -297,6 +316,25 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
       updated = scrubbed.content;
     }
 
+    // Layout already renders SourceList — strip any inline copy the model
+    // wrote in violation of the prompt instruction.
+    const sl = scrubInlineSourceList(updated);
+    if (sl.count > 0) {
+      console.log(`  🧹 Stripped ${sl.count} inline <SourceList /> (layout adds it once)`);
+      updated = sl.content;
+    }
+
+    // Strip markdown links Claude invented to URLs that don't exist on the
+    // live site (404s on click). The anchor text is preserved so prose
+    // still reads naturally.
+    const siteOrigin = `https://${siteConfig.domain}`;
+    const existingUrls = buildPublishedUrlSet(niche, market);
+    const linkCheck = stripBrokenInternalLinks(updated, { existingUrls, siteOrigin });
+    if (linkCheck.count > 0) {
+      console.log(`  🧹 Removed ${linkCheck.count} broken internal link${linkCheck.count > 1 ? 's' : ''}: ${linkCheck.removed.map(r => r.url).slice(0, 3).join(', ')}${linkCheck.count > 3 ? '…' : ''}`);
+      updated = linkCheck.content;
+    }
+
     writeFileSync(outputPath, updated);
     let validationErrors = validateGeneratedArticle(updated);
     if (validationErrors.length > 0 && isRemediableErrorSet(validationErrors)) {
@@ -317,15 +355,28 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     const nonAff = Object.values(nonAffiliateMap || {}).filter(Boolean).length;
     console.log(`  🖼  ${imgs}/${productList.length} images · 🔗 ${asins}/${productList.length} ASINs · 🌐 ${nonAff} non-affiliés · 💶 ${prices}/${productList.length} prices`);
   } else {
-    // No product post-pass to run — still scrub prices and validate so the
+    // No product post-pass to run — still scrub prices, scrub inline
+    // <SourceList />, drop broken internal links, then validate so the
     // grounding gate + (for informational) the no-affiliate gate trip here.
     const scrubbed = scrubRawPrices(written);
     let finalContent = written;
     if (scrubbed.count > 0) {
       console.log(`  🧹 Scrubbed ${scrubbed.count} raw price${scrubbed.count > 1 ? 's' : ''} from prose`);
       finalContent = scrubbed.content;
-      writeFileSync(outputPath, finalContent);
     }
+    const sl = scrubInlineSourceList(finalContent);
+    if (sl.count > 0) {
+      console.log(`  🧹 Stripped ${sl.count} inline <SourceList /> (layout adds it once)`);
+      finalContent = sl.content;
+    }
+    const siteOrigin = `https://${siteConfig.domain}`;
+    const existingUrls = buildPublishedUrlSet(niche, market);
+    const linkCheck = stripBrokenInternalLinks(finalContent, { existingUrls, siteOrigin });
+    if (linkCheck.count > 0) {
+      console.log(`  🧹 Removed ${linkCheck.count} broken internal link${linkCheck.count > 1 ? 's' : ''}: ${linkCheck.removed.map(r => r.url).slice(0, 3).join(', ')}${linkCheck.count > 3 ? '…' : ''}`);
+      finalContent = linkCheck.content;
+    }
+    if (finalContent !== written) writeFileSync(outputPath, finalContent);
     let validationErrors = validateGeneratedArticle(finalContent);
     if (validationErrors.length > 0 && isRemediableErrorSet(validationErrors)) {
       const rewritten = remediateLlmTics(outputPath);

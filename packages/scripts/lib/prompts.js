@@ -757,6 +757,13 @@ markdown link TWICE:
 
 No other wording. No <AffiliateButton>. Pure markdown link.` : '';
 
+  // Structure varies based on whether a parent comparatif exists. Without
+  // a known URL, the model used to invent a plausible one (e.g.
+  // "/comparatifs/meilleures-tronconneuses/") which then 404'd.
+  const step3Fr = hasParent ? '  3. [encart lien comparatif — voir bloc dédié]\n' : '';
+  const step8Fr = hasParent
+    ? '  8. ## En résumé — récap concis + lien final vers le comparatif'
+    : '  8. ## En résumé — récap concis. AUCUN lien externe et AUCUN lien interne forgé.';
   const briefFr = `\
 TYPE = PILLAR PAGE "COMMENT CHOISIR" (PAS de produit, PAS de lien d'affiliation).
 Cet article pose les critères d'achat d'une CATÉGORIE de produit, pas un modèle.
@@ -766,16 +773,19 @@ Si tu cites une marque, c'est en exemple générique (jamais "achetez X").
 STRUCTURE OBLIGATOIRE (dans cet ordre) :
   1. H1 "Comment choisir [topic]" (le keyword exact)
   2. Introduction 2-3 phrases qui posent l'enjeu de l'achat
-  3. [encart lien comparatif — voir bloc dédié]
-  4. ## Les critères qui comptent — 5 à 8 sous-sections H3 (une par critère),
+${step3Fr}  4. ## Les critères qui comptent — 5 à 8 sous-sections H3 (une par critère),
      chacune indiquant son poids relatif (« décisif », « important », « secondaire »)
      et un seuil concret ("au-dessus de X bars", "moins de Y kg", etc.)
   5. ## Les pièges à éviter — 3-5 erreurs d'achat fréquentes avec source à l'appui
   6. ## Profils d'usage — 3 sous-sections : usage occasionnel / régulier / intensif.
      Pour chaque profil, indique quels critères priorisent et quelle gamme de prix viser.
   7. ## FAQ — 5 à 7 questions long-tail (questions que les acheteurs tapent vraiment)
-  8. ## En résumé — récap concis + lien final vers le comparatif`;
+${step8Fr}`;
 
+  const step3En = hasParent ? '  3. [parent-comparison link callout — see dedicated block]\n' : '';
+  const step8En = hasParent
+    ? '  8. ## Takeaway — concise recap + closing link to the parent comparison'
+    : '  8. ## Takeaway — concise recap. NO external link and NO fabricated internal link.';
   const briefEn = `\
 TYPE = PILLAR PAGE "HOW TO CHOOSE" (NO product, NO affiliate link).
 This article lays out the buying criteria for a CATEGORY, not a model. No
@@ -785,15 +795,14 @@ brand, do it as a neutral example (never "buy X").
 MANDATORY STRUCTURE (in this order):
   1. H1 "How to choose [topic]" (the exact keyword)
   2. Introduction 2-3 sentences framing the buying stakes
-  3. [parent-comparison link callout — see dedicated block]
-  4. ## The criteria that matter — 5 to 8 H3 sub-sections (one per criterion),
+${step3En}  4. ## The criteria that matter — 5 to 8 H3 sub-sections (one per criterion),
      each with its relative weight ("decisive", "important", "secondary") and
      a concrete threshold ("above X bar", "under Y kg", etc.)
   5. ## Pitfalls to avoid — 3-5 common buying mistakes anchored to a source
   6. ## Use-case profiles — 3 sub-sections: occasional / regular / heavy-duty.
      For each, state which criteria to prioritise and the price band to target.
   7. ## FAQ — 5 to 7 long-tail questions buyers actually type
-  8. ## Takeaway — concise recap + closing link to the parent comparison`;
+${step8En}`;
 
   const frontmatter = `---
 title: "[${isFr ? 'titre type \"Comment choisir [topic]\" ≤60 chars' : 'title like \"How to choose [topic]\" ≤60 chars'}]"
