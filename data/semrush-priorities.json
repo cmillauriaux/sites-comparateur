@@ -1684,7 +1684,9 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "generatedAt": null,
-        "publishedUrl": null
+        "publishedUrl": null,
+        "errorCount": 1,
+        "lastError": "article validation failed: LLM stylometric tics: 9 occurrences (em/en-dashes×9)"
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-electrique",
