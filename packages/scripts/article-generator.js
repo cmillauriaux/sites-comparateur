@@ -30,6 +30,7 @@ import { scrapeSourcesForKeyword } from './lib/scrape.js';
 import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices, injectMerchantUrls } from './lib/product-images.js';
 import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
+import { remediateLlmTics, isRemediableErrorSet } from './lib/article-remediator.js';
 import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
 import { fetchArticleHero } from './lib/hero-image.js';
@@ -296,12 +297,20 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
       updated = scrubbed.content;
     }
 
-    const validationErrors = validateGeneratedArticle(updated);
+    writeFileSync(outputPath, updated);
+    let validationErrors = validateGeneratedArticle(updated);
+    if (validationErrors.length > 0 && isRemediableErrorSet(validationErrors)) {
+      const rewritten = remediateLlmTics(outputPath);
+      if (rewritten) {
+        updated = rewritten;
+        validationErrors = [];
+      } else {
+        validationErrors = validateGeneratedArticle(readFileSync(outputPath, 'utf-8'));
+      }
+    }
     if (validationErrors.length > 0) {
       throw new Error(`article validation failed: ${validationErrors.join('; ')}`);
     }
-
-    writeFileSync(outputPath, updated);
     const imgs = Object.values(imageMap).filter(Boolean).length;
     const asins = Object.values(asinMap).filter(Boolean).length;
     const prices = Object.values(priceMap).filter(Boolean).length;
@@ -317,7 +326,16 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
       finalContent = scrubbed.content;
       writeFileSync(outputPath, finalContent);
     }
-    const validationErrors = validateGeneratedArticle(finalContent);
+    let validationErrors = validateGeneratedArticle(finalContent);
+    if (validationErrors.length > 0 && isRemediableErrorSet(validationErrors)) {
+      const rewritten = remediateLlmTics(outputPath);
+      if (rewritten) {
+        finalContent = rewritten;
+        validationErrors = [];
+      } else {
+        validationErrors = validateGeneratedArticle(readFileSync(outputPath, 'utf-8'));
+      }
+    }
     if (validationErrors.length > 0) {
       throw new Error(`article validation failed: ${validationErrors.join('; ')}`);
     }
