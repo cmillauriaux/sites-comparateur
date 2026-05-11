@@ -6,7 +6,9 @@
   "main": "./index.js",
   "exports": {
     ".": "./index.js",
-    "./src/*": "./src/*"
+    "./src/*": "./src/*",
+    "./components":   "./src/components/index.js",
+    "./components/*": "./src/components/*"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.14",
