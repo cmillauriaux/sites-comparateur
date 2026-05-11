@@ -93,8 +93,6 @@ jobs:
 
       - if: env.SKIP != '1'
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - if: env.SKIP != '1'
         uses: actions/setup-node@v4
