@@ -7,6 +7,8 @@ export {
   MARKETS,
   ENABLED_SITES,
   MARKET_DATAFORSEO,
+  NICHE_EMOJI,
+  nicheEmoji,
   isValidNiche,
   isValidMarket,
   isEnabled,

@@ -13,7 +13,7 @@ export default {
 
   // Niche-specific marketing copy used on the homepage hero (line break = <br/>).
   heroTitle: ['Le guide d\'achat indépendant', 'du jardin et du bricolage'],
-  heroBlurb: 'Tests détaillés, comparatifs argumentés et guides d\'achat — tous nos avis sont étayés par des sources vérifiées (Que Choisir, Les Numériques, retailers officiels).',
+  heroBlurb: 'Le bon outil au bon prix, sans lire 40 fiches produit. Tests, comparatifs et guides d\'achat indépendants.',
 
   keywords: {
     minVolume: 500,

@@ -46,15 +46,15 @@ const strings = {
     // SourceList
     sourcesHeading: 'Sources consultées',
     consultedOn:    'consulté le',
-    sourcesBlurb:   (n, score) =>
-      `Cet article s'appuie sur ${n} sources vérifiées${score ? ` (couverture : ${score})` : ''}. Toutes les informations factuelles (prix, specs, classements) en proviennent.`,
+    sourcesBlurb:   (n) =>
+      `Cet article s'appuie sur ${n} sources vérifiées. Toutes les informations factuelles (prix, specs, classements) en proviennent.`,
 
     // AuthorBio
     authorByline:   'Rédigé par',
 
     // AffiliateDisclosure
     disclosureLabel: "Liens d'affiliation",
-    disclosureBody:  "cette page contient des liens d'affiliation. Si vous achetez via ces liens, nous percevons une commission sans surcoût pour vous. Notre éditorial reste indépendant.",
+    disclosureBody:  "cette page contient des liens d'affiliation. Si vous achetez via ces liens, nous percevons une commission sans surcoût pour vous. C'est notre seul modèle de financement : nous ne vendons pas d'espace publicitaire aux fabricants et ne facturons aucun test, ce qui garantit notre indépendance éditoriale.",
 
     // Header / Footer / nav
     home:            'Accueil',
@@ -81,7 +81,7 @@ const strings = {
     latestPrefix:     'Derniers',
     homeTitleSuffix: "Tests, comparatifs et guides d'achat",
     pageComparisonsIntro:
-      "Chaque comparatif commence par les critères de choix, présente brièvement chaque produit retenu, et se conclut par un tableau récapitulatif assorti d'une recommandation finale.",
+      "Les critères qui comptent, une sélection resserrée, un tableau pour comparer en un coup d'œil et une recommandation argumentée.",
     pageReviewsIntro:
       'Chaque sélection est appuyée par au minimum 3 sources vérifiées. La note éditoriale est une moyenne pondérée selon nos critères de sélection.',
     noComparisons:   'Aucun comparatif publié pour le moment.',
@@ -117,13 +117,13 @@ const strings = {
 
     sourcesHeading:  'Sources consulted',
     consultedOn:     'consulted on',
-    sourcesBlurb:    (n, score) =>
-      `This article draws on ${n} verified sources${score ? ` (coverage: ${score})` : ''}. All factual claims (prices, specs, rankings) come from them.`,
+    sourcesBlurb:    (n) =>
+      `This article draws on ${n} verified sources. All factual claims (prices, specs, rankings) come from them.`,
 
     authorByline:    'Written by',
 
     disclosureLabel: 'Affiliate disclosure',
-    disclosureBody:  'this page contains affiliate links. If you purchase through these links we earn a commission at no extra cost to you. Our editorial coverage stays independent.',
+    disclosureBody:  "this page contains affiliate links. If you purchase through these links we earn a commission at no extra cost to you. This is our only revenue model: we don't sell ad space to manufacturers and we don't charge for reviews, which is what guarantees our editorial independence.",
 
     home:            'Home',
     navigation:      'Navigation',
@@ -184,13 +184,13 @@ const strings = {
 
     sourcesHeading:  'Sources consulted',
     consultedOn:     'consulted on',
-    sourcesBlurb:    (n, score) =>
-      `This article draws on ${n} verified sources${score ? ` (coverage: ${score})` : ''}. All factual claims (prices, specs, rankings) come from them.`,
+    sourcesBlurb:    (n) =>
+      `This article draws on ${n} verified sources. All factual claims (prices, specs, rankings) come from them.`,
 
     authorByline:    'Written by',
 
     disclosureLabel: 'Affiliate disclosure',
-    disclosureBody:  'this page contains affiliate links. If you buy through these links we earn a commission at no extra cost to you. Our editorial coverage remains independent.',
+    disclosureBody:  "this page contains affiliate links. If you buy through these links we earn a commission at no extra cost to you. This is our only revenue model: we don't sell ad space to manufacturers and we don't charge for reviews, which is what guarantees our editorial independence.",
 
     home:            'Home',
     navigation:      'Navigation',

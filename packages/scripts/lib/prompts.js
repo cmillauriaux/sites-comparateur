@@ -109,8 +109,10 @@ COMPONENTS / COMPOSANTS
    → image="auto:..." is REQUIRED. Content after "auto:" is the Amazon search query.
      The pipeline replaces this placeholder with a local image path. NEVER use a
      remote URL or omit the attribute.
-   → ProductCard already embeds its own <AffiliateButton>; do not add another
-     button next to it.
+   → ProductCard already embeds its own <AffiliateButton>; NEVER add another
+     <AffiliateButton> in the same product block (before, immediately after,
+     or in the surrounding paragraph). The card's button IS the CTA for that
+     product. Adding a second one is redundant noise.
    → NEVER pass asin="..." — same auto-injection as above.
 
 - <ComparisonTable
@@ -175,6 +177,7 @@ function buildPromptFr({ keyword, intent, scrapedSources, siteConfig, articleSlu
 4. ## Notre sélection [année] — un H3 par produit (4-6 produits). Pour chacun :
    - Une <ProductCard name="Marque Modèle" image="auto:Marque Modèle" score={8.5} description="..." pros={["...", "..."]} cons={["..."]} /> — le placeholder image="auto:..." sera remplacé automatiquement par l'image Amazon (ne mets PAS d'URL d'image manuelle)
    - 3-5 lignes de prose qui présentent le produit avec verdict
+   - INTERDIT : ne JAMAIS ajouter de <AffiliateButton> après ce paragraphe. La <ProductCard> contient déjà son propre bouton — un second bouton fait doublon visuel.
 5. ## Tableau comparatif — <ComparisonTable products={[{name: "Marque Modèle", image: "auto:Marque Modèle", score: 8.5, criteria: {performance: 9, ergonomie: 8, rapportQualitePrix: 8}}, ...]} criteria={["performance", "ergonomie", "rapportQualitePrix"]} criteriaLabels={{performance: "Performance", ergonomie: "Ergonomie", rapportQualitePrix: "Rapport qualité-prix"}} />
    IMPORTANT : chaque produit dans la table DOIT avoir un \`image: "auto:Marque Modèle"\` avec EXACTEMENT la même string que celle utilisée dans la <ProductCard> correspondante.
 6. ## FAQ — 3-5 questions/réponses
@@ -359,6 +362,7 @@ function buildPromptEn({ keyword, intent, scrapedSources, siteConfig, articleSlu
 4. ## Our picks for [year] — one H3 per product (4-6 products). For each:
    - One <ProductCard name="Brand Model" image="auto:Brand Model" score={8.5} description="..." pros={["...", "..."]} cons={["..."]} /> — the image="auto:..." placeholder is auto-replaced with the Amazon image (do NOT use manual image URLs)
    - 3-5 lines of prose presenting the product with a verdict
+   - FORBIDDEN: NEVER add an <AffiliateButton> after the product paragraph. The <ProductCard> already embeds its own CTA — a second button is redundant visual noise.
 5. ## Comparison table — <ComparisonTable products={[{name: "Brand Model", image: "auto:Brand Model", score: 8.5, criteria: {performance: 9, ergonomics: 8, ${valueLabel}: 8}}, ...]} criteria={["performance", "ergonomics", "${valueLabel}"]} criteriaLabels={{performance: "Performance", ergonomics: "Ergonomics", ${valueLabel}: "Value"}} />
    IMPORTANT: every product in the table MUST carry \`image: "auto:Brand Model"\` matching its <ProductCard> name EXACTLY.
 6. ## FAQ — 3-5 Q&A pairs

@@ -64,6 +64,20 @@ export const MARKET_DATAFORSEO = {
   gb: { location_code: 2826, location_name: 'United Kingdom', language_code: 'en', language_name: 'English' },
 };
 
+// Emoji used as the favicon for each niche. Same emoji is shared across
+// FR/US/GB so a niche stays visually consistent across markets; markets are
+// disambiguated by the brand name in the tab title.
+export const NICHE_EMOJI = {
+  'jardin-bricolage': '🌱',
+  'sport-fitness':    '💪',
+  'cuisine':          '🍳',
+  'maison-elec':      '💡',
+};
+
+export function nicheEmoji(niche) {
+  return NICHE_EMOJI[niche] ?? '•';
+}
+
 // Semrush database codes per market. Used by semrush-prioritize.js.
 // Semrush uses `uk` (not `gb`) for the United Kingdom database.
 export const MARKET_SEMRUSH = {

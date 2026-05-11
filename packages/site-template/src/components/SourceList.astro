@@ -4,8 +4,8 @@ import { i18n } from '@comparateur/config';
 const s = i18n(siteConfig.market);
 
 interface SourceEntry { name: string; url: string; domain: string; scrapedAt: Date | string }
-interface Props { sources: SourceEntry[]; groundingScore?: string }
-const { sources, groundingScore } = Astro.props;
+interface Props { sources: SourceEntry[] }
+const { sources } = Astro.props;
 const fmt = (d: Date | string) => {
   const date = typeof d === 'string' ? new Date(d) : d;
   return date.toLocaleDateString(siteConfig.locale ?? 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -14,7 +14,7 @@ const fmt = (d: Date | string) => {
 <section class="mt-12 border-t border-[var(--color-border)] pt-6 not-prose">
   <h2 class="text-lg font-semibold text-[var(--color-primary-dark)] mb-3">{s.sourcesHeading}</h2>
   <p class="text-sm text-[var(--color-text-muted)] mb-3">
-    {s.sourcesBlurb(sources.length, groundingScore)}
+    {s.sourcesBlurb(sources.length)}
   </p>
   <ul class="text-sm space-y-1">
     {sources.map((src) => (

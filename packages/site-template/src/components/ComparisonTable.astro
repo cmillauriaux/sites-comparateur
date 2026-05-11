@@ -11,6 +11,10 @@ interface Product {
   image?: string;       // chemin résolu par l'article-generator post-pass ("auto:..." → /images/products/...)
   price?: string;       // injecté par le pipeline depuis Amazon (ex: "89,99 €")
   program?: string;
+  // Google Shopping fallback (non-affilié) — injecté par le post-pass quand
+  // Amazon n'a pas trouvé d'ASIN. AffiliateButton bascule alors en outline.
+  merchantUrl?: string;
+  merchant?: string;
   criteria?: Record<string, number | string>;
 }
 interface Props {
@@ -105,7 +109,8 @@ const isLeaderScore = (p: Product) =>
                 product={p.name}
                 asin={p.asin ?? undefined}
                 program={p.program}
-                variant="secondary"
+                merchantUrl={p.merchantUrl}
+                merchant={p.merchant}
               >
                 {p.price ? s.viewOffer : s.viewPrice}
               </AffiliateButton>
