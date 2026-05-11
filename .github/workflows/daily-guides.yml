@@ -1,15 +1,24 @@
-name: Daily Article Generation
+name: Daily Pillar Guide Generation
+
+# Drains pending pillar pages (intent='guide') auto-enqueued by daily-articles
+# after each comparatif cluster ships. One pillar per (niche, market) per day
+# while stock is available — once the queue empties (no recent comparatif),
+# the run is a silent no-op.
+#
+# Off-affiliate balance lever: target ~30% off-aff content vs affiliate.
+# daily-articles publishes 1-2 affiliate/day; this run + weekly-informational
+# bring the off-aff side to ~3-5/week per site.
 
 on:
-  # 4 cron slots spread across the day. Each site gets ONE slot honoured per
-  # day (elected by cadence-cli below), the other 3 trigger a cheap early-exit
-  # (~30s of CI for checkout + gate). This breaks the "robot publishing at
-  # 07:00 UTC sharp" pattern without burning minutes on a sleep.
+  # 4 cron slots spread across the day, each ~1h after the corresponding
+  # daily-articles slot to let it enqueue today's pillars first. Only one
+  # slot per (site, day) is honoured by cadence-cli; the other 3 cost only
+  # ~30s of CI checkout + gate.
   schedule:
-    - cron: '11 6 * * *'    # slot 0 — ~06:11 UTC
-    - cron: '37 10 * * *'   # slot 1 — ~10:37 UTC
-    - cron: '23 14 * * *'   # slot 2 — ~14:23 UTC
-    - cron: '47 18 * * *'   # slot 3 — ~18:47 UTC
+    - cron: '19 7 * * *'    # slot 0 — ~07:19 UTC (after daily-articles 06:11)
+    - cron: '43 11 * * *'   # slot 1 — ~11:43 UTC (after daily-articles 10:37)
+    - cron: '31 15 * * *'   # slot 2 — ~15:31 UTC (after daily-articles 14:23)
+    - cron: '53 19 * * *'   # slot 3 — ~19:53 UTC (after daily-articles 18:47)
   workflow_dispatch:
     inputs:
       site:
@@ -29,10 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 1   # serialize writes to data/keywords-queue.json
-      # Mirror packages/config/niches.js#ENABLED_SITES. Add a row here only
-      # when the matching sites/<niche>/<market>/ exists AND its env vars +
-      # Cloudflare Pages project + custom domain are wired up.
+      max-parallel: 1   # serialize writes to data/semrush-priorities.json
+      # Mirror packages/config/niches.js#ENABLED_SITES — keep in sync with
+      # daily-articles.yml.
       matrix:
         include:
           - { niche: jardin-bricolage, market: fr }
@@ -43,8 +51,6 @@ jobs:
       MARKET: ${{ matrix.market }}
       SITE:   ${{ matrix.niche }}-${{ matrix.market }}
       MANUAL_SITE: ${{ github.event.inputs.site }}
-      # Cron string of the schedule that triggered this run (empty for manual).
-      # Resolved to a numeric slot in the "Resolve slot" step below.
       TRIGGER_CRON: ${{ github.event.schedule }}
       FORCE_SLOT: ${{ github.event.inputs.force_slot }}
 
@@ -53,9 +59,6 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN || github.token }}
 
-      # When the workflow is dispatched manually with a specific siteId, skip
-      # rows that don't match. Scheduled runs leave MANUAL_SITE empty and run
-      # every row.
       - name: Filter by manual input
         run: |
           if [ -n "$MANUAL_SITE" ] && [ "$MANUAL_SITE" != "all" ] && [ "$MANUAL_SITE" != "$SITE" ]; then
@@ -63,31 +66,36 @@ jobs:
             echo "SKIP=1" >> "$GITHUB_ENV"
           fi
 
-      # Map the cron string that triggered the run to a 0..3 slot index. For
-      # manual workflow_dispatch, fall back to FORCE_SLOT input (default 0).
       - if: env.SKIP != '1'
         name: Resolve slot from cron schedule
         run: |
           case "$TRIGGER_CRON" in
-            '11 6 * * *')  SLOT=0 ;;
-            '37 10 * * *') SLOT=1 ;;
-            '23 14 * * *') SLOT=2 ;;
-            '47 18 * * *') SLOT=3 ;;
+            '19 7 * * *')  SLOT=0 ;;
+            '43 11 * * *') SLOT=1 ;;
+            '31 15 * * *') SLOT=2 ;;
+            '53 19 * * *') SLOT=3 ;;
             *)             SLOT="${FORCE_SLOT:-0}" ;;
           esac
           echo "SLOT=$SLOT" >> "$GITHUB_ENV"
 
-      # Cadence gate: anti-Google-detection ramp + per-day slot election.
-      # Cheap (~30s) — runs BEFORE the heavy install/build steps so rejected
-      # slots cost almost nothing in CI minutes.
       - if: env.SKIP != '1'
         name: Cadence gate
         run: |
           DECISION=$(node packages/scripts/cadence-cli.js \
             --niche "$NICHE" --market "$MARKET" \
-            --workflow daily-articles --slot "$SLOT" --num-slots 4)
+            --workflow daily-guides --slot "$SLOT" --num-slots 4)
           if [ "$DECISION" = "skip" ]; then
             echo "Cadence gate: skip for $SITE (slot=$SLOT)"
+            echo "SKIP=1" >> "$GITHUB_ENV"
+          fi
+
+      - if: env.SKIP != '1'
+        name: Check pending pillar stock
+        run: |
+          PILLAR_LEN=$(node -e "const p=require('./data/semrush-priorities.json'); console.log((p[process.env.NICHE]?.[process.env.MARKET]||[]).filter(o=>o.intent==='guide'&&o.status==='pending').length)")
+          echo "pending pillars for $SITE: $PILLAR_LEN"
+          if [ "$PILLAR_LEN" = "0" ]; then
+            echo "No pending pillar — skipping the rest of the run (this is normal until a comparatif cluster ships)."
             echo "SKIP=1" >> "$GITHUB_ENV"
           fi
 
@@ -115,34 +123,13 @@ jobs:
         run: npm install -g @anthropic-ai/claude-code
 
       - if: env.SKIP != '1'
-        name: Refill keyword queue if empty (DataForSEO)
+        name: Generate pillar (--cluster --guide-only --count 1)
         env:
-          DATAFORSEO_LOGIN:    ${{ secrets.DATAFORSEO_LOGIN }}
-          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
-        run: |
-          QUEUE_LEN=$(node -e "const q=require('./data/keywords-queue.json'); console.log((q[process.env.NICHE]?.[process.env.MARKET]||[]).filter(k=>k.status==='pending').length)")
-          echo "pending keywords for $SITE: $QUEUE_LEN"
-          if [ "$QUEUE_LEN" = "0" ]; then
-            node packages/scripts/dataforseo-keywords.js --niche "$NICHE" --market "$MARKET"
-          fi
-
-      - if: env.SKIP != '1'
-        name: Generate articles
-        env:
-          CLAUDE_CODE_OAUTH_TOKEN:    ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          AMAZON_AFFILIATE_ID_FR:     ${{ secrets.AMAZON_AFFILIATE_ID_FR }}
-          AMAZON_AFFILIATE_ID_US:     ${{ secrets.AMAZON_AFFILIATE_ID_US }}
-          AMAZON_AFFILIATE_ID_GB:     ${{ secrets.AMAZON_AFFILIATE_ID_GB }}
-          AWIN_PUBLISHER_ID:          ${{ secrets.AWIN_PUBLISHER_ID }}
-          AWIN_LEROY_MERLIN_ID:       ${{ secrets.AWIN_LEROY_MERLIN_ID }}
-          AWIN_BOULANGER_ID:          ${{ secrets.AWIN_BOULANGER_ID }}
-          AWIN_DECATHLON_ID:          ${{ secrets.AWIN_DECATHLON_ID }}
-          AWIN_DARTY_ID:              ${{ secrets.AWIN_DARTY_ID }}
-          AWIN_FNAC_ID:               ${{ secrets.AWIN_FNAC_ID }}
-          AWIN_CASTORAMA_ID:          ${{ secrets.AWIN_CASTORAMA_ID }}
-          AWIN_MR_BRICOLAGE_ID:       ${{ secrets.AWIN_MR_BRICOLAGE_ID }}
-          MAX_ARTICLES_PER_RUN:       '2'
-        run: node packages/scripts/article-generator.js --niche "$NICHE" --market "$MARKET"
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # No Amazon / Awin secrets needed — pillar pages are off-affiliate
+          # and the validator blocks any leaked CTA. Image fetch is skipped
+          # because guide intent has no product components.
+        run: node packages/scripts/article-generator.js --niche "$NICHE" --market "$MARKET" --cluster --guide-only --count 1
 
       - if: env.SKIP != '1'
         name: Build site
@@ -162,7 +149,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add data/ "sites/$NICHE/$MARKET/src/content/articles/"
-          git diff --staged --quiet || git commit -m "content: daily $SITE articles + queue update"
+          git diff --staged --quiet || git commit -m "content: daily $SITE pillar guide"
 
       - if: env.SKIP != '1'
         name: Safe push (rebase + retry)

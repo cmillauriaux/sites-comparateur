@@ -64,7 +64,12 @@ export function validateGeneratedArticle(content) {
   }
 
   const intent = readFrontmatterField(content, 'intent');
-  const isInformational = intent === 'informational' || intent === 'guide';
+  // `noAffiliate: true` is set by article-generator when an `avis` cannot
+  // resolve any ASIN (Amazon + Google Shopping both empty). The article
+  // publishes as off-affiliate instead of failing — same validator branch
+  // as informational/guide. See CLAUDE.md "Avis no-aff fallback".
+  const noAffiliate = readFrontmatterField(content, 'noAffiliate') === 'true';
+  const isInformational = intent === 'informational' || intent === 'guide' || noAffiliate;
 
   // Grounding gate — count `groundingScore: "X/Y"` numerator OR fall back to
   // the literal `sources:` array length. Mirrors the Zod schema in

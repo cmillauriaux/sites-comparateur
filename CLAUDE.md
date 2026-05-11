@@ -180,12 +180,44 @@ cadence, or affiliation density.
   signal of programmatic generation. Same for `updatedAt` — leave it equal
   to `publishedAt` until you genuinely re-edit. Use `git filter-branch` /
   `rebase` only on local backlog imports, never on already-pushed history.
-- **Post-launch cadence.** `MAX_ARTICLES_PER_RUN=2` in the daily workflow
-  is the ceiling per (niche, market). Don't raise it. The weekly
-  informational adds +1/week per site. Total ceiling per site = ~16/week
-  worst case. Monitor GSC's Indexed/Submitted ratio weekly — if > 30% of
-  submissions sit in "Discovered – not indexed" past 4 weeks, halt the
-  daily run and investigate before resuming.
+- **Post-launch cadence — automatic ramp.** The pipeline self-throttles
+  based on how many articles each (niche, market) has already published
+  (read from `data/published-urls.json`). The single source of truth is
+  [`lib/cadence.js`](packages/scripts/lib/cadence.js); both `cadence-cli`
+  (workflow gate) and `article-generator` (defensive cap) consume it.
+
+  | Stage    | Articles published | Aff/jour | Guide/jour | Info/sem | Jours actifs/sem | Worst case/sem |
+  |----------|--------------------|----------|------------|----------|-------------------|----------------|
+  | sandbox  | 0-9                | 1        | 0          | 0        | 4                 | **4**          |
+  | warming  | 10-29              | 1        | 1          | 1        | 5                 | **11**         |
+  | ramping  | 30-79              | 1        | 1          | 1        | 7                 | **15**         |
+  | mature   | 80+                | 2        | 1          | 1        | 7                 | **22**         |
+
+  Implications:
+  - **NEVER bulk-publish** to skip the ramp. Maturity is measured in
+    `published-urls.json` count, not in calendar age. Backfilling the
+    registry to "graduate" a site is the cleanest way to nuke the
+    anti-sandbox protection.
+  - `MAX_ARTICLES_PER_RUN=2` env stays as a HARD ceiling — cadence can
+    only lower it (e.g., sandbox clamps it to 1). Don't raise it above 2.
+  - Active-day skip is deterministic per (date, site): `(dateHash ^ siteHash) % 7 < activeDaysPerWeek`.
+    Re-running the workflow on a skipped day stays skipped (no flapping),
+    and FR/US/GB get **disjoint** skip sets (~46% of days) so the three
+    markets don't all publish in lockstep.
+  - **Hour variation without burning CI**: each daily workflow declares
+    4 cron slots (06:11 / 10:37 / 14:23 / 18:47 UTC for daily-articles;
+    07:19 / 11:43 / 15:31 / 19:53 for daily-guides). cadence-cli elects
+    one slot per (site, day) via the same deterministic hash; the other 3
+    triggers exit at the gate after ~30s. No `sleep` — sleeping would
+    cost paid CI minutes.
+  - **Monitoring**: weekly check on GSC's Indexed/Submitted ratio. If >
+    30% of submissions sit in "Discovered – not indexed" past 4 weeks,
+    halt the daily run (manually pause the workflow) and investigate
+    before resuming. The auto-ramp does not currently read GSC signal —
+    that's still operator responsibility.
+  - **Manual override for testing**: `workflow_dispatch` accepts
+    `force_slot` (0-3). The cadence-cli also accepts a CLI invocation
+    locally for "will this site publish today?" pre-flight checks.
 - **Author bio integrity.** The `author` block in `site.config.js` is not
   decorative — Google's quality raters click through to verify identity.
   Once a `linkedinUrl` is set, it MUST resolve. Don't ship the URL until

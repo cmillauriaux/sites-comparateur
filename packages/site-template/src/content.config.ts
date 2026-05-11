@@ -39,6 +39,11 @@ const articles = defineCollection({
     affiliateLinks: z.array(affiliateLink).default([]),
     groundingScore: z.string().optional(),
     draft: z.boolean().default(false),
+    // Set by article-generator when an `avis` cannot resolve any ASIN from
+    // Amazon or Google Shopping — the article publishes without affiliate
+    // CTAs instead of failing. Validator branches on this to skip the
+    // ≥3 affiliate-button gate.
+    noAffiliate: z.boolean().optional(),
 
     // Extracted from the body's `## FAQ` section by article-generator.js
     // post-pass; consumed by ArticleLayout to emit FAQPage JSON-LD.

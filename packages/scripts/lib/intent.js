@@ -29,3 +29,37 @@ export function detectIntent(keyword, { cpc } = {}) {
   if (cpc != null && cpc >= COMMERCIAL_CPC_FLOOR) return 'comparatif';
   return 'informational';
 }
+
+const TOPIC_STRIP_TOKENS = [
+  'meilleur', 'meilleure', 'meilleurs', 'meilleures',
+  'top', 'classement', 'comparatif', 'comparaison', 'versus', 'vs',
+  'best', 'top',
+  'avis', 'test', 'review', 'reviews',
+  'comment', 'guide', 'choisir', 'quelle', 'quel', 'pourquoi',
+  'how', 'which', 'what', 'why', 'buying',
+  'pas', 'cher', 'cheap',
+  'de', 'du', 'des', 'le', 'la', 'les', 'un', 'une', 'a', 'an', 'the',
+  'en', 'for', 'pour',
+];
+
+/**
+ * Extract the product topic from a keyword. Used by the cluster→pillar hook
+ * to build a "comment choisir un <topic>" keyword.
+ *
+ *   "meilleur robot tondeuse 2026"      → "robot tondeuse"
+ *   "comparatif nettoyeur haute pression" → "nettoyeur haute pression"
+ *   "best lawn mower"                   → "lawn mower"
+ */
+export function extractTopicFromKeyword(keyword) {
+  const tokens = keyword
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    // Drop pure-numeric tokens up to 4 digits: 1-3 = quantifiers ("top 5",
+    // "top 10"), 4 = years ("2026"). Multi-digit spec values ("5000 mAh")
+    // rarely appear in cluster primary keywords, where the topic is a noun.
+    .filter(t => !/^\d{1,4}$/.test(t))
+    .filter(t => !TOPIC_STRIP_TOKENS.includes(t));
+  return tokens.join(' ').trim();
+}

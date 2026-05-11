@@ -34,6 +34,8 @@ import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
 import { fetchArticleHero } from './lib/hero-image.js';
 import { tokenize } from './lib/cluster.js';
+import { extractTopicFromKeyword } from './lib/intent.js';
+import { getCadence } from './lib/cadence.js';
 import { getSourcesFor } from '@comparateur/config/sources';
 import { i18n } from '@comparateur/config';
 import { MARKET_SEMRUSH } from '@comparateur/config/niches';
@@ -98,7 +100,38 @@ function pickNextPending(queue, niche, market) {
  *
  * @returns {Promise<{publishedUrl: string, articleSlug: string, outputPath: string}>}
  */
-async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords = [] }) {
+/**
+ * Strip every <AffiliateButton ...>…</AffiliateButton> (paired) + self-closing
+ * <AffiliateButton .../> tag, plus every <ProductCard .../> self-closing tag.
+ * Used by the avis no-affiliate fallback when zero ASIN resolves — we'd rather
+ * publish the article as a no-CTA review than fail the run entirely.
+ */
+function stripAffiliateComponents(content) {
+  return content
+    .replace(/<AffiliateButton\b[^>]*>[\s\S]*?<\/AffiliateButton>/g, '')
+    .replace(/<AffiliateButton\b[^>]*\/>/g, '')
+    .replace(/<ProductCard\b[\s\S]*?\/>/g, '')
+    // Collapse the blank lines left behind so the .mdx doesn't ship with
+    // 4-line gaps where components used to sit.
+    .replace(/\n{3,}/g, '\n\n');
+}
+
+/**
+ * Set a top-level frontmatter scalar field. Used by the avis no-affiliate
+ * fallback to flag the article so validator + Astro schema both know to skip
+ * the affiliate gate.
+ */
+function setFrontmatterField(content, field, value) {
+  const m = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!m) return content;
+  let frontmatter;
+  try { frontmatter = YAML.parse(m[1]) ?? {}; } catch { return content; }
+  frontmatter[field] = value;
+  const yamlText = YAML.stringify(frontmatter, { lineWidth: 0 }).trimEnd();
+  return `---\n${yamlText}\n---\n${m[2]}`;
+}
+
+async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords = [], parentComparatifUrl, parentComparatifTitle }) {
   const { niche, market } = siteConfig;
 
   // 1. Scrape sources whitelisted for this (niche, market)
@@ -143,6 +176,10 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     articleSlug,
     outputPath,
     existingArticles,
+    // Only consumed by buildGuidePrompt — pillar pages must link 2× to their
+    // parent comparatif. Undefined for other intents.
+    parentComparatifUrl,
+    parentComparatifTitle,
   });
 
   // Snapshot the dirty paths BEFORE invoking Claude so we can diff against the
@@ -216,6 +253,22 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     updated = injectPrices(updated, priceMap);
     updated = injectMerchantUrls(updated, nonAffiliateMap);
 
+    // Avis no-affiliate fallback. When a single-product review can't resolve
+    // any ASIN AND no non-affiliate merchant URL was found, the AffiliateButton
+    // / ProductCard tags would render with broken or empty CTAs. Rather than
+    // failing the run, strip the components and publish as an off-affiliate
+    // review — the same dilution lever as informational/guide pieces. Validator
+    // honours `noAffiliate: true` to skip the ≥3 CTA gate.
+    if (intent === 'avis') {
+      const hasAnyAsin = Object.values(asinMap).some(Boolean);
+      const hasAnyNonAff = nonAffiliateMap && Object.values(nonAffiliateMap).some(Boolean);
+      if (!hasAnyAsin && !hasAnyNonAff) {
+        console.log(`  ℹ️  No ASIN / non-affiliate URL resolved — fallback to no-affiliate avis`);
+        updated = stripAffiliateComponents(updated);
+        updated = setFrontmatterField(updated, 'noAffiliate', true);
+      }
+    }
+
     // Pre-validation pass: strip raw prices the model leaked into prose.
     // Component attributes (where injected prices live) are preserved.
     const scrubbed = scrubRawPrices(updated);
@@ -286,7 +339,7 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
   const subdir = subdirByIntent[finalIntent] ?? slugs.slugGuides;
   const publishedUrl = `https://${siteConfig.domain}/${subdir}/${articleSlug}/`;
 
-  return { publishedUrl, articleSlug, outputPath };
+  return { publishedUrl, articleSlug, outputPath, finalIntent };
 }
 
 function readFrontmatterIntent(path) {
@@ -447,6 +500,53 @@ function absorbCoveredQueueKeywords(opp, publishedUrl) {
   return absorbed;
 }
 
+/**
+ * Append a synthetic pillar opportunity ("Comment choisir son <topic>") to
+ * the priorities registry, derived from a freshly-generated comparatif. The
+ * pillar is `intent: 'guide'`, status `pending`, and carries `parentPublishedUrl`
+ * + `parentPrimaryKeyword` so buildGuidePrompt can inject the editorial link.
+ *
+ * Idempotent: if `<clusterId>-pillar` already exists in the bucket (regardless
+ * of status), this is a no-op so re-running a cluster never spawns duplicates.
+ *
+ * Mutates `fresh` in place. The caller is responsible for `writePriorities(fresh)`.
+ */
+function enqueuePillarOpportunity({ fresh, niche, market, parentOpp, parentPublishedUrl }) {
+  fresh[niche] = fresh[niche] || {};
+  fresh[niche][market] = fresh[niche][market] || [];
+  const bucket = fresh[niche][market];
+  const pillarId = `${parentOpp.id}-pillar`;
+  if (bucket.some(o => o.id === pillarId)) return;
+
+  const topic = extractTopicFromKeyword(parentOpp.primaryKeyword);
+  if (!topic) {
+    console.warn(`  ⚠️  Could not derive topic from "${parentOpp.primaryKeyword}" — skipping pillar enqueue`);
+    return;
+  }
+  const isFr = market === 'fr';
+  const pillarKeyword = isFr ? `comment choisir ${topic}` : `how to choose ${topic}`;
+
+  bucket.push({
+    id: pillarId,
+    niche, market,
+    primaryKeyword: pillarKeyword,
+    secondaryKeywords: [],
+    intent: 'guide',
+    status: 'pending',
+    source: 'cluster-pillar',
+    parentClusterId: parentOpp.id,
+    parentPublishedUrl,
+    parentPrimaryKeyword: parentOpp.primaryKeyword,
+    // Inherit the parent's score so the pillar sorts alongside its source
+    // cluster when --guide-only picks top-N by score.
+    score: parentOpp.score ?? 0,
+    totalVolume: parentOpp.totalVolume ?? 0,
+    avgKD: parentOpp.avgKD ?? 0,
+    createdAt: new Date().toISOString(),
+  });
+  console.log(`  🧭 Enqueued pillar: "${pillarKeyword}" (id=${pillarId})`);
+}
+
 async function generateFromCluster(clusterId) {
   const registry = readPriorities();
   const found = findOpportunity(registry, clusterId);
@@ -472,10 +572,14 @@ async function generateFromCluster(clusterId) {
   console.log(`   intent=${opp.intent} totalVolume=${opp.totalVolume} avgKD=${opp.avgKD} (${opp.secondaryKeywords?.length || 0} secondaries)`);
 
   try {
-    const { publishedUrl } = await generateArticle(siteConfig, {
+    const { publishedUrl, finalIntent } = await generateArticle(siteConfig, {
       keyword: opp.primaryKeyword,
       intent: opp.intent,
       secondaryKeywords: opp.secondaryKeywords || [],
+      // For cluster-pillar opportunities: pass the parent comparatif URL +
+      // its keyword (used as the link title in the pillar prompt).
+      parentComparatifUrl: opp.parentPublishedUrl,
+      parentComparatifTitle: opp.parentPrimaryKeyword,
     });
 
     // Mark the opportunity generated. Re-read the registry to avoid clobbering
@@ -487,8 +591,18 @@ async function generateFromCluster(clusterId) {
       found2.opp.status = 'generated';
       found2.opp.publishedUrl = publishedUrl;
       found2.opp.generatedAt = new Date().toISOString();
-      writePriorities(fresh);
     }
+
+    // Auto-trigger pillar: when a comparatif cluster successfully ships, enqueue
+    // its matching "Comment choisir son <topic>" pillar so the daily-guides
+    // workflow can pick it up next. Idempotent — re-running the cluster never
+    // duplicates the pillar. Skipped when the article's final intent isn't
+    // `comparatif` (Claude is allowed to demote a cluster to avis/guide) or
+    // when this opportunity is ITSELF a pillar (avoids recursion).
+    if (finalIntent === 'comparatif' && opp.source !== 'cluster-pillar') {
+      enqueuePillarOpportunity({ fresh, niche, market, parentOpp: opp, parentPublishedUrl: publishedUrl });
+    }
+    writePriorities(fresh);
 
     appendPublished({
       url: publishedUrl,
@@ -526,13 +640,20 @@ async function run(targets) {
       console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
       continue;
     }
+    // Cadence ramp: the per-day affiliate cap depends on the site's maturity
+    // (count of already-published URLs). Sandbox sites get cap=1, mature
+    // sites get cap=2. The env-level `MAX_ARTICLES_PER_RUN` stays a hard
+    // ceiling — cadence can lower it, never raise it.
+    const cadence = getCadence(niche, market);
+    const cap = Math.min(MAX_ARTICLES_PER_RUN, cadence.affiliateCap);
+    console.log(`📊 cadence ${niche}/${market}: stage=${cadence.stage} published=${cadence.publishedCount} affCap=${cadence.affiliateCap} → run cap=${cap}`);
     let written = 0;
-    for (let i = 0; i < MAX_ARTICLES_PER_RUN; i++) {
+    for (let i = 0; i < cap; i++) {
       const url = await generateOne(siteConfig);
       if (url) written++;
       else break;
     }
-    console.log(`\n📊 ${niche}/${market}: ${written}/${MAX_ARTICLES_PER_RUN} articles generated`);
+    console.log(`\n📊 ${niche}/${market}: ${written}/${cap} articles generated`);
   }
 }
 
@@ -605,6 +726,15 @@ async function runInformational(targets) {
       console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
       continue;
     }
+    // Cadence gate: sandbox-stage sites publish ZERO informational pieces —
+    // we'd rather concentrate the tiny weekly budget on one comparatif.
+    // Warming+ stages allow it.
+    const cadence = getCadence(niche, market);
+    if (!cadence.allowInformational) {
+      console.log(`⏭  ${niche}/${market}: informational disabled at stage=${cadence.stage} (published=${cadence.publishedCount})`);
+      continue;
+    }
+    console.log(`📊 cadence ${niche}/${market}: stage=${cadence.stage} published=${cadence.publishedCount} → informational allowed`);
     await generateOneInformational(siteConfig);
   }
 }
@@ -625,7 +755,7 @@ const LONGTAIL_MIN_TOKENS = 3;
  * even on a registry that was mined without --longtail (it just filters the
  * existing entries).
  */
-async function runTopClusters(targets, count, { longtail = false } = {}) {
+async function runTopClusters(targets, count, { longtail = false, guideOnly = false } = {}) {
   const registry = readPriorities();
   const targetSet = new Set(targets.map(t => `${t.niche}/${t.market}`));
 
@@ -634,6 +764,17 @@ async function runTopClusters(targets, count, { longtail = false } = {}) {
     if (opp.avgKD > LONGTAIL_KD_CEILING) return false;
     const tokens = tokenize(opp.primaryKeyword, langByMarket(opp.market));
     return tokens.size >= LONGTAIL_MIN_TOKENS;
+  };
+
+  // Defensive cadence cap (per (niche, market) in scope). The workflow-side
+  // cadence-cli gate is the primary defence; this cache + filter protects
+  // local runs where `--guide-only --count 5` would otherwise bypass the
+  // stage caps for a sandbox-stage site.
+  const cadenceCache = new Map();
+  const cadenceFor = (niche, market) => {
+    const key = `${niche}/${market}`;
+    if (!cadenceCache.has(key)) cadenceCache.set(key, getCadence(niche, market));
+    return cadenceCache.get(key);
   };
 
   // Flatten registry across the resolved scope, drop already-generated and
@@ -647,6 +788,12 @@ async function runTopClusters(targets, count, { longtail = false } = {}) {
         if (opp.status === 'rejected') continue;
         if ((opp.errorCount || 0) >= 3) continue;
         if (longtail && !isLongtail(opp)) continue;
+        if (guideOnly && opp.intent !== 'guide') continue;
+        // Site stage forbids this intent right now → drop the candidate.
+        const cad = cadenceFor(niche, market);
+        if (opp.intent === 'guide' && cad.guideCap <= 0) continue;
+        if (opp.intent === 'comparatif' && cad.affiliateCap <= 0) continue;
+        if (opp.intent === 'avis' && cad.affiliateCap <= 0) continue;
         candidates.push(opp);
       }
     }
@@ -654,7 +801,11 @@ async function runTopClusters(targets, count, { longtail = false } = {}) {
   candidates.sort((a, b) => b.score - a.score);
 
   if (candidates.length === 0) {
-    if (longtail) {
+    if (guideOnly) {
+      // Normal/expected when no comparatif has been generated recently — pillars
+      // are auto-enqueued only after a comparatif cluster ships.
+      console.log(`ℹ️  No pending pillar (intent='guide') in scope. Generate a comparatif cluster first.`);
+    } else if (longtail) {
       console.log(`ℹ️  No long-tail opportunities in scope (KD ≤ ${LONGTAIL_KD_CEILING}, ≥${LONGTAIL_MIN_TOKENS} tokens).`);
       console.log(`   Run: node packages/scripts/semrush-prioritize.js --longtail [scope]`);
     } else {
@@ -726,7 +877,8 @@ if (args.informational === true) {
   }
   const targets = resolveTargets(args);
   const longtail = args.longtail === true;
-  runTopClusters(targets, count, { longtail }).catch(err => {
+  const guideOnly = args['guide-only'] === true || args.guideOnly === true;
+  runTopClusters(targets, count, { longtail, guideOnly }).catch(err => {
     console.error(err);
     process.exit(1);
   });
