@@ -137,7 +137,7 @@
         "score": 1025,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "partial",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.329Z",
         "generatedAt": null,
@@ -162,9 +162,9 @@
           "avis": {
             "keyword": "Bosch Professional GST 18 V-Li S avis",
             "slug": "bosch-professional-gst-18-v-li-s-avis",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/bosch-professional-gst-18-v-li-s-avis/",
+            "publishedAt": "2026-05-11T21:16:29.509Z"
           }
         }
       },
