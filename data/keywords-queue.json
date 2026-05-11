@@ -8,15 +8,12 @@
         "cpc": 0.42,
         "score": 6578,
         "intent": "comparatif",
-        "status": "published",
+        "status": "pending",
         "site": "jardin-bricolage",
         "createdAt": "2026-05-07T22:07:58.149Z",
         "niche": "jardin-bricolage",
         "market": "fr",
-        "errorCount": 1,
-        "lastError": "article validation failed: image coverage 75% (6/8), need 80%+",
-        "publishedUrl": "https://jardinguide.fr/comparatifs/nettoyeur-vapeur/",
-        "publishedAt": "2026-05-11T17:23:58.900Z"
+        "lastError": "article validation failed: image coverage 75% (6/8), need 80%+"
       },
       {
         "keyword": "perceuse",
