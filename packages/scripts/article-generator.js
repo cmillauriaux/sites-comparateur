@@ -856,13 +856,13 @@ if (args.informational === true) {
   // classified as — picks the same way as the daily run, just rewrites with
   // a different brief.
   const targets = resolveTargets(args);
-  runInformational(targets).catch(err => {
+  runInformational(targets).then(() => process.exit(0)).catch(err => {
     console.error(err);
     process.exit(1);
   });
 } else if (typeof args.cluster === 'string') {
   // --cluster <id> → generate that exact cluster
-  generateFromCluster(args.cluster).catch(err => {
+  generateFromCluster(args.cluster).then(() => process.exit(0)).catch(err => {
     console.error(err);
     process.exit(1);
   });
@@ -878,13 +878,13 @@ if (args.informational === true) {
   const targets = resolveTargets(args);
   const longtail = args.longtail === true;
   const guideOnly = args['guide-only'] === true || args.guideOnly === true;
-  runTopClusters(targets, count, { longtail, guideOnly }).catch(err => {
+  runTopClusters(targets, count, { longtail, guideOnly }).then(() => process.exit(0)).catch(err => {
     console.error(err);
     process.exit(1);
   });
 } else {
   const targets = resolveTargets(args);
-  run(targets).catch(err => {
+  run(targets).then(() => process.exit(0)).catch(err => {
     console.error(err);
     process.exit(1);
   });
