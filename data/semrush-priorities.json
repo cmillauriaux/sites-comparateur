@@ -67,11 +67,9 @@
         "score": 1128,
         "intent": "informational",
         "semrushIntent": "commercial",
-        "status": "generated",
+        "status": "pending",
         "source": "semrush",
-        "createdAt": "2026-05-10T19:18:21.330Z",
-        "generatedAt": "2026-05-10T19:28:50.930Z",
-        "publishedUrl": "https://jardinguide.fr/avis/taille-haie-thermique/"
+        "createdAt": "2026-05-10T19:18:21.330Z"
       },
       {
         "id": "jardin-bricolage-fr-scie-sauteuse",
@@ -996,11 +994,9 @@
         "score": 386,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "generated",
+        "status": "pending",
         "source": "semrush",
-        "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": "2026-05-10T21:12:33.036Z",
-        "publishedUrl": "https://jardinguide.fr/comparatifs/lavor-nettoyeur-haute-pression/"
+        "createdAt": "2026-05-10T19:18:21.331Z"
       },
       {
         "id": "jardin-bricolage-fr-tondeuse-debroussailleuse",
@@ -1335,11 +1331,9 @@
         "score": 297,
         "intent": "informational",
         "semrushIntent": "informational",
-        "status": "generated",
+        "status": "pending",
         "source": "semrush",
-        "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": "2026-05-10T21:14:04.858Z",
-        "publishedUrl": "https://jardinguide.fr/guides/brico-depot-nettoyeur-haute-pression/"
+        "createdAt": "2026-05-10T19:18:21.331Z"
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-sans-fil-périphérique-gps",
@@ -1623,11 +1617,9 @@
         "score": 274,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "generated",
+        "status": "pending",
         "source": "semrush",
-        "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": "2026-05-10T21:18:20.457Z",
-        "publishedUrl": "https://jardinguide.fr/comparatifs/taille-haie-thermique-perche/"
+        "createdAt": "2026-05-10T19:18:21.331Z"
       },
       {
         "id": "jardin-bricolage-fr-guide-tronconneuse",
