@@ -26,6 +26,9 @@ data/semrush-cache/
 # DataForSEO Google Shopping cache (14-day TTL, regenerated on demand)
 data/google-shopping-cache/
 
+# DataForSEO Amazon Products cache (14-day TTL, regenerated on demand)
+data/amazon-dfs-cache/
+
 # Per-site Polyglow lockfiles — keep root pnpm-lock.yaml only
 sites/*/pnpm-lock.yaml
 sites/*/package-lock.json

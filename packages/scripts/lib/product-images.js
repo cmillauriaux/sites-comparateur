@@ -13,9 +13,9 @@
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
 import slugger from 'github-slugger';
-import { fetchWithBrowser } from './browser.js';
 import { SITES_DIR } from './env.js';
 import { findGoogleShoppingProduct } from './google-shopping.js';
+import { searchAmazonProducts } from './amazon-dfs.js';
 
 const slug = new slugger();
 
@@ -26,97 +26,49 @@ const AMAZON_HOST = {
   gb: 'www.amazon.co.uk',
 };
 
-// Currency-symbol pattern for price extraction per market. Amazon uses a
-// trailing "€" on .fr and a leading "$" / "£" on .com / .co.uk.
-const PRICE_PATTERN = {
-  fr: /<span\s+class="a-offscreen">\s*([^<]*?€[^<]*?)<\/span>/,
-  us: /<span\s+class="a-offscreen">\s*(\$[^<]*?)<\/span>/,
-  gb: /<span\s+class="a-offscreen">\s*(£[^<]*?)<\/span>/,
-};
-
 /**
- * Returns `{ imageUrl, asin, price }` for the best matching Amazon search
- * result on the given market's marketplace. Strategy:
+ * Returns `{ imageUrl, asin, price, title, matchScore, pickedIdx }` for the
+ * best matching Amazon search result on the given market's marketplace.
  *
- *   1. Walk the first MAX_BLOCKS_TO_INSPECT product blocks. Amazon's HTML
- *      structure changes regularly (used to be `data-component-type=
- *      "s-search-result"` per product, now it's a single wrapper with
- *      lazy-loaded children). We anchor on `/dp/<ASIN>` href patterns,
- *      take each unique ASIN in DOM order, and slice the HTML between
- *      consecutive ASIN positions as that ASIN's "block".
- *   2. Score each block: token overlap between query and product title, with
- *      heavy penalties for accessory keywords (compatible, kit, filtre, ...)
- *      and suspiciously low prices.
- *   3. Pick the block with the highest score, gated by MIN_TITLE_MATCH.
- *      Below the gate, return null/null/null — better an empty card than a
- *      wrong link, image, or price (= zero conversion + lost credibility).
+ * Backend: DataForSEO Amazon Products (live endpoint). Replaces the previous
+ * Playwright scrape that was 100% bot-blocked on GitHub-hosted runners (every
+ * `s?k=` request returned a 195-char "Robot check" stub from Amazon's WAF).
+ * DataForSEO routes through its own proxy pool and returns structured items.
  *
- * `waitFor: 'networkidle'` is required: Amazon now hydrates results client-
- * side, so 'domcontentloaded' returns the shell HTML without ASINs.
+ * Strategy:
+ *   1. Hit the live endpoint (~10-15s) — get up to 20 ranked items.
+ *   2. Score the first MAX_BLOCKS_TO_INSPECT by token overlap against the
+ *      product name, with the same accessory + price-floor penalties as the
+ *      previous HTML-scraping version.
+ *   3. Pick the highest-adjusted-score candidate, gated by MIN_TITLE_MATCH.
+ *      Below the gate, return nulls — better an empty card than a wrong link.
  */
 export async function findAmazonProduct(productName, { market = 'fr' } = {}) {
-  const host = AMAZON_HOST[market];
-  if (!host) throw new Error(`findAmazonProduct: unknown market "${market}"`);
-  const url = `https://${host}/s?k=${encodeURIComponent(productName)}`;
+  if (!AMAZON_HOST[market]) throw new Error(`findAmazonProduct: unknown market "${market}"`);
   try {
-    // Pass `market` so the browser uses the matching locale + timezone:
-    // a fr-FR session on amazon.co.uk gets EUR prices, an en-GB session gets
-    // GBP. Without this the price extractor (which keys on £/$/€) misses
-    // every entry.
-    const { html } = await fetchWithBrowser(url, { waitFor: 'networkidle', timeoutMs: 30_000, market });
-
-    // Collect unique ASINs in DOM order (first occurrence wins).
-    const asinFirstSeen = new Map();
-    for (const m of html.matchAll(/\/dp\/(B0[A-Z0-9]{8})/g)) {
-      if (!asinFirstSeen.has(m[1])) asinFirstSeen.set(m[1], m.index);
-    }
-    const asinsByPosition = [...asinFirstSeen.entries()]
-      .sort((a, b) => a[1] - b[1]);
-
-    if (asinsByPosition.length === 0) {
-      return { imageUrl: null, asin: null, price: null };
-    }
-
-    // Build a (position → asin) list with a sentinel at end for slicing.
-    const positions = asinsByPosition.map(([asin, idx], i) => ({
-      asin,
-      start: Math.max(0, idx - 2000),   // include some context before the link (image/title sit before)
-      end: i + 1 < asinsByPosition.length ? asinsByPosition[i + 1][1] : Math.min(idx + 6000, html.length),
-    }));
+    const items = await searchAmazonProducts(productName, { market });
+    if (items.length === 0) return { imageUrl: null, asin: null, price: null, title: null, matchScore: 0 };
 
     let best = null;
-    const candidates = [];
-    for (let i = 0; i < Math.min(MAX_BLOCKS_TO_INSPECT, positions.length); i++) {
-      const { asin, start, end } = positions[i];
-      const block = html.slice(start, end);
+    for (let i = 0; i < Math.min(MAX_BLOCKS_TO_INSPECT, items.length); i++) {
+      const it = items[i];
+      if (!it.title || !it.asin) continue;
+      const { score, accessory } = scoreTitleMatch(productName, it.title);
 
-      const title = extractTitle(block);
-      if (!title) continue;
-      const { score, accessory } = scoreTitleMatch(productName, title);
-      const price = extractPrice(block, market);
-
-      // Cheap-price soft-gate: a high title-match with a price below the
-      // "headline product" floor (e.g. 19,99 € for an SV450 hit) is almost
-      // certainly an accessory whose listing happens to contain the product
-      // name. Apply an extra penalty to drop it below better-priced candidates.
-      const priceValue = price ? parsePrice(price) : NaN;
+      // Cheap-price soft-gate: same logic as the legacy HTML version. A
+      // high title-match with a price below the "headline product" floor
+      // (e.g. 19,99 € for an SV450 hit) is almost certainly an accessory
+      // whose listing happens to contain the product name.
       let adjusted = score;
-      if (Number.isFinite(priceValue) && priceValue < PRICE_FLOOR[market]) {
+      if (Number.isFinite(it.priceValue) && it.priceValue < PRICE_FLOOR[market]) {
         adjusted -= PRICE_LOW_PENALTY;
       }
 
-      const cand = {
-        idx: i, score, adjusted, accessory, title,
-        asin,
-        imageUrl: extractImage(block),
-        price,
-      };
-      candidates.push(cand);
+      const cand = { idx: i, score, adjusted, accessory, ...it };
       if (!best || cand.adjusted > best.adjusted) best = cand;
     }
 
     if (!best || best.score < MIN_TITLE_MATCH) {
-      // No plausible match — return nothing rather than misleading data.
       return { imageUrl: null, asin: null, price: null, title: null, matchScore: best?.score ?? 0 };
     }
 
@@ -128,8 +80,9 @@ export async function findAmazonProduct(productName, { market = 'fr' } = {}) {
       matchScore: best.score,
       pickedIdx: best.idx,
     };
-  } catch {
-    return { imageUrl: null, asin: null, price: null };
+  } catch (err) {
+    console.warn(`    ⚠️  amazon-dfs: ${err.message}`);
+    return { imageUrl: null, asin: null, price: null, title: null, matchScore: 0 };
   }
 }
 
@@ -148,32 +101,6 @@ const MIN_TITLE_MATCH = 0.5;
 // approximate enough that finer tuning is not warranted.
 const PRICE_FLOOR = { fr: 40, us: 40, gb: 35 };
 const PRICE_LOW_PENALTY = 0.4;
-
-const parsePrice = (raw) => {
-  // "1 234,56 €" / "$1,234.56" / "£1,234.56" → 1234.56. Returns NaN on garbage.
-  // Strategy: strip currency symbols and spaces; if the string contains both
-  // "," and "." treat the LAST of them as the decimal separator and the other
-  // as a thousands separator. Otherwise treat "," as decimal (FR) when no ".".
-  const noSym = raw.replace(/[\s$£€]/g, '');
-  let cleaned;
-  const hasComma = noSym.includes(',');
-  const hasDot = noSym.includes('.');
-  if (hasComma && hasDot) {
-    const lastComma = noSym.lastIndexOf(',');
-    const lastDot = noSym.lastIndexOf('.');
-    if (lastDot > lastComma) {
-      cleaned = noSym.replace(/,/g, '');           // "$1,234.56" → "1234.56"
-    } else {
-      cleaned = noSym.replace(/\./g, '').replace(',', '.'); // "1.234,56" → "1234.56"
-    }
-  } else if (hasComma) {
-    cleaned = noSym.replace(',', '.');             // "1234,56" → "1234.56"
-  } else {
-    cleaned = noSym;
-  }
-  const n = parseFloat(cleaned);
-  return Number.isFinite(n) ? n : NaN;
-};
 
 // STRONG accessory signals — words that, when in the title's prefix, identify
 // the listing as an accessory rather than the headline product. Penalty is
@@ -363,31 +290,6 @@ function scoreTitleMatch(query, title) {
   score -= penalty;
 
   return { score, accessory: penalty > 0 };
-}
-
-function extractTitle(block) {
-  const patterns = [
-    /<h2[^>]*>[\s\S]*?<span[^>]*>([^<]+)<\/span>/,
-    /aria-label="([^"]{20,300})"/,
-    /<span[^>]*class="[^"]*a-text-normal[^"]*"[^>]*>([^<]+)<\/span>/,
-  ];
-  for (const re of patterns) {
-    const m = block.match(re);
-    if (m && m[1].trim().length > 15) return m[1].trim();
-  }
-  return null;
-}
-
-function extractPrice(block, market = 'fr') {
-  const re = PRICE_PATTERN[market] ?? PRICE_PATTERN.fr;
-  const raw = block.match(re)?.[1];
-  return raw ? raw.replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim() : null;
-}
-
-function extractImage(block) {
-  const primary = block.match(/<img[^>]+class="[^"]*s-image[^"]*"[^>]+src="([^"]+)"/);
-  const fallback = block.match(/<img[^>]+src="(https:\/\/m\.media-amazon\.com\/images\/I\/[^"]+\.jpg)"/);
-  return primary?.[1] ?? fallback?.[1] ?? null;
 }
 
 async function downloadTo(url, outputPath) {
