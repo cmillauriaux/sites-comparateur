@@ -23,41 +23,36 @@ const scriptSrc = enabled ? `${host}/script.js` : '';
   <>
     <script is:inline defer src={scriptSrc} data-website-id={websiteId}></script>
     <script is:inline>
-      {`
-        (function () {
-          function track(ev) {
-            var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
-            if (!a) return;
-            // Ignore left-click+modifier handled natively, keep the event for tracking
-            // anyway (the new tab/window still opens, we just want the beacon out).
-            var href = a.getAttribute('href');
-            if (!href || href[0] === '#') return;
-            var url;
-            try { url = new URL(a.href, location.href); } catch (e) { return; }
-            if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
-            if (url.hostname === location.hostname) return;
-            if (typeof window.umami === 'undefined' || typeof window.umami.track !== 'function') return;
+      (function () {
+        function track(ev) {
+          var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+          if (!a) return;
+          var href = a.getAttribute('href');
+          if (!href || href[0] === '#') return;
+          var url;
+          try { url = new URL(a.href, location.href); } catch (e) { return; }
+          if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+          if (url.hostname === location.hostname) return;
+          if (typeof window.umami === 'undefined' || typeof window.umami.track !== 'function') return;
 
-            var program = a.getAttribute('data-affiliate') || '';
-            var product = a.getAttribute('data-product') || '';
-            var payload = {
-              target_host: url.hostname,
-              target_url: url.href,
-              source_path: location.pathname,
-            };
-            if (program) {
-              payload.program = program;
-              if (product) payload.product = product;
-              window.umami.track('affiliate-click', payload);
-            } else {
-              window.umami.track('outbound-click', payload);
-            }
+          var program = a.getAttribute('data-affiliate') || '';
+          var product = a.getAttribute('data-product') || '';
+          var payload = {
+            target_host: url.hostname,
+            target_url: url.href,
+            source_path: location.pathname,
+          };
+          if (program) {
+            payload.program = program;
+            if (product) payload.product = product;
+            window.umami.track('affiliate-click', payload);
+          } else {
+            window.umami.track('outbound-click', payload);
           }
-          // Capture phase so we beat any stopPropagation; auxclick covers middle-click.
-          document.addEventListener('click', track, true);
-          document.addEventListener('auxclick', track, true);
-        })();
-      `}
+        }
+        document.addEventListener('click', track, true);
+        document.addEventListener('auxclick', track, true);
+      })();
     </script>
   </>
 )}
