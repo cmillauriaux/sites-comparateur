@@ -141,6 +141,10 @@ jobs:
           # Hero image fetch (free image sources) — guides still get a topical hero.
           PEXELS_API_KEY:          ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY:         ${{ secrets.PIXABAY_API_KEY }}
+          # When bypass_cadence is set on workflow_dispatch, propagate it to the
+          # generator so runTopClusters() skips its stage-cap filter (sandbox sites
+          # would otherwise drop every guide candidate because guideCap=0).
+          BYPASS_CADENCE:          ${{ github.event.inputs.bypass_cadence }}
           # No Amazon / Awin secrets needed — pillar pages are off-affiliate
           # and the validator blocks any leaked CTA. Image fetch is skipped
           # because guide intent has no product components.

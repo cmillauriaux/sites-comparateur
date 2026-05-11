@@ -792,6 +792,12 @@ async function runTopClusters(targets, count, { longtail = false, guideOnly = fa
   // cadence-cli gate is the primary defence; this cache + filter protects
   // local runs where `--guide-only --count 5` would otherwise bypass the
   // stage caps for a sandbox-stage site.
+  //
+  // BYPASS_CADENCE=true is propagated from the workflow_dispatch manual test
+  // path so a sandbox-stage site can still validate the full pillar pipeline
+  // end-to-end without first publishing 10+ comparatifs. The flag is OFF for
+  // every cron-triggered run — it requires explicit operator action.
+  const bypassCadence = process.env.BYPASS_CADENCE === 'true';
   const cadenceCache = new Map();
   const cadenceFor = (niche, market) => {
     const key = `${niche}/${market}`;
@@ -811,11 +817,13 @@ async function runTopClusters(targets, count, { longtail = false, guideOnly = fa
         if ((opp.errorCount || 0) >= 3) continue;
         if (longtail && !isLongtail(opp)) continue;
         if (guideOnly && opp.intent !== 'guide') continue;
-        // Site stage forbids this intent right now → drop the candidate.
-        const cad = cadenceFor(niche, market);
-        if (opp.intent === 'guide' && cad.guideCap <= 0) continue;
-        if (opp.intent === 'comparatif' && cad.affiliateCap <= 0) continue;
-        if (opp.intent === 'avis' && cad.affiliateCap <= 0) continue;
+        if (!bypassCadence) {
+          // Site stage forbids this intent right now → drop the candidate.
+          const cad = cadenceFor(niche, market);
+          if (opp.intent === 'guide' && cad.guideCap <= 0) continue;
+          if (opp.intent === 'comparatif' && cad.affiliateCap <= 0) continue;
+          if (opp.intent === 'avis' && cad.affiliateCap <= 0) continue;
+        }
         candidates.push(opp);
       }
     }
