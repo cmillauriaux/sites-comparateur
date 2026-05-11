@@ -12,7 +12,9 @@
         "site": "jardin-bricolage",
         "createdAt": "2026-05-07T22:07:58.149Z",
         "niche": "jardin-bricolage",
-        "market": "fr"
+        "market": "fr",
+        "errorCount": 1,
+        "lastError": "article validation failed: image coverage 75% (6/8), need 80%+"
       },
       {
         "keyword": "perceuse",
