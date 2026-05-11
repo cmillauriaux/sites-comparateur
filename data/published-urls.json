@@ -6,5 +6,23 @@
     "keyword": "nettoyeur vapeur",
     "publishedAt": "2026-05-11T18:45:28.211Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/guides/guide-tronconneuse/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "guide tronconneuse",
+    "secondaryKeywords": [
+      "tronconneuse guide",
+      "guide chaine tronconneuse",
+      "guide tronconneuse stihl",
+      "chaine et guide tronconneuse",
+      "chaine guide tronconneuse",
+      "guide chaine pour tronconneuse"
+    ],
+    "clusterId": "jardin-bricolage-fr-guide-tronconneuse",
+    "intent": "guide",
+    "publishedAt": "2026-05-11T20:14:34.326Z",
+    "indexationStatus": "pending"
   }
 ]
