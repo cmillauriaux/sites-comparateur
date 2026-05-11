@@ -30,6 +30,36 @@ export function scrubInlineSourceList(content) {
 }
 
 /**
+ * Strip every `import X from "...";?` line from the .mdx body.
+ *
+ * The site-template ships components to MDX articles via the dynamic page
+ * route's `<Content components={...} />` prop — articles must NOT declare
+ * their own imports. When Claude writes one anyway (recurring lapse on
+ * guide articles), Astro tries to resolve it as a relative path from the
+ * article location, which fails because the components live in a
+ * different workspace package (`@comparateur/site-template`). The build
+ * 500s before ever rendering. Strip preemptively.
+ *
+ * Frontmatter (the YAML block bounded by `---`) is left untouched.
+ * Lines must start with `import` (ESM style) — `require(...)` calls,
+ * inline `import()` expressions, and prose mentioning the word are kept.
+ */
+export function scrubMdxImports(content) {
+  const fmMatch = content.match(/^(---\n[\s\S]*?\n---\n)([\s\S]*)$/);
+  const head = fmMatch ? fmMatch[1] : '';
+  const body = fmMatch ? fmMatch[2] : content;
+
+  let count = 0;
+  // Match a real ESM import line — `import X from "...";?` or
+  // `import { X, Y } from "...";?` or `import * as X from "...";?`.
+  // Anchored at the line start; the `from "<path>"` is mandatory so
+  // English prose starting with the word "import" is left alone.
+  const re = /^[ \t]*import\b[^\n]*?\s+from\s+(?:"[^"]+"|'[^']+')\s*;?[ \t]*\r?\n/gm;
+  const cleaned = body.replace(re, () => { count++; return ''; });
+  return { content: head + cleaned, count };
+}
+
+/**
  * Validate every internal markdown link in the body and strip any that
  * points to a URL not in `existingUrls`. The bracketed text is preserved
  * so the prose still reads naturally.

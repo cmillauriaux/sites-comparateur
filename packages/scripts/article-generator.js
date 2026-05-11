@@ -34,7 +34,7 @@ import { remediateLlmTics, isRemediableErrorSet } from './lib/article-remediator
 import { pickNextBundleSlot, initBundle, markBundleSlotShipped, markBundleSlotFailed, BUNDLE_SLOTS, SLOT_INTENT, slugFromKeyword, bundleSlotUrl } from './lib/bundle.js';
 import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
-import { scrubInlineSourceList, stripBrokenInternalLinks } from './lib/article-postprocess.js';
+import { scrubInlineSourceList, scrubMdxImports, stripBrokenInternalLinks } from './lib/article-postprocess.js';
 import { fetchArticleHero } from './lib/hero-image.js';
 import { tokenize } from './lib/cluster.js';
 import { extractTopicFromKeyword } from './lib/intent.js';
@@ -332,6 +332,17 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
       updated = sl.content;
     }
 
+    // .mdx files in this project never declare imports — components are
+    // injected by the dynamic page route's <Content components={...} /> prop.
+    // Stray imports from the model resolve to relative paths that don't
+    // exist (the components live in a different workspace package), which
+    // crashes the build.
+    const imp = scrubMdxImports(updated);
+    if (imp.count > 0) {
+      console.log(`  🧹 Stripped ${imp.count} stray import statement${imp.count > 1 ? 's' : ''} from .mdx body`);
+      updated = imp.content;
+    }
+
     // Strip markdown links Claude invented to URLs that don't exist on the
     // live site (404s on click). The anchor text is preserved so prose
     // still reads naturally.
@@ -376,6 +387,11 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     if (sl.count > 0) {
       console.log(`  🧹 Stripped ${sl.count} inline <SourceList /> (layout adds it once)`);
       finalContent = sl.content;
+    }
+    const imp = scrubMdxImports(finalContent);
+    if (imp.count > 0) {
+      console.log(`  🧹 Stripped ${imp.count} stray import statement${imp.count > 1 ? 's' : ''} from .mdx body`);
+      finalContent = imp.content;
     }
     const siteOrigin = `https://${siteConfig.domain}`;
     const existingUrls = buildPublishedUrlSet(niche, market);
