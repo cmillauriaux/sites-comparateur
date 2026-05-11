@@ -8,7 +8,9 @@ const MIN_CONTENT_CHARS = 300;
 
 const SEARCH_URLS = {
   // FR
-  'www.quechoisir.org':       q => `https://www.quechoisir.org/recherche/?query=${encodeURIComponent(q)}`,
+  // /recherche/?query= returns HTTP 500 (deprecated endpoint?). /utils/recherche/?keyword=
+  // is what the site's own search form posts to and returns 200.
+  'www.quechoisir.org':       q => `https://www.quechoisir.org/utils/recherche/?keyword=${encodeURIComponent(q)}`,
   'www.lesnumeriques.com':    q => `https://www.lesnumeriques.com/recherche?q=${encodeURIComponent(q)}`,
   'www.60millions-mag.com':   q => `https://www.60millions-mag.com/recherche?search_text=${encodeURIComponent(q)}`,
   'www.darty.com':            q => `https://www.darty.com/nav/recherche/search?text=${encodeURIComponent(q)}`,
