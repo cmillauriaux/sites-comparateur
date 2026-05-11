@@ -79,6 +79,22 @@ jobs:
           echo "SLOT=$SLOT" >> "$GITHUB_ENV"
 
       - if: env.SKIP != '1'
+        uses: pnpm/action-setup@v4
+
+      - if: env.SKIP != '1'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - if: env.SKIP != '1'
+        name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Cadence gate: anti-Google-detection ramp + per-day slot election.
+      # Runs after dep install (needs the workspace config) but before the
+      # heavy Claude generation step — rejected slots short-circuit early.
+      - if: env.SKIP != '1'
         name: Cadence gate
         run: |
           DECISION=$(node packages/scripts/cadence-cli.js \
@@ -98,19 +114,6 @@ jobs:
             echo "No pending pillar — skipping the rest of the run (this is normal until a comparatif cluster ships)."
             echo "SKIP=1" >> "$GITHUB_ENV"
           fi
-
-      - if: env.SKIP != '1'
-        uses: pnpm/action-setup@v4
-
-      - if: env.SKIP != '1'
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - if: env.SKIP != '1'
-        name: Install dependencies
-        run: pnpm install --frozen-lockfile
 
       - if: env.SKIP != '1'
         name: Install Playwright Chromium (for scraper browser fallback)

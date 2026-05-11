@@ -77,20 +77,6 @@ jobs:
           esac
           echo "SLOT=$SLOT" >> "$GITHUB_ENV"
 
-      # Cadence gate: anti-Google-detection ramp + per-day slot election.
-      # Cheap (~30s) — runs BEFORE the heavy install/build steps so rejected
-      # slots cost almost nothing in CI minutes.
-      - if: env.SKIP != '1'
-        name: Cadence gate
-        run: |
-          DECISION=$(node packages/scripts/cadence-cli.js \
-            --niche "$NICHE" --market "$MARKET" \
-            --workflow daily-articles --slot "$SLOT" --num-slots 4)
-          if [ "$DECISION" = "skip" ]; then
-            echo "Cadence gate: skip for $SITE (slot=$SLOT)"
-            echo "SKIP=1" >> "$GITHUB_ENV"
-          fi
-
       - if: env.SKIP != '1'
         uses: pnpm/action-setup@v4
 
@@ -103,6 +89,20 @@ jobs:
       - if: env.SKIP != '1'
         name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # Cadence gate: anti-Google-detection ramp + per-day slot election.
+      # Runs after dep install (needs the workspace config) but before the
+      # heavy Claude generation step — rejected slots short-circuit early.
+      - if: env.SKIP != '1'
+        name: Cadence gate
+        run: |
+          DECISION=$(node packages/scripts/cadence-cli.js \
+            --niche "$NICHE" --market "$MARKET" \
+            --workflow daily-articles --slot "$SLOT" --num-slots 4)
+          if [ "$DECISION" = "skip" ]; then
+            echo "Cadence gate: skip for $SITE (slot=$SLOT)"
+            echo "SKIP=1" >> "$GITHUB_ENV"
+          fi
 
       - if: env.SKIP != '1'
         name: Install Playwright Chromium (for scraper browser fallback)

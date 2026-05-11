@@ -56,17 +56,6 @@ jobs:
       # Single Tuesday cron → only slot 0. The gate gates on stage permission
       # (sandbox sites = no informational), not on slot election.
       - if: env.SKIP != '1'
-        name: Cadence gate
-        run: |
-          DECISION=$(node packages/scripts/cadence-cli.js \
-            --niche "$NICHE" --market "$MARKET" \
-            --workflow weekly-informational --slot 0 --num-slots 1)
-          if [ "$DECISION" = "skip" ]; then
-            echo "Cadence gate: skip for $SITE (stage too young)"
-            echo "SKIP=1" >> "$GITHUB_ENV"
-          fi
-
-      - if: env.SKIP != '1'
         uses: pnpm/action-setup@v4
 
       - if: env.SKIP != '1'
@@ -78,6 +67,17 @@ jobs:
       - if: env.SKIP != '1'
         name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - if: env.SKIP != '1'
+        name: Cadence gate
+        run: |
+          DECISION=$(node packages/scripts/cadence-cli.js \
+            --niche "$NICHE" --market "$MARKET" \
+            --workflow weekly-informational --slot 0 --num-slots 1)
+          if [ "$DECISION" = "skip" ]; then
+            echo "Cadence gate: skip for $SITE (stage too young)"
+            echo "SKIP=1" >> "$GITHUB_ENV"
+          fi
 
       - if: env.SKIP != '1'
         name: Install Playwright Chromium (for scraper browser fallback)
