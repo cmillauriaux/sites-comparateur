@@ -9,5 +9,16 @@
     "intent": "comparatif",
     "publishedAt": "2026-05-11T20:51:14.057Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/guides/comment-choisir-un-scie-sauteuse/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "comment choisir un scie sauteuse",
+    "bundleId": "jardin-bricolage-fr-scie-sauteuse",
+    "bundleSlot": "pillar",
+    "intent": "guide",
+    "publishedAt": "2026-05-11T21:07:44.047Z",
+    "indexationStatus": "pending"
   }
 ]
