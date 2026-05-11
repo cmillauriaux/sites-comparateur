@@ -32,6 +32,7 @@ import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
 import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
+import { fetchArticleHero } from './lib/hero-image.js';
 import { tokenize } from './lib/cluster.js';
 import { getSourcesFor } from '@comparateur/config/sources';
 import { i18n } from '@comparateur/config';
@@ -252,6 +253,19 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
 
   injectFaqFrontmatter(outputPath);
 
+  // Per-article hero image: fetch a topic-specific photo from Pexels/Pixabay
+  // and write `heroImage` + `heroImageAlt` into the frontmatter. The prompt
+  // intentionally omits these fields so we have a clean injection point
+  // here — otherwise every article would ship with the same generic
+  // /images/hero.jpg (niche-level photo from fetch-pillar-images.js), which
+  // reads as templated content and breaks topic-image relevance.
+  try {
+    const hero = await fetchArticleHero({ niche, market, articleSlug, keyword });
+    if (hero) injectHeroFrontmatter(outputPath, hero);
+  } catch (err) {
+    console.warn(`  ⚠️  hero fetch failed: ${err.message}`);
+  }
+
   // 6. Compute the published URL. The intent → subdir mapping comes from the
   // SAME i18n source used by the Astro [type]/ dynamic route (single source
   // of truth: packages/config/i18n.js#slug{Comparisons,Reviews,Guides}).
@@ -285,6 +299,23 @@ function readFrontmatterIntent(path) {
   } catch {
     return null;
   }
+}
+
+/**
+ * Write `heroImage` + `heroImageAlt` into the frontmatter. Skips if either
+ * is already set — never overwrites a manual editorial choice.
+ */
+function injectHeroFrontmatter(path, hero) {
+  const content = readFileSync(path, 'utf-8');
+  const m = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!m) return;
+  let frontmatter;
+  try { frontmatter = YAML.parse(m[1]) ?? {}; } catch { return; }
+  if (frontmatter.heroImage && frontmatter.heroImageAlt) return;
+  frontmatter.heroImage = frontmatter.heroImage ?? hero.publicPath;
+  frontmatter.heroImageAlt = frontmatter.heroImageAlt ?? hero.alt;
+  const yamlText = YAML.stringify(frontmatter, { lineWidth: 0 }).trimEnd();
+  writeFileSync(path, `---\n${yamlText}\n---\n${m[2]}`);
 }
 
 /**

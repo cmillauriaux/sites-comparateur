@@ -120,8 +120,6 @@ keyword: "${keyword}"
 intent: "comparatif"
 publishedAt: "${today}"
 updatedAt: "${today}"
-heroImage: "/images/hero.jpg"
-heroImageAlt: "[alt descriptif de l'image]"
 products:
   - { name: "Marque Modèle 1", score: 8.5, criteria: { performance: 9, ergonomie: 8, rapportQualitePrix: 8 } }
   - { name: "Marque Modèle 2", score: 8.0, criteria: { performance: 8, ergonomie: 8, rapportQualitePrix: 9 } }
@@ -138,8 +136,6 @@ keyword: "${keyword}"
 intent: "avis"
 publishedAt: "${today}"
 updatedAt: "${today}"
-heroImage: "/images/hero.jpg"
-heroImageAlt: "[alt descriptif]"
 product:
   name: "Marque Modèle"
   developer: "Marque"
@@ -307,8 +303,6 @@ keyword: "${keyword}"
 intent: "comparatif"
 publishedAt: "${today}"
 updatedAt: "${today}"
-heroImage: "/images/hero.jpg"
-heroImageAlt: "[descriptive alt text]"
 products:
   - { name: "Brand Model 1", score: 8.5, criteria: { performance: 9, ergonomics: 8, ${valueLabel}: 8 } }
   - { name: "Brand Model 2", score: 8.0, criteria: { performance: 8, ergonomics: 8, ${valueLabel}: 9 } }
@@ -325,8 +319,6 @@ keyword: "${keyword}"
 intent: "avis"
 publishedAt: "${today}"
 updatedAt: "${today}"
-heroImage: "/images/hero.jpg"
-heroImageAlt: "[descriptive alt text]"
 product:
   name: "Brand Model"
   developer: "Brand"
@@ -499,8 +491,6 @@ keyword: "${keyword}"
 intent: "informational"
 publishedAt: "${today}"
 updatedAt: "${today}"
-heroImage: "/images/hero.jpg"
-heroImageAlt: "[${isFr ? 'alt descriptif' : 'descriptive alt'}]"
 sources:
   - { name: "...", url: "...", domain: "...", scrapedAt: "..." }
 affiliateLinks: []
