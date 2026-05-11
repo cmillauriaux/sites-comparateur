@@ -189,9 +189,15 @@ cadence, or affiliation density.
   | Stage    | Articles published | Aff/jour | Guide/jour | Info/sem | Jours actifs/sem | Worst case/sem |
   |----------|--------------------|----------|------------|----------|-------------------|----------------|
   | sandbox  | 0-9                | 1        | 0          | 0        | 4                 | **4**          |
-  | warming  | 10-29              | 1        | 1          | 1        | 5                 | **11**         |
-  | ramping  | 30-79              | 1        | 1          | 1        | 7                 | **15**         |
-  | mature   | 80+                | 2        | 1          | 1        | 7                 | **22**         |
+  | warming  | 10-29              | 1        | 1          | 1        | 5                 | **5***         |
+  | ramping  | 30-79              | 1        | 1          | 1        | 7                 | **7***         |
+  | mature   | 80+                | 1        | 1          | 1        | 7                 | **7***         |
+
+  *Worst-case is now capped at `Jours actifs/sem` because of the cross-workflow
+  1/day rule (see `publishedToday` in `lib/cadence.js`). The per-workflow caps
+  above are individually true but only ONE workflow's article can actually
+  ship per day per site — comparatif + guide + info on the same day used to
+  be possible and is now blocked at the cadence-cli gate.
 
   Implications:
   - **NEVER bulk-publish** to skip the ramp. Maturity is measured in
@@ -200,6 +206,11 @@ cadence, or affiliation density.
     anti-sandbox protection.
   - `MAX_ARTICLES_PER_RUN=2` env stays as a HARD ceiling — cadence can
     only lower it (e.g., sandbox clamps it to 1). Don't raise it above 2.
+  - **Cross-workflow 1/day**: `publishedToday(niche, market)` blocks the run
+    at the gate when ≥1 article is already in `published-urls.json` with a
+    `publishedAt` matching today's UTC date. Applies uniformly to daily-
+    articles, daily-guides and weekly-informational — no workflow can stack
+    on top of another for the same site on the same day.
   - Active-day skip is deterministic per (date, site): `(dateHash ^ siteHash) % 7 < activeDaysPerWeek`.
     Re-running the workflow on a skipped day stays skipped (no flapping),
     and FR/US/GB get **disjoint** skip sets (~46% of days) so the three
@@ -278,7 +289,7 @@ products: [ { name, score, asin?, awinId?, criteria: {...} } ]
 ## Editorial / SEO conventions
 
 - Slug from the keyword via `github-slugger`. Do not edit slugs after publication — the URL is in `data/published-urls.json` and was submitted to GSC.
-- Internal linking: every new article should link to ≥2 existing articles in the same niche if any exist (cluster strategy). Read the `src/content/articles/*.md` directory before writing.
+- Internal linking: directional hub-and-spoke. The prompt now groups already-published articles by intent and tells Claude to prioritise outbound links to the *complementary* intent group: transactional pages (comparatif / avis) link to guides / informationals; editorial pages (guide / informational) link to comparatifs / avis. Same-class links count as secondary. Forced links are still discouraged when no entry is topically close. See `buildClusterBlock` in [`packages/scripts/lib/prompts.js`](packages/scripts/lib/prompts.js).
 - Affiliation disclosure block (RGPD + Amazon/Awin TOS) must be present on every article — render it once via the `ArticleLayout`, don't ask the model to repeat it.
 - All four sites must each include `/mentions-legales` and `/politique-confidentialite` pages. Do not deploy a site missing these.
 
