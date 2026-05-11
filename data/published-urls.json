@@ -14,5 +14,77 @@
     "indexationStatus": "pending",
     "niche": "jardin-bricolage",
     "market": "fr"
+  },
+  {
+    "url": "https://jardinguide.fr/avis/taille-haie-thermique/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "taille haie thermique",
+    "secondaryKeywords": [
+      "taille haie batterie",
+      "taille haie perche",
+      "taille haie sur perche",
+      "taille haie stihl batterie",
+      "taille haie parkside",
+      "taille haie à perche",
+      "stihl taille haie batterie"
+    ],
+    "clusterId": "jardin-bricolage-fr-taille-haie-thermique",
+    "publishedAt": "2026-05-10T19:28:50.931Z",
+    "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/lavor-nettoyeur-haute-pression/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "lavor nettoyeur haute pression",
+    "secondaryKeywords": [
+      "meilleur nettoyeur haute pression",
+      "nettoyeur thermique haute pression",
+      "nettoyeur haute pression sur batterie",
+      "nettoyeur haute pression batterie",
+      "nettoyeur haute pression 200 bars",
+      "location nettoyeur haute pression",
+      "stihl nettoyeur haute pression"
+    ],
+    "clusterId": "jardin-bricolage-fr-lavor-nettoyeur-haute-pression",
+    "publishedAt": "2026-05-10T21:12:33.042Z",
+    "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/guides/brico-depot-nettoyeur-haute-pression/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "brico depot nettoyeur haute pression",
+    "secondaryKeywords": [
+      "nettoyeur haute pression bosch",
+      "nettoyeur haute pression kranzle",
+      "meilleures nettoyeur haute pression",
+      "nettoyeur haute pression ryobi",
+      "nettoyeur eau chaude haute pression",
+      "lance nettoyeur haute pression",
+      "kranzle nettoyeur haute pression"
+    ],
+    "clusterId": "jardin-bricolage-fr-brico-depot-nettoyeur-haute-pression",
+    "publishedAt": "2026-05-10T21:14:04.859Z",
+    "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/taille-haie-thermique-perche/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "taille haie thermique perche",
+    "secondaryKeywords": [
+      "perche stihl taille haie",
+      "taille haie telescopique thermique",
+      "taille haie sur perche stihl",
+      "perche pour taille haie thermique",
+      "taille haie thermique telescopique",
+      "taille-haie télescopique thermique",
+      "taille haie a batterie"
+    ],
+    "clusterId": "jardin-bricolage-fr-taille-haie-thermique-perche",
+    "publishedAt": "2026-05-10T21:18:20.458Z",
+    "indexationStatus": "pending"
   }
 ]

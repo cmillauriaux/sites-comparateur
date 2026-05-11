@@ -3,9 +3,24 @@ import SiteLayout from './SiteLayout.astro';
 import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
 import SourceList from '../components/SourceList.astro';
 import ScoreBadge from '../components/ScoreBadge.astro';
+import AuthorBio from '../components/AuthorBio.astro';
 import siteConfig from 'virtual:site-config';
 import { i18n } from '@comparateur/config';
 const s = i18n(siteConfig.market);
+
+// E-E-A-T author signal. When `author` is configured in site.config.js, the
+// JSON-LD switches from publisher-only to a full Person author. Sites can
+// leave `author` undefined and ship as Organisation-authored.
+interface AuthorMeta { name: string; role: string; bio: string; photo?: string; linkedinUrl?: string; url?: string }
+const author = (siteConfig as { author?: AuthorMeta }).author;
+const authorSchema = author ? {
+  '@type': 'Person',
+  name: author.name,
+  jobTitle: author.role,
+  description: author.bio,
+  ...(author.photo ? { image: author.photo.startsWith('http') ? author.photo : `https://${siteConfig.domain}${author.photo}` } : {}),
+  ...(author.linkedinUrl || author.url ? { sameAs: [author.linkedinUrl, author.url].filter(Boolean) } : {}),
+} : null;
 
 const { article } = Astro.props;
 const data = article.data;
@@ -38,10 +53,11 @@ const articleSchema = {
     name: siteConfig.name,
     url: baseUrl,
   },
+  ...(authorSchema ? { author: authorSchema } : {}),
   ...(isReview && data.product && data.finalScore !== undefined ? {
     itemReviewed: { '@type': 'Product', name: data.product.name, brand: { '@type': 'Brand', name: data.product.developer ?? data.product.name } },
     reviewRating: { '@type': 'Rating', ratingValue: data.finalScore, bestRating: 10, worstRating: 0 },
-    author: { '@type': 'Organization', name: siteConfig.name },
+    ...(authorSchema ? {} : { author: { '@type': 'Organization', name: siteConfig.name } }),
   } : {}),
 };
 
@@ -57,7 +73,7 @@ const itemListSchema = isRoundup ? {
     position: i + 1,
     item: {
       '@type': 'Review',
-      author: { '@type': 'Organization', name: siteConfig.name },
+      author: authorSchema ?? { '@type': 'Organization', name: siteConfig.name },
       itemReviewed: {
         '@type': 'Product',
         name: p.name,
@@ -147,5 +163,7 @@ const faqSchema = (Array.isArray(data.faq) && data.faq.length > 0) ? {
     </div>
 
     <SourceList sources={data.sources} groundingScore={data.groundingScore} />
+
+    <AuthorBio />
   </article>
 </SiteLayout>

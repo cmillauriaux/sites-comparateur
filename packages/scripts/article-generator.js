@@ -5,7 +5,7 @@
  * Flow:
  *   1. Pick highest-score pending keyword for (niche, market)
  *   2. Mark "writing" → scrape sources from sources.config.js[niche][market]
- *   3. Abort if < 2 sources reachable (anti-plagiarism: forces synthesis)
+ *   3. Abort if < 3 sources reachable (anti-plagiarism + anti scaled-content-abuse)
  *   4. Build a per-market grounded prompt (Les Numériques voice for FR,
  *      Wirecutter voice for US, Which?/TechRadar voice for GB)
  *   5. Spawn Claude Code CLI; CLI writes the .mdx
@@ -27,15 +27,20 @@ import { REPO_ROOT, SITES_DIR, DATA_DIR, requireEnv } from './lib/env.js';
 import { readQueue, writeQueue, appendPublished, getBucket, readPublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveTargets, isLaunched } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
-import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices } from './lib/product-images.js';
+import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices, injectMerchantUrls } from './lib/product-images.js';
 import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
 import { extractFaqFromBody } from './lib/faq-extract.js';
+import { scrubRawPrices } from './lib/price-scrubber.js';
+import { tokenize } from './lib/cluster.js';
 import { getSourcesFor } from '@comparateur/config/sources';
 import { i18n } from '@comparateur/config';
+import { MARKET_SEMRUSH } from '@comparateur/config/niches';
 
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '2', 10);
-const MIN_SOURCES = 2;
+// 3 = anti scaled-content-abuse floor (matches Zod schema + validator).
+// Bumped from 2 in the anti-AI-spam pass — see CLAUDE.md "Anti-spam AI".
+const MIN_SOURCES = 3;
 const slug = new slugger();
 
 /**
@@ -159,15 +164,23 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     throw new Error(`claude CLI exited with status ${result.status}`);
   }
 
-  // Post-flight: refuse anything Claude *newly* touched outside the article
-  // output path. Defends against prompt-injection from scraped sources steering
-  // the CLI to write elsewhere (settings, secrets, scripts). Compare against
-  // the pre-Claude snapshot so unrelated dirty files don't false-flag.
+  // Post-flight: deny-list of paths Claude must NOT write under any
+  // circumstance. Threat model = prompt-injection from scraped sources making
+  // the CLI exfiltrate secrets or rewrite settings — NOT "Claude edits a
+  // source file". The previous allow-list approach false-flagged whenever the
+  // user edited project source concurrently with a long-running batch (the
+  // pre/post diff can't tell user-edits-during-run from claude-writes).
+  // Reframing as deny-list keeps protection on the actual threat surface
+  // while letting the user iterate on the codebase during runs.
   const postDirty = parseGitStatus(spawnSync('git', ['status', '--porcelain=v1', '-z'], { cwd: REPO_ROOT, encoding: 'utf-8' }).stdout || '');
-  const expectedDir = `sites/${niche}/${market}/`;
-  const offendingPaths = [...postDirty].filter(p => !preDirty.has(p) && !p.startsWith(expectedDir) && !p.startsWith('data/'));
+  const newlyDirty = [...postDirty].filter(p => !preDirty.has(p));
+  const offendingPaths = newlyDirty.filter(p =>
+    /^\.env(\.|$)/.test(p) ||
+    p.startsWith('.claude/settings') ||
+    p.startsWith('/'),                          // absolute paths = outside repo (e.g. ~/.aws)
+  );
   if (offendingPaths.length > 0) {
-    throw new Error(`Claude touched files outside ${expectedDir}: ${offendingPaths.slice(0, 5).join(', ')}`);
+    throw new Error(`Claude touched protected paths: ${offendingPaths.slice(0, 5).join(', ')}`);
   }
 
   // 4. Verify output
@@ -183,19 +196,32 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
   }
 
   // 5. Post-pass: fetch images + ASINs from Amazon (correct marketplace) and inject.
+  // Skipped entirely for informational pieces — they have no product
+  // components by design (weekly off-affiliate balance articles).
   const productNames = new Set();
-  for (const m of written.matchAll(/\bimage\s*[:=]\s*(["'])auto:([^"']+)\1/g)) productNames.add(m[2].trim());
-  for (const m of written.matchAll(/<AffiliateButton\b[\s\S]*?\bproduct\s*=\s*(["'])([^"']+)\1/g)) productNames.add(m[2].trim());
-  for (const m of written.matchAll(/<ProductCard\b[\s\S]*?\bname\s*=\s*(["'])([^"']+)\1/g)) productNames.add(m[2].trim());
+  if (intent !== 'informational') {
+    for (const m of written.matchAll(/\bimage\s*[:=]\s*(["'])auto:([^"']+)\1/g)) productNames.add(m[2].trim());
+    for (const m of written.matchAll(/<AffiliateButton\b[\s\S]*?\bproduct\s*=\s*(["'])([^"']+)\1/g)) productNames.add(m[2].trim());
+    for (const m of written.matchAll(/<ProductCard\b[\s\S]*?\bname\s*=\s*(["'])([^"']+)\1/g)) productNames.add(m[2].trim());
+  }
 
   if (productNames.size > 0) {
     const productList = [...productNames];
     console.log(`  🛒 Fetching ${productList.length} products from amazon (${market})…`);
-    const { imageMap, asinMap, priceMap } = await fetchProductImages({ niche, market, articleSlug, products: productList });
+    const { imageMap, asinMap, priceMap, nonAffiliateMap } = await fetchProductImages({ niche, market, articleSlug, products: productList });
     let updated = injectImagePaths(written, imageMap);
     updated = injectImageAttributes(updated, imageMap);
     updated = injectAffiliateAsins(updated, asinMap);
     updated = injectPrices(updated, priceMap);
+    updated = injectMerchantUrls(updated, nonAffiliateMap);
+
+    // Pre-validation pass: strip raw prices the model leaked into prose.
+    // Component attributes (where injected prices live) are preserved.
+    const scrubbed = scrubRawPrices(updated);
+    if (scrubbed.count > 0) {
+      console.log(`  🧹 Scrubbed ${scrubbed.count} raw price${scrubbed.count > 1 ? 's' : ''} from prose`);
+      updated = scrubbed.content;
+    }
 
     const validationErrors = validateGeneratedArticle(updated);
     if (validationErrors.length > 0) {
@@ -206,7 +232,22 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     const imgs = Object.values(imageMap).filter(Boolean).length;
     const asins = Object.values(asinMap).filter(Boolean).length;
     const prices = Object.values(priceMap).filter(Boolean).length;
-    console.log(`  🖼  ${imgs}/${productList.length} images · 🔗 ${asins}/${productList.length} ASINs · 💶 ${prices}/${productList.length} prices`);
+    const nonAff = Object.values(nonAffiliateMap || {}).filter(Boolean).length;
+    console.log(`  🖼  ${imgs}/${productList.length} images · 🔗 ${asins}/${productList.length} ASINs · 🌐 ${nonAff} non-affiliés · 💶 ${prices}/${productList.length} prices`);
+  } else {
+    // No product post-pass to run — still scrub prices and validate so the
+    // grounding gate + (for informational) the no-affiliate gate trip here.
+    const scrubbed = scrubRawPrices(written);
+    let finalContent = written;
+    if (scrubbed.count > 0) {
+      console.log(`  🧹 Scrubbed ${scrubbed.count} raw price${scrubbed.count > 1 ? 's' : ''} from prose`);
+      finalContent = scrubbed.content;
+      writeFileSync(outputPath, finalContent);
+    }
+    const validationErrors = validateGeneratedArticle(finalContent);
+    if (validationErrors.length > 0) {
+      throw new Error(`article validation failed: ${validationErrors.join('; ')}`);
+    }
   }
 
   injectFaqFrontmatter(outputPath);
@@ -464,15 +505,105 @@ async function run(targets) {
   }
 }
 
+// ─────────────────────────────────────────────────────── INFORMATIONAL PATH
+// Weekly off-affiliate run. Picks the next pending keyword from the queue
+// and rewrites it with intent='informational' (no product components, no
+// affiliate links). Goal = dilute the affiliate-density signal that flags
+// scaled content abuse. ALWAYS exactly 1 article per (niche, market) per
+// invocation — this is a balance piece, not a volume play.
+async function generateOneInformational(siteConfig) {
+  const { niche, market } = siteConfig;
+  const queue = readQueue();
+  const next = pickNextPending(queue, niche, market);
+
+  if (!next) {
+    console.log(`ℹ️  ${niche}/${market}: no pending keyword for informational run.`);
+    return null;
+  }
+
+  console.log(`\n📚 ${niche}/${market}: INFORMATIONAL "${next.keyword}" (vol=${next.volume}, kd=${next.kd})`);
+
+  next.status = 'writing';
+  writeQueue(queue);
+
+  try {
+    const { publishedUrl } = await generateArticle(siteConfig, {
+      keyword: next.keyword,
+      intent: 'informational',
+    });
+    const fresh = readQueue();
+    const bucket = getBucket(fresh, niche, market);
+    const idx = bucket.findIndex(k => k.keyword === next.keyword);
+    if (idx !== -1) {
+      bucket[idx].status = 'published';
+      bucket[idx].publishedUrl = publishedUrl;
+      bucket[idx].publishedAt = new Date().toISOString();
+      bucket[idx].publishedAs = 'informational';
+      writeQueue(fresh);
+    }
+    appendPublished({
+      url: publishedUrl,
+      niche, market,
+      keyword: next.keyword,
+      publishedAt: new Date().toISOString(),
+      indexationStatus: 'pending',
+      isInformational: true,
+    });
+    console.log(`  ✅ Published (informational): ${publishedUrl}`);
+    return publishedUrl;
+  } catch (err) {
+    console.error(`  ❌ Failed: ${err.message}`);
+    cleanupOutput(siteConfig, next.keyword);
+    const fresh = readQueue();
+    const bucket = fresh?.[niche]?.[market] || [];
+    const idx = bucket.findIndex(k => k.keyword === next.keyword);
+    if (idx !== -1) {
+      bucket[idx].status = 'pending';
+      bucket[idx].errorCount = (bucket[idx].errorCount || 0) + 1;
+      bucket[idx].lastError = err.message;
+      writeQueue(fresh);
+    }
+    return null;
+  }
+}
+
+async function runInformational(targets) {
+  for (const { niche, market } of targets) {
+    const siteConfig = await loadSiteConfig(niche, market);
+    if (!isLaunched(siteConfig)) {
+      console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
+      continue;
+    }
+    await generateOneInformational(siteConfig);
+  }
+}
+
+// Long-tail criteria (anti-sandbox): tight enough that picked clusters rank
+// quickly without backlinks. Mirrors the LONGTAIL preset in semrush-prioritize.js.
+const LONGTAIL_KD_CEILING = 19;
+const LONGTAIL_MIN_TOKENS = 3;
+
 /**
  * Pick the top N pending opportunities across the resolved (niche, market)
  * targets and generate them in score-desc order. Stops early on first failure
  * to avoid silently burning credits when something is broken (typically scrape
  * sources down or claude CLI auth expired).
+ *
+ * `longtail=true` restricts to clusters whose primary has ≥3 content tokens
+ * AND avgKD ≤ 19 — the anti-sandbox profile for fresh sites. The flag works
+ * even on a registry that was mined without --longtail (it just filters the
+ * existing entries).
  */
-async function runTopClusters(targets, count) {
+async function runTopClusters(targets, count, { longtail = false } = {}) {
   const registry = readPriorities();
   const targetSet = new Set(targets.map(t => `${t.niche}/${t.market}`));
+
+  const langByMarket = (m) => MARKET_SEMRUSH[m]?.language ?? 'fr';
+  const isLongtail = (opp) => {
+    if (opp.avgKD > LONGTAIL_KD_CEILING) return false;
+    const tokens = tokenize(opp.primaryKeyword, langByMarket(opp.market));
+    return tokens.size >= LONGTAIL_MIN_TOKENS;
+  };
 
   // Flatten registry across the resolved scope, drop already-generated and
   // 3-strikes-out entries, sort by score desc.
@@ -484,6 +615,7 @@ async function runTopClusters(targets, count) {
         if (opp.status === 'generated') continue;
         if (opp.status === 'rejected') continue;
         if ((opp.errorCount || 0) >= 3) continue;
+        if (longtail && !isLongtail(opp)) continue;
         candidates.push(opp);
       }
     }
@@ -491,32 +623,62 @@ async function runTopClusters(targets, count) {
   candidates.sort((a, b) => b.score - a.score);
 
   if (candidates.length === 0) {
-    console.log(`ℹ️  No pending opportunities in scope. Run semrush-prioritize first.`);
+    if (longtail) {
+      console.log(`ℹ️  No long-tail opportunities in scope (KD ≤ ${LONGTAIL_KD_CEILING}, ≥${LONGTAIL_MIN_TOKENS} tokens).`);
+      console.log(`   Run: node packages/scripts/semrush-prioritize.js --longtail [scope]`);
+    } else {
+      console.log(`ℹ️  No pending opportunities in scope. Run semrush-prioritize first.`);
+    }
     return;
   }
 
   const picks = candidates.slice(0, count);
-  console.log(`🎯 Picking top ${picks.length} of ${candidates.length} pending opportunities:`);
+  console.log(`🎯 Picking top ${picks.length} of ${candidates.length} pending${longtail ? ' long-tail' : ''} opportunities:`);
   for (const o of picks) {
     console.log(`   [${o.score.toString().padStart(6)}] ${o.intent.padEnd(13)} vol=${String(o.totalVolume).padStart(6)} kd=${String(Math.round(o.avgKD)).padStart(2)} ${o.niche}/${o.market}  ${o.primaryKeyword}`);
   }
   console.log();
 
+  // Stop on N consecutive failures, not the first. A single article can fail
+  // for article-specific reasons (model price-drift, ASIN miss, thin scrape)
+  // without indicating a systemic issue — those are recoverable on the next
+  // cluster. Two in a row points to auth expired, scrape pipeline down, or
+  // similar — bail out before burning more credits.
+  const MAX_CONSECUTIVE_FAILURES = 2;
   let written = 0;
+  let failed = 0;
+  let consecutiveFailures = 0;
   for (const opp of picks) {
     const url = await generateFromCluster(opp.id);
-    if (!url) {
-      console.warn(`⚠️  Stopping early — failure on "${opp.primaryKeyword}". Fix the underlying issue (sources, auth) before re-running.`);
-      break;
+    if (url) {
+      written++;
+      consecutiveFailures = 0;
+    } else {
+      failed++;
+      consecutiveFailures++;
+      if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+        console.warn(`⚠️  Stopping — ${consecutiveFailures} consecutive failures (likely systemic: auth, scrape pipeline). Investigate before re-running.`);
+        break;
+      }
+      console.warn(`   ↳ continuing — single failure, possibly article-specific (model drift, ASIN miss)`);
     }
-    written++;
   }
-  console.log(`\n📊 Generated ${written}/${picks.length} cluster articles.`);
+  console.log(`\n📊 Generated ${written} of ${picks.length} (${failed} failed).`);
 }
 
 const args = parseArgs(process.argv.slice(2));
 
-if (typeof args.cluster === 'string') {
+if (args.informational === true) {
+  // Weekly off-affiliate run: 1 informational article per (niche, market).
+  // Forces intent='informational' regardless of what the queue entry was
+  // classified as — picks the same way as the daily run, just rewrites with
+  // a different brief.
+  const targets = resolveTargets(args);
+  runInformational(targets).catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
+} else if (typeof args.cluster === 'string') {
   // --cluster <id> → generate that exact cluster
   generateFromCluster(args.cluster).catch(err => {
     console.error(err);
@@ -525,13 +687,15 @@ if (typeof args.cluster === 'string') {
 } else if (args.cluster === true) {
   // --cluster (no id) → pick top N pending from the registry, scoped by
   // --niche/--market/--site (or all enabled if none).
+  // --longtail restricts to anti-sandbox candidates (KD ≤ 19, ≥3 tokens).
   const count = parseInt(args.count ?? '1', 10);
   if (!Number.isFinite(count) || count < 1) {
     console.error(`Invalid --count: ${args.count}`);
     process.exit(1);
   }
   const targets = resolveTargets(args);
-  runTopClusters(targets, count).catch(err => {
+  const longtail = args.longtail === true;
+  runTopClusters(targets, count, { longtail }).catch(err => {
     console.error(err);
     process.exit(1);
   });

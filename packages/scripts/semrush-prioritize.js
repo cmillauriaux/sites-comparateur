@@ -37,12 +37,18 @@ import { readPublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveTargets, isLaunched } from './lib/site-config.js';
 import { detectIntent } from './lib/intent.js';
 import { fetchBroadMatch, normalizeRow } from './lib/semrush.js';
-import { clusterKeywords, summarizeCluster } from './lib/cluster.js';
+import { clusterKeywords, summarizeCluster, tokenize } from './lib/cluster.js';
 import { MARKET_SEMRUSH } from '@comparateur/config/niches';
 
 const PRIORITIES_PATH = resolve(DATA_DIR, 'semrush-priorities.json');
-const KD_CEILING = 29;            // "Easy" + "Very Easy" buckets in Semrush
-const VOLUME_FLOOR = 200;         // ROI threshold for affiliate articles
+
+// Two presets; the --longtail flag swaps from REGULAR to LONGTAIL.
+// LONGTAIL targets sandbox-evading queries: very-easy KD, modest volume the
+// big editors ignore, ≥ 3 content tokens so we don't cluster head terms.
+const PRESETS = {
+  regular: { kdCeiling: 29, volumeFloor: 200, volumeCeiling: null, minContentTokens: 0 },
+  longtail: { kdCeiling: 19, volumeFloor: 50,  volumeCeiling: 500,  minContentTokens: 3 },
+};
 const PER_SEED_LIMIT = 100;       // Semrush rows per seed call (cost = 100 × 20 = 2000 units)
 const KD_DEFAULT_WHEN_UNKNOWN = 30;
 const DEFAULT_MAX_UNITS = 100000;
@@ -109,13 +115,19 @@ function toOpportunity(cluster, niche, market) {
   };
 }
 
-async function mineOne(siteConfig, { maxUnits, noCache }) {
+async function mineOne(siteConfig, { maxUnits, noCache, preset }) {
   const { niche, market, keywords: kwConfig } = siteConfig;
   const semConf = MARKET_SEMRUSH[market];
   if (!semConf) throw new Error(`No Semrush database mapping for market ${market}`);
 
-  const minVolume = Math.max(VOLUME_FLOOR, kwConfig.minVolume ?? VOLUME_FLOOR);
-  console.log(`\n📊 ${niche}/${market}: mining Semrush (db=${semConf.database}, KD ≤ ${KD_CEILING}, vol ≥ ${minVolume})`);
+  // For the longtail preset we keep the configured volume floor low (50) even
+  // if the site config sets a higher minVolume — the whole point is to scoop
+  // up queries the site config's defaults would skip.
+  const minVolume = preset === PRESETS.longtail
+    ? preset.volumeFloor
+    : Math.max(preset.volumeFloor, kwConfig.minVolume ?? preset.volumeFloor);
+  const volRange = preset.volumeCeiling ? `${minVolume}-${preset.volumeCeiling}` : `≥${minVolume}`;
+  console.log(`\n📊 ${niche}/${market}: mining Semrush (db=${semConf.database}, KD ≤ ${preset.kdCeiling}, vol ${volRange}${preset.minContentTokens > 0 ? `, ≥${preset.minContentTokens} content tokens` : ''})`);
   console.log(`   ${kwConfig.seedKeywords.length} seeds, max ${PER_SEED_LIMIT} rows/seed → up to ${kwConfig.seedKeywords.length * PER_SEED_LIMIT * 20} units`);
 
   const allRows = [];
@@ -132,7 +144,8 @@ async function mineOne(siteConfig, { maxUnits, noCache }) {
         phrase: seed,
         database: semConf.database,
         minVolume,
-        maxKD: KD_CEILING,
+        maxKD: preset.kdCeiling,
+        maxVolume: preset.volumeCeiling,
         limit: PER_SEED_LIMIT,
         noCache,
       });
@@ -153,9 +166,21 @@ async function mineOne(siteConfig, { maxUnits, noCache }) {
   console.log(`  📥 ${allRows.length} rows total (${cachedHits}/${kwConfig.seedKeywords.length} cached, $cost ≈ ${totalCost} units)`);
 
   // Normalize → typed keywords
-  const normalized = allRows
+  let normalized = allRows
     .map(normalizeRow)
-    .filter(k => k.keyword && k.volume >= minVolume && k.kd <= KD_CEILING);
+    .filter(k => k.keyword && k.volume >= minVolume && k.kd <= preset.kdCeiling);
+  if (preset.volumeCeiling) normalized = normalized.filter(k => k.volume <= preset.volumeCeiling);
+
+  // Long-tail: drop head terms (≥ 3 content tokens required). Done client-side
+  // because Semrush has no "min word count" filter. Keeps the cluster primaries
+  // honest — a 2-token "robot tondeuse" should not be a long-tail primary even
+  // if it survived the volume cap.
+  const lang = semConf.language;
+  if (preset.minContentTokens > 0) {
+    const before = normalized.length;
+    normalized = normalized.filter(k => tokenize(k.keyword, lang).size >= preset.minContentTokens);
+    console.log(`  📏 ${normalized.length}/${before} rows pass min-${preset.minContentTokens}-tokens filter`);
+  }
 
   // Topic filter (keep cluster tight to the niche's vocabulary)
   const onTopic = normalized.filter(k => passesTopicFilter(k.keyword, kwConfig.topicTokens));
@@ -199,17 +224,17 @@ async function mineOne(siteConfig, { maxUnits, noCache }) {
   }
 
   // Cluster + score
-  const lang = semConf.language;
   const clusters = clusterKeywords(fresh, { lang, similarityThreshold: 0.4, minSharedTokens: 2, maxClusterSize: 7 });
   const opportunities = clusters
     .map(c => toOpportunity(c, niche, market))
+    .map(o => preset === PRESETS.longtail ? { ...o, longtail: true } : o)
     .sort((a, b) => b.score - a.score);
 
   console.log(`  📦 ${clusters.length} clusters built (${fresh.length - clusters.length} keywords merged as secondaries)`);
   return { opportunities, cost: totalCost };
 }
 
-async function run({ targets, maxUnits, noCache, topN }) {
+async function run({ targets, maxUnits, noCache, topN, preset }) {
   const registry = readPriorities();
   let totalCost = 0;
   const allFresh = [];
@@ -220,7 +245,7 @@ async function run({ targets, maxUnits, noCache, topN }) {
       console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
       continue;
     }
-    const { opportunities, cost } = await mineOne(siteConfig, { maxUnits: maxUnits - totalCost, noCache });
+    const { opportunities, cost } = await mineOne(siteConfig, { maxUnits: maxUnits - totalCost, noCache, preset });
     totalCost += cost;
 
     if (opportunities.length === 0) continue;
@@ -255,8 +280,9 @@ const targets = resolveTargets(args);
 const maxUnits = parseInt(args['max-units'] ?? DEFAULT_MAX_UNITS, 10);
 const noCache = args['no-cache'] === true;
 const topN = parseInt(args['top'] ?? 15, 10);
+const preset = args.longtail === true ? PRESETS.longtail : PRESETS.regular;
 
-run({ targets, maxUnits, noCache, topN }).catch(err => {
+run({ targets, maxUnits, noCache, topN, preset }).catch(err => {
   console.error(err);
   process.exit(1);
 });

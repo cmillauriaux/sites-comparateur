@@ -49,6 +49,9 @@ const strings = {
     sourcesBlurb:   (n, score) =>
       `Cet article s'appuie sur ${n} sources vérifiées${score ? ` (couverture : ${score})` : ''}. Toutes les informations factuelles (prix, specs, classements) en proviennent.`,
 
+    // AuthorBio
+    authorByline:   'Rédigé par',
+
     // AffiliateDisclosure
     disclosureLabel: "Liens d'affiliation",
     disclosureBody:  "cette page contient des liens d'affiliation. Si vous achetez via ces liens, nous percevons une commission sans surcoût pour vous. Notre éditorial reste indépendant.",
@@ -80,7 +83,7 @@ const strings = {
     pageComparisonsIntro:
       "Chaque comparatif commence par les critères de choix, présente brièvement chaque produit retenu, et se conclut par un tableau récapitulatif assorti d'une recommandation finale.",
     pageReviewsIntro:
-      'Chaque sélection est appuyée par au minimum 2 sources vérifiées. La note éditoriale est une moyenne pondérée selon nos critères de sélection.',
+      'Chaque sélection est appuyée par au minimum 3 sources vérifiées. La note éditoriale est une moyenne pondérée selon nos critères de sélection.',
     noComparisons:   'Aucun comparatif publié pour le moment.',
     noReviews:       'Aucun test publié pour le moment.',
     noGuides:        'Aucun guide publié pour le moment.',
@@ -117,6 +120,8 @@ const strings = {
     sourcesBlurb:    (n, score) =>
       `This article draws on ${n} verified sources${score ? ` (coverage: ${score})` : ''}. All factual claims (prices, specs, rankings) come from them.`,
 
+    authorByline:    'Written by',
+
     disclosureLabel: 'Affiliate disclosure',
     disclosureBody:  'this page contains affiliate links. If you purchase through these links we earn a commission at no extra cost to you. Our editorial coverage stays independent.',
 
@@ -145,7 +150,7 @@ const strings = {
     pageComparisonsIntro:
       'Each roundup opens with the buying criteria, briefly presents every product we kept, and closes with a summary table and our final pick.',
     pageReviewsIntro:
-      'Every editor’s pick is backed by at least 2 verified sources. The editorial score is a weighted average across our selection criteria.',
+      'Every editor’s pick is backed by at least 3 verified sources. The editorial score is a weighted average across our selection criteria.',
     noComparisons:   'No roundups published yet.',
     noReviews:       'No reviews published yet.',
     noGuides:        'No guides published yet.',
@@ -182,6 +187,8 @@ const strings = {
     sourcesBlurb:    (n, score) =>
       `This article draws on ${n} verified sources${score ? ` (coverage: ${score})` : ''}. All factual claims (prices, specs, rankings) come from them.`,
 
+    authorByline:    'Written by',
+
     disclosureLabel: 'Affiliate disclosure',
     disclosureBody:  'this page contains affiliate links. If you buy through these links we earn a commission at no extra cost to you. Our editorial coverage remains independent.',
 
@@ -210,7 +217,7 @@ const strings = {
     pageComparisonsIntro:
       'Each comparison opens with the buying criteria, briefly presents every product we kept, and closes with a summary table and our final pick.',
     pageReviewsIntro:
-      'Every editor’s pick is backed by at least 2 verified sources. The editorial score is a weighted average across our selection criteria.',
+      'Every editor’s pick is backed by at least 3 verified sources. The editorial score is a weighted average across our selection criteria.',
     noComparisons:   'No comparisons published yet.',
     noReviews:       'No reviews published yet.',
     noGuides:        'No guides published yet.',

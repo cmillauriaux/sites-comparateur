@@ -15,6 +15,7 @@ import { dirname, resolve, join } from 'node:path';
 import slugger from 'github-slugger';
 import { fetchWithBrowser } from './browser.js';
 import { SITES_DIR } from './env.js';
+import { findGoogleShoppingProduct } from './google-shopping.js';
 
 const slug = new slugger();
 
@@ -240,6 +241,27 @@ function buildModelIdFallbacks(productName) {
   return [withBrand, skuOnly].filter((v, i, a) => v && a.indexOf(v) === i);
 }
 
+/**
+ * Progressive shortening fallback for product names where buildModelIdQuery
+ * misses (consumer brand families with no SKU-style suffix):
+ *   "Lavor Galaxy 160" → ["Lavor Galaxy"]
+ *   "Bosch Professional GST 18 V-Li S" → ["Bosch Professional GST 18 V-Li", "Bosch Professional GST 18", "Bosch Professional GST", "Bosch Professional"]
+ *   "Karcher K5 Premium Full Control" → ["Karcher K5 Premium Full", "Karcher K5 Premium", "Karcher K5"]
+ *
+ * Returns longest-first so we prefer specific matches (less generic noise).
+ * Stops at brand+1 word — anything shorter is too generic and would match
+ * accessories/related products.
+ */
+function buildShortenedNameFallbacks(productName) {
+  const words = productName.trim().split(/\s+/).filter(Boolean);
+  if (words.length < 3) return [];          // already short enough; nothing to shorten
+  const fallbacks = [];
+  for (let len = words.length - 1; len >= 2; len--) {
+    fallbacks.push(words.slice(0, len).join(' '));
+  }
+  return fallbacks;
+}
+
 function buildModelIdQuery(productName) {
   // Find the longest contiguous "model id" run in the original string. A model
   // id run is one of:
@@ -387,13 +409,24 @@ function readSidecar(jsonPath, asinPath) {
   if (existsSync(jsonPath)) {
     try {
       const data = JSON.parse(readFileSync(jsonPath, 'utf-8'));
-      return { asin: data.asin ?? null, price: data.price ?? null, fetchedAt: data.fetchedAt ?? null };
+      return {
+        asin: data.asin ?? null,
+        price: data.price ?? null,
+        fetchedAt: data.fetchedAt ?? null,
+        // Non-Amazon merchant fallback (Google Shopping path). null when the
+        // sidecar predates the fallback feature OR when the product resolved
+        // on Amazon (no need for fallback metadata).
+        nonAffiliate: data.nonAffiliate ?? null,
+      };
     } catch { /* fall through */ }
   }
   if (existsSync(asinPath)) {
-    return { asin: readFileSync(asinPath, 'utf-8').trim() || null, price: null, fetchedAt: null };
+    return {
+      asin: readFileSync(asinPath, 'utf-8').trim() || null,
+      price: null, fetchedAt: null, nonAffiliate: null,
+    };
   }
-  return { asin: null, price: null, fetchedAt: null };
+  return { asin: null, price: null, fetchedAt: null, nonAffiliate: null };
 }
 
 /**
@@ -410,6 +443,12 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
   const imageMap = {};
   const asinMap = {};
   const priceMap = {};
+  // nonAffiliateMap[name] = { merchantUrl, merchant } when Amazon search missed
+  // and Google Shopping found a non-Amazon listing. The renderer (AffiliateButton)
+  // uses these to swap into outline-style "Voir sur <merchant>" buttons that
+  // bypass the Amazon affiliate program — they read as outbound clicks in
+  // analytics, which dilutes the "scaled-affiliate-spam" signal.
+  const nonAffiliateMap = {};
   const publicDir = resolve(SITES_DIR, niche, market, 'public/images/products', articleSlug);
 
   for (const productName of products) {
@@ -423,10 +462,11 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
     // caches (or legacy .asin-only) trigger a re-fetch so we get a current price.
     if (existsSync(localPath) && existsSync(jsonSidecar)) {
       if (verbose) console.log(`    📷 cached: ${productName}`);
-      const { asin, price } = readSidecar(jsonSidecar, legacyAsinSidecar);
+      const { asin, price, nonAffiliate } = readSidecar(jsonSidecar, legacyAsinSidecar);
       imageMap[productName] = publicPath;
       asinMap[productName] = asin;
       priceMap[productName] = price;
+      if (nonAffiliate) nonAffiliateMap[productName] = nonAffiliate;
       continue;
     }
 
@@ -436,10 +476,23 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
       // narrower → narrower:
       //   1. brand + sku (e.g. "Stihl RE 100" from "Stihl RE 100 Plus Control")
       //   2. sku alone   (e.g. "DCD999" from "DeWalt DCD999")
+      //   3. progressive shortening — drop trailing words one at a time
+      //      (e.g. "Lavor Galaxy 160" → "Lavor Galaxy"). Catches consumer
+      //      brand families where the model id isn't SKU-shaped.
       // The narrower query forces Amazon's relevance ranker to put the SKU's
       // own listing first instead of "drills compatible with DCD999" noise.
       if (!result.asin) {
-        const fallbacks = buildModelIdFallbacks(productName).filter(q => q && q.toLowerCase() !== productName.toLowerCase());
+        const seen = new Set([productName.toLowerCase()]);
+        const dedup = (q) => {
+          const k = q?.toLowerCase();
+          if (!k || seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        };
+        const fallbacks = [
+          ...buildModelIdFallbacks(productName),
+          ...buildShortenedNameFallbacks(productName),
+        ].filter(dedup);
         for (const fallback of fallbacks) {
           if (verbose) console.log(`    🔁 fallback query: "${fallback}"`);
           const retry = await findAmazonProduct(fallback, { market });
@@ -452,7 +505,50 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
       const { imageUrl, asin, price, title, matchScore, pickedIdx } = result;
 
       if (!imageUrl && !asin) {
-        if (verbose) console.warn(`    ⚠️  ${productName} — rejected (score=${matchScore?.toFixed(2) ?? '0.00'})`);
+        // Amazon exhausted. Try Google Shopping for a non-affiliate fallback —
+        // a niche brand that Amazon doesn't carry will often show up on a
+        // dedicated retailer (Manomano, Leroy Merlin, Castorama). Better a
+        // sourced non-affiliate link than an empty product card.
+        if (verbose) console.log(`    🌐 Amazon miss → Google Shopping fallback for "${productName}"`);
+        let gsMatch = null;
+        try {
+          gsMatch = await findGoogleShoppingProduct({ productName, market });
+        } catch (err) {
+          if (verbose) console.warn(`    ⚠️  Google Shopping failed: ${err.message}`);
+        }
+
+        if (gsMatch) {
+          // Download the merchant's product image so it's served from our own
+          // public/images path (same caching/CDN behaviour as Amazon images).
+          if (gsMatch.imageUrl && !existsSync(localPath)) {
+            mkdirSync(publicDir, { recursive: true });
+            try {
+              await downloadTo(gsMatch.imageUrl, localPath);
+            } catch (err) {
+              if (verbose) console.warn(`    ⚠️  image download failed: ${err.message}`);
+            }
+          }
+          imageMap[productName] = existsSync(localPath) ? publicPath : null;
+          asinMap[productName] = null;
+          priceMap[productName] = gsMatch.price;
+          nonAffiliateMap[productName] = {
+            merchantUrl: gsMatch.merchantUrl,
+            merchant: gsMatch.merchant,
+          };
+          mkdirSync(publicDir, { recursive: true });
+          writeFileSync(jsonSidecar, JSON.stringify({
+            asin: null,
+            price: gsMatch.price,
+            title: gsMatch.title,
+            matchScore: gsMatch.matchScore,
+            nonAffiliate: { merchantUrl: gsMatch.merchantUrl, merchant: gsMatch.merchant },
+            fetchedAt: new Date().toISOString(),
+          }, null, 2));
+          if (verbose) console.log(`    ✅ ${productName} → ${gsMatch.merchant} (price=${gsMatch.price ?? '–'})`);
+          continue;
+        }
+
+        if (verbose) console.warn(`    ⚠️  ${productName} — rejected (Amazon score=${matchScore?.toFixed(2) ?? '0.00'}, no Google Shopping match)`);
         imageMap[productName] = null;
         asinMap[productName] = null;
         priceMap[productName] = null;
@@ -493,7 +589,7 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
     }
   }
 
-  return { imageMap, asinMap, priceMap };
+  return { imageMap, asinMap, priceMap, nonAffiliateMap };
 }
 
 /**
@@ -599,4 +695,22 @@ export function injectImageAttributes(markdown, imageMap) {
  *  doesn't display price. */
 export function injectPrices(markdown, priceMap) {
   return injectAttributeByProductName(markdown, 'price', priceMap, { onAffiliateButton: false });
+}
+
+/** Inject `merchantUrl="..."` and `merchant="..."` for products that resolved
+ *  via the Google Shopping fallback (Amazon ASIN missing). Both ProductCard
+ *  AND AffiliateButton receive the attrs — AffiliateButton uses them to
+ *  switch into outline non-affiliate mode, ProductCard uses them to relabel
+ *  the price tile ("Prix sur Manomano" instead of "Prix Amazon"). */
+export function injectMerchantUrls(markdown, nonAffiliateMap) {
+  if (!nonAffiliateMap || Object.keys(nonAffiliateMap).length === 0) return markdown;
+  const urlMap = {};
+  const merchantMap = {};
+  for (const [name, na] of Object.entries(nonAffiliateMap)) {
+    if (na?.merchantUrl) urlMap[name] = na.merchantUrl;
+    if (na?.merchant) merchantMap[name] = na.merchant;
+  }
+  let out = injectAttributeByProductName(markdown, 'merchantUrl', urlMap, { onAffiliateButton: true });
+  out = injectAttributeByProductName(out, 'merchant', merchantMap, { onAffiliateButton: true });
+  return out;
 }

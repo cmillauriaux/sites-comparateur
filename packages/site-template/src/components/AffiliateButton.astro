@@ -1,8 +1,18 @@
 ---
 /**
- * Bouton CTA d'affiliation. Construit le href automatiquement quand `product`
- * est fourni et qu'aucun href n'est passé : URL Amazon de la marketplace du
- * site (lu depuis site.config.js) avec ASIN + tag + paramètres SiteStripe.
+ * Bouton CTA d'affiliation. Deux modes :
+ *
+ *   1. Affilié (défaut) — Amazon de la marketplace du site, href construit
+ *      depuis ASIN/query + tag + SiteStripe params. Bouton plein, attribut
+ *      `data-affiliate` → l'event Umami est `affiliate-click`.
+ *
+ *   2. Non affilié — déclenché quand le post-pass `article-generator` a
+ *      fourni un `merchantUrl` (Amazon a manqué le produit, Google Shopping
+ *      a trouvé un retailer alternatif). Bouton outline (bordure verte), pas
+ *      de `data-affiliate` → l'event Umami passe en `outbound-click`. Le
+ *      style + l'absence de `rel=sponsored` signalent au lecteur ET à Google
+ *      qu'on n'est PAS rémunéré sur ce clic, ce qui dilue le signal
+ *      "scaled-affiliate-spam" sur le site dans son ensemble.
  *
  * Awin est désactivé tant qu'aucun ID Awin n'est configuré dans .env. Si
  * `program="awin-..."` est passé sans advertiserId, on retombe sur Amazon.
@@ -17,28 +27,52 @@ interface Props {
   asin?: string;
   program?: string;
   variant?: 'primary' | 'secondary';
+  // Non-affiliate fallback — set by the post-pass when Amazon couldn't
+  // resolve the product but Google Shopping found a retailer link.
+  merchantUrl?: string;
+  merchant?: string;
 }
 const market: 'fr' | 'us' | 'gb' = siteConfig.market;
-const { href, product, asin, program = `amazon-${market}`, variant = 'primary' } = Astro.props;
+const { href, product, asin, program = `amazon-${market}`, variant = 'primary', merchantUrl, merchant } = Astro.props;
 
-const tagEnvKey = `AMAZON_AFFILIATE_ID_${market.toUpperCase()}`;
-const amazonTag = import.meta.env[tagEnvKey] || process.env[tagEnvKey] || '';
-const finalHref = href || buildAmazonUrl({ asin, query: product, market, tag: amazonTag });
-const label = i18n(market).viewOnAmazon;
+const isNonAffiliate = Boolean(merchantUrl);
+let finalHref: string;
+let finalVariant: 'primary' | 'secondary';
+let label: string;
+let rel: string;
+let dataAffiliate: string | undefined;
+
+if (isNonAffiliate) {
+  finalHref = merchantUrl!;
+  finalVariant = 'secondary';                      // outline → visually distinct from monetised CTAs
+  rel = 'nofollow noopener';                       // intentionally NO `sponsored` — we're not paid
+  dataAffiliate = undefined;                       // omit attr → Umami fires `outbound-click` instead
+  const merchantLabel = merchant || new URL(finalHref).hostname.replace(/^www\./, '');
+  label = market === 'fr' ? `Voir sur ${merchantLabel}` : `View on ${merchantLabel}`;
+} else {
+  const tagEnvKey = `AMAZON_AFFILIATE_ID_${market.toUpperCase()}`;
+  const amazonTag = import.meta.env[tagEnvKey] || process.env[tagEnvKey] || '';
+  finalHref = href || buildAmazonUrl({ asin, query: product, market, tag: amazonTag });
+  finalVariant = variant;
+  rel = 'sponsored nofollow noopener';
+  dataAffiliate = program;
+  label = i18n(market).viewOnAmazon;
+}
 ---
 <a
   href={finalHref}
-  rel="sponsored nofollow noopener"
+  rel={rel}
   target="_blank"
-  data-affiliate={program}
+  data-affiliate={dataAffiliate}
   data-product={product}
+  data-merchant={isNonAffiliate ? merchant : undefined}
   class:list={[
     "inline-flex items-center gap-2 rounded-md px-5 py-3 font-semibold text-center no-underline transition-colors",
-    variant === 'primary'
+    finalVariant === 'primary'
       ? "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]"
-      : "border-2 border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white",
+      : "border-2 border-[var(--color-primary)] bg-white text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white",
   ]}
 >
-  <slot>{label}{product ? ` — ${product}` : ''}</slot>
+  <slot>{label}{!isNonAffiliate && product ? ` — ${product}` : ''}</slot>
   <span aria-hidden="true">→</span>
 </a>

@@ -133,13 +133,73 @@ AMAZON_AFFILIATE_ID_GB
 
 Add these to the brief's [section 8](claude-code-guide-affiliation-sites.md) secrets list. The legacy `AMAZON_AFFILIATE_ID` (no suffix) is retired — `buildAmazonUrl` only reads `AMAZON_AFFILIATE_ID_<MARKET>`.
 
+## Anti-spam AI — what the pipeline enforces and what stays manual
+
+Google's scaled-content-abuse classifier (March 2024 spam policy, integrated
+into the core ranking system since the Helpful Content System merge) doesn't
+detect AI stylistically — it detects behavioural and structural patterns. The
+pipeline enforces several signals automatically; a few stay on the operator's
+shoulders. Read this before changing anything related to article generation,
+cadence, or affiliation density.
+
+### Enforced by the pipeline
+
+- **Grounding floor = 3 sources minimum.** Triple-gated: `MIN_SOURCES = 3` in
+  [article-generator.js](packages/scripts/article-generator.js) aborts the
+  scrape early; `validateGeneratedArticle` parses `groundingScore: "X/Y"` in
+  the frontmatter and rejects when `X < 3`; the Zod schema in
+  [content.config.ts](packages/site-template/src/content.config.ts) enforces
+  `sources.min(3)` at build time so a hand-edited article also fails CI. Do
+  not lower this without removing all three gates simultaneously.
+- **Affiliate density = ≤3 CTAs per affiliate article + 0 on informational
+  pieces.** The validator counts `<AffiliateButton>` + `<ProductCard>` and
+  fails on < 3. The informational branch (intent=`informational`) inverts the
+  rule: any affiliate component leaks fail the article.
+- **Weekly off-affiliate piece per (niche, market).** Driven by
+  [.github/workflows/weekly-informational.yml](.github/workflows/weekly-informational.yml)
+  → `article-generator.js --informational`. One pure-info article per site
+  per Tuesday. This is the dilution lever — do not silently turn it off.
+- **Structural variability rules in the prompt.** [prompts.js](packages/scripts/lib/prompts.js)
+  asks the model for a 1500-3200 word range, 4-6 criteria (not always the
+  same count), 3-5 FAQ items, and forbids recurring boilerplate openings/
+  closings. These are advisory to the model — not validator-enforced — but
+  removing them measurably regresses pattern variability.
+- **JSON-LD `author: Person` when `site.config.js#author` is set.** The
+  ArticleLayout switches the author from Organisation to Person (with
+  `sameAs: linkedinUrl`) and renders the AuthorBio block. Sites without an
+  `author` block ship as Organisation-authored — fine pre-launch, weak
+  E-E-A-T post-launch.
+
+### Manual operator responsibilities
+
+- **Cadence pre-launch.** When seeding a brand-new (niche, market) before
+  pointing GSC at it, NEVER bulk-publish 50 articles in one commit with
+  identical `publishedAt`. Stage the backlog and rewrite `publishedAt` so
+  dates spread realistically over the prior weeks (e.g. 1-2 articles/day
+  going back 4-8 weeks). A burst of identical timestamps is the cleanest
+  signal of programmatic generation. Same for `updatedAt` — leave it equal
+  to `publishedAt` until you genuinely re-edit. Use `git filter-branch` /
+  `rebase` only on local backlog imports, never on already-pushed history.
+- **Post-launch cadence.** `MAX_ARTICLES_PER_RUN=2` in the daily workflow
+  is the ceiling per (niche, market). Don't raise it. The weekly
+  informational adds +1/week per site. Total ceiling per site = ~16/week
+  worst case. Monitor GSC's Indexed/Submitted ratio weekly — if > 30% of
+  submissions sit in "Discovered – not indexed" past 4 weeks, halt the
+  daily run and investigate before resuming.
+- **Author bio integrity.** The `author` block in `site.config.js` is not
+  decorative — Google's quality raters click through to verify identity.
+  Once a `linkedinUrl` is set, it MUST resolve. Don't ship the URL until
+  the LinkedIn profile exists. See `TODO.md` for the open author tasks.
+- **Off-page diversification.** Backlinks and social mentions cannot be
+  automated by this repo. Tracked in `TODO.md`.
+
 ## Editorial line — non-negotiable
 
 Voice and depth: **Les Numériques** (lesnumeriques.com). Tone: expert, factual, neutral, French, no superlatives without evidence. Two and only two article types:
 
 ### Type 1 — Test (intent: `avis`, single product)
 
-- **Minimum 2 distinct sources** scraped before writing — this is anti-plagiarism, not a soft target. If only one source is reachable, abort the article (write `ERROR_INSUFFICIENT_SOURCES`, leave status `pending`, increment `errorCount`). Never paraphrase a single source.
+- **Minimum 3 distinct sources** scraped before writing — anti-plagiarism + anti scaled-content-abuse signal. If fewer than 3 are reachable, abort the article (write `ERROR_INSUFFICIENT_SOURCES`, leave status `pending`, increment `errorCount`). Never paraphrase a single source. The floor is enforced in three places (see "Anti-spam AI" above).
 - Required structure: H1 → intro → **specs/fiche technique** → sections per criterion (each with an **intermediate score `/10`**: e.g. *Performance*, *Ergonomie*, *Rapport qualité-prix*, *Autonomie/Bruit/whatever fits the niche*) → verdict with **a single final score `/10`** computed as a weighted average → pros/cons → conclusion.
 - The final score must be derived from the intermediate scores in frontmatter (`subscores: { performance: 8, ergonomie: 7, ... }`, `finalScore: 7.6`). Document the weighting once in the frontmatter so reviewers can audit. **Never invent a score** — anchor each one in a sourced statement.
 - **Affiliate placement**: the affiliate CTA must appear at least **3 times**: (1) right after the intro ("Voir le prix actuel"), (2) inside the specs/verdict block, (3) in the conclusion. Use the `<AffiliateButton>` component, not raw links. Each `<ProductCard>` counts as one affiliate button (it embeds one at render time) — `article-validator.js` enforces this.
@@ -226,11 +286,22 @@ When `--cluster` succeeds, the article-generator:
 
 Three invocation modes:
 
-| Mode                                     | Behaviour                                                       |
-|------------------------------------------|-----------------------------------------------------------------|
-| `--cluster <id>`                         | Generate that exact opportunity by id                           |
-| `--cluster --count N` (+ optional scope) | Pick top N pending by score across resolved targets, stop on 1st failure |
-| (no `--cluster` flag)                    | Daily-pipeline mode — pulls from `keywords-queue.json`          |
+| Mode                                                | Behaviour                                                                  |
+|-----------------------------------------------------|----------------------------------------------------------------------------|
+| `--cluster <id>`                                    | Generate that exact opportunity by id                                      |
+| `--cluster --count N`                               | Pick top N pending by score across resolved targets, stop on 1st failure   |
+| `--cluster --count N --longtail`                    | Same, but only clusters with primary ≥3 content tokens AND avgKD ≤ 19      |
+| (no `--cluster` flag)                               | Daily-pipeline mode — pulls from `keywords-queue.json`                     |
+
+**Long-tail mode (anti-sandbox).** New sites get throttled by Google for 1-3
+months; targeting head terms during that window wastes effort. Use `--longtail`
+to pick clusters whose primary has ≥3 content tokens AND avgKD ≤ 19 — these
+rank in 2-6 weeks even without backlinks. Pair with the matching mine:
+`semrush-prioritize.js --longtail` swaps the preset to `KD ≤ 19, vol 50-500,
+≥3 content tokens` and tags new entries with `longtail: true`. The
+article-generator's filter works on ANY registry entry (not just `longtail:
+true`-tagged ones), so even regular-mined entries that happen to qualify get
+picked — re-mining isn't required to start.
 
 **Intent promotion is allowed.** `semrush-prioritize.js` classifies the cluster
 intent heuristically from the primary keyword (CPC + pattern match in
@@ -260,6 +331,7 @@ node packages/scripts/dataforseo-keywords.js                              # all 
 node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market fr
 node packages/scripts/semrush-prioritize.js --top 30                      # bigger leaderboard
 node packages/scripts/semrush-prioritize.js --no-cache                    # bypass disk cache
+node packages/scripts/semrush-prioritize.js --longtail                    # anti-sandbox preset: KD ≤ 19, vol 50-500, ≥3 tokens
 
 # Generate the next article(s) — env MAX_ARTICLES_PER_RUN limits per (niche, market)
 node packages/scripts/article-generator.js --niche jardin-bricolage --market fr
@@ -269,6 +341,10 @@ node packages/scripts/article-generator.js --cluster <id-from-priorities-json>
 # Stops early on first failure to avoid burning credits on a broken pipeline.
 node packages/scripts/article-generator.js --cluster --count 5
 node packages/scripts/article-generator.js --cluster --niche jardin-bricolage --market fr --count 3
+
+# Long-tail picker: only clusters with primary ≥3 content tokens AND avgKD ≤ 19.
+# Use this on a fresh site (anti-sandbox) before tackling head terms.
+node packages/scripts/article-generator.js --cluster --count 10 --longtail
 
 # Submit pending URLs to GSC (rate-limited to 1/s, daily cap 200). Optional scoping flags.
 node packages/scripts/gsc-indexing.js

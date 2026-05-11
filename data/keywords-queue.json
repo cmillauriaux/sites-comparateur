@@ -504,14 +504,16 @@
         "cpc": 0.34,
         "score": 291,
         "intent": "comparatif",
-        "status": "pending",
+        "status": "absorbed-by-cluster",
         "site": "jardin-bricolage",
         "createdAt": "2026-05-07T22:07:58.150Z",
         "publishedUrl": null,
         "publishedAt": null,
         "errorCount": 0,
         "niche": "jardin-bricolage",
-        "market": "fr"
+        "market": "fr",
+        "absorbedBy": "https://jardinguide.fr/avis/taille-haie-thermique/",
+        "absorbedAt": "2026-05-10T19:28:50.932Z"
       },
       {
         "keyword": "tondeuse debroussailleuse",
@@ -584,14 +586,16 @@
         "cpc": 0.27,
         "score": 273,
         "intent": "comparatif",
-        "status": "pending",
+        "status": "absorbed-by-cluster",
         "site": "jardin-bricolage",
         "createdAt": "2026-05-07T22:07:58.150Z",
         "publishedUrl": null,
         "publishedAt": null,
         "errorCount": 0,
         "niche": "jardin-bricolage",
-        "market": "fr"
+        "market": "fr",
+        "absorbedBy": "https://jardinguide.fr/avis/taille-haie-thermique/",
+        "absorbedAt": "2026-05-10T19:28:50.932Z"
       },
       {
         "keyword": "perceuse a colonne",
@@ -1032,14 +1036,16 @@
         "cpc": 0.28,
         "score": 151,
         "intent": "comparatif",
-        "status": "pending",
+        "status": "absorbed-by-cluster",
         "site": "jardin-bricolage",
         "createdAt": "2026-05-07T22:07:58.150Z",
         "publishedUrl": null,
         "publishedAt": null,
         "errorCount": 0,
         "niche": "jardin-bricolage",
-        "market": "fr"
+        "market": "fr",
+        "absorbedBy": "https://jardinguide.fr/avis/taille-haie-thermique/",
+        "absorbedAt": "2026-05-10T19:28:50.932Z"
       },
       {
         "keyword": "mini tronçonneuse",
@@ -1576,14 +1582,16 @@
         "cpc": 0.18,
         "score": 90,
         "intent": "informational",
-        "status": "pending",
+        "status": "absorbed-by-cluster",
         "site": "jardin-bricolage",
         "createdAt": "2026-05-07T22:07:58.150Z",
         "publishedUrl": null,
         "publishedAt": null,
         "errorCount": 0,
         "niche": "jardin-bricolage",
-        "market": "fr"
+        "market": "fr",
+        "absorbedBy": "https://jardinguide.fr/avis/taille-haie-thermique/",
+        "absorbedAt": "2026-05-10T19:28:50.932Z"
       },
       {
         "keyword": "coupe bordure parkside",

@@ -64,6 +64,21 @@ export default {
 
   affiliatePrograms: ['amazon-fr', 'awin-leroy-merlin', 'awin-mr-bricolage', 'awin-castorama'],
 
+  // Editorial author. Drives the AuthorBio block + JSON-LD `author: Person`
+  // (E-E-A-T signal — hands-on background backs the editorial voice). The
+  // bio MUST stay aligned with the LinkedIn profile referenced below; if the
+  // LinkedIn changes, update both.
+  // TODO: see TODO.md "Author bios — real LinkedIn profile" before launch.
+  // Until LinkedIn exists, keep `linkedinUrl` undefined so we don't ship a
+  // 404 link.
+  author: {
+    name: 'Marc Lefèvre',
+    role: "Rédacteur en chef — ancien paysagiste",
+    bio: "Quinze ans sur le terrain comme paysagiste indépendant en Île-de-France avant de passer côté rédaction. Spécialisé dans les outils de coupe thermiques, l'arrosage et l'aménagement extérieur. Ses sélections privilégient la durabilité et le SAV à long terme plutôt que les gadgets.",
+    photo: '/images/team/marc-lefevre.jpg',
+    // linkedinUrl: 'https://www.linkedin.com/in/marc-lefevre-paysagiste/',  // ← uncomment once the profile is live
+  },
+
   // Umami analytics — leave host/websiteId empty to disable on this site.
   // host = base URL of your Umami instance (no trailing slash, no /script.js).
   umami: {

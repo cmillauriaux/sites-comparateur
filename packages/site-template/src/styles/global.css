@@ -1,6 +1,16 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Tailwind v4 auto-detection follows the Vite module graph, but in this
+   monorepo the .astro components live under packages/site-template/src/ and
+   the per-site article .mdx files live under sites/<niche>/<market>/src/content/.
+   Without these @source globs, the dev/build CSS ends up with only 6
+   built-in utilities — every component class is purged. Globs are relative
+   to this CSS file (packages/site-template/src/styles/global.css). */
+@source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
+@source "../../../../sites/*/*/src/content/**/*.{md,mdx}";
+@source "../../../../sites/*/*/src/pages/**/*.{astro,html,md,mdx}";
+
 /* JardinGuide — vert jardin */
 :root {
   --color-primary:    #2d6a4f;

@@ -1,0 +1,109 @@
+name: Weekly Informational Article
+
+# Off-affiliate balance run. One pure-informational article per (niche,
+# market) per week — no <ProductCard>, no <AffiliateButton>, no Amazon
+# scrape. Goal: dilute the affiliate-density signal that triggers Google's
+# scaled-content-abuse classifier (March 2024 spam policy + Helpful Content
+# integration into core).
+#
+# Tuesday 09:00 UTC = clear of the daily run (07:00 UTC) and mid-week so a
+# build failure has Wed/Thu/Fri to be investigated before the weekend.
+
+on:
+  schedule:
+    - cron: '0 9 * * 2'    # Tuesday 09:00 UTC
+  workflow_dispatch:
+    inputs:
+      site:
+        description: 'siteId (<niche>-<market>) to run, or "all"'
+        required: false
+        default: all
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1   # serialize writes to data/keywords-queue.json
+      # Mirror packages/config/niches.js#ENABLED_SITES — same matrix as
+      # daily-articles.yml. Add a row here only when the daily row exists.
+      matrix:
+        include:
+          - { niche: jardin-bricolage, market: fr }
+          - { niche: jardin-bricolage, market: us }
+          - { niche: jardin-bricolage, market: gb }
+    env:
+      NICHE:  ${{ matrix.niche }}
+      MARKET: ${{ matrix.market }}
+      SITE:   ${{ matrix.niche }}-${{ matrix.market }}
+      MANUAL_SITE: ${{ github.event.inputs.site }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN || github.token }}
+
+      - name: Filter by manual input
+        run: |
+          if [ -n "$MANUAL_SITE" ] && [ "$MANUAL_SITE" != "all" ] && [ "$MANUAL_SITE" != "$SITE" ]; then
+            echo "Skipping $SITE (manual run targets $MANUAL_SITE)"
+            echo "SKIP=1" >> "$GITHUB_ENV"
+          fi
+
+      - if: env.SKIP != '1'
+        uses: pnpm/action-setup@v4
+        with: { version: 10 }
+
+      - if: env.SKIP != '1'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - if: env.SKIP != '1'
+        name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - if: env.SKIP != '1'
+        name: Install Playwright Chromium (for scraper browser fallback)
+        run: pnpm --filter ./packages/scripts exec playwright install --with-deps chromium
+
+      - if: env.SKIP != '1'
+        name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - if: env.SKIP != '1'
+        # Informational pieces share the same keyword queue as the daily run
+        # — no separate seeding. If the queue is empty we just skip the run
+        # rather than refilling (refill is the daily workflow's job).
+        name: Generate informational article
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: node packages/scripts/article-generator.js --niche "$NICHE" --market "$MARKET" --informational
+
+      - if: env.SKIP != '1'
+        name: Build site
+        run: pnpm --filter "./sites/$NICHE/$MARKET" build
+
+      - if: env.SKIP != '1'
+        name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken:  ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy sites/${{ matrix.niche }}/${{ matrix.market }}/dist --project-name=${{ matrix.niche }}-${{ matrix.market }} --branch=main
+
+      - if: env.SKIP != '1'
+        name: Commit data/ updates
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/ "sites/$NICHE/$MARKET/src/content/articles/"
+          git diff --staged --quiet || git commit -m "content: weekly informational $SITE"
+
+      - if: env.SKIP != '1'
+        name: Safe push (rebase + retry)
+        uses: ./.github/actions/safe-push

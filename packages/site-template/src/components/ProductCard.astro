@@ -14,12 +14,19 @@ interface Props {
   affiliateUrl?: string;
   asin?: string;
   program?: string;
-  price?: string;       // injecté par le pipeline depuis Amazon (ex: "89,99 €")
+  price?: string;       // injecté par le pipeline depuis Amazon OU Google Shopping (ex: "89,99 €")
   pros?: string[];
   cons?: string[];
+  // Non-affiliate fallback — set when the product couldn't be resolved on
+  // Amazon and the post-pass found it on a non-Amazon retailer via Google
+  // Shopping. Forwarded to AffiliateButton, which switches into outline-style
+  // "Voir sur <merchant>" mode and drops the affiliate tracking.
+  merchantUrl?: string;
+  merchant?: string;
 }
-const { name, score, description, image, imageAlt, affiliateUrl, asin, program, price, pros = [], cons = [] } = Astro.props;
+const { name, score, description, image, imageAlt, affiliateUrl, asin, program, price, pros = [], cons = [], merchantUrl, merchant } = Astro.props;
 const showImage = image && !image.startsWith('auto:');
+const priceLabel = merchant ? (siteConfig.market === 'fr' ? `Prix sur ${merchant}` : `Price at ${merchant}`) : s.amazonPriceLabel;
 ---
 <article class="not-prose my-8 rounded-lg border border-[var(--color-border)] bg-white p-5 shadow-sm">
   <div class="flex flex-wrap items-start gap-5">
@@ -36,7 +43,7 @@ const showImage = image && !image.startsWith('auto:');
         {score !== undefined && <ScoreBadge score={score} size="sm" label={s.scoreLabel} />}
         {price && (
           <div>
-            <p class="text-xs uppercase tracking-wide text-[var(--color-text-muted)] m-0">{s.amazonPriceLabel}</p>
+            <p class="text-xs uppercase tracking-wide text-[var(--color-text-muted)] m-0">{priceLabel}</p>
             <p class="text-lg font-semibold text-[var(--color-primary-dark)] m-0">{price}</p>
           </div>
         )}
@@ -68,6 +75,8 @@ const showImage = image && !image.startsWith('auto:');
       product={name}
       asin={asin}
       program={program}
+      merchantUrl={merchantUrl}
+      merchant={merchant}
     />
   </div>
 </article>

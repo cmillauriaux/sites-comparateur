@@ -30,7 +30,7 @@ const STOPWORDS_BY_LANG = {
   ]),
 };
 
-function tokenize(keyword, lang = 'fr') {
+export function tokenize(keyword, lang = 'fr') {
   const stopwords = STOPWORDS_BY_LANG[lang] ?? STOPWORDS_BY_LANG.fr;
   return new Set(
     keyword

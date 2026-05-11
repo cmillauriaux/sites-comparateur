@@ -36,6 +36,9 @@ The user may pass any of:
 - `--no-cache` — bypass the 14-day disk cache (rare, costs API units)
 - `--top <N>` — how many opportunities to print (default 15)
 - `--max-units <N>` — cap Semrush API spend in this run (default 100000)
+- `--longtail` — switch to anti-sandbox preset: KD ≤ 19, vol 50-500,
+  ≥3 content tokens. Use this on a fresh site to capture rankings within
+  2-6 weeks instead of fighting Google's sandbox on head terms.
 - `--generate <id>` — after mining, immediately spawn article-generator on
   this cluster id
 
@@ -78,6 +81,9 @@ grep -q '^SEMRUSH_API_KEY=..' .env && echo OK || echo MISSING
 
    ```bash
    node packages/scripts/article-generator.js --cluster <id>
+
+   # Or pick top N automatically (--longtail recommended on a fresh site):
+   node packages/scripts/article-generator.js --cluster --count 5 --longtail
    ```
 
    This invokes the same scrape → Claude Code CLI → image injection → FAQ

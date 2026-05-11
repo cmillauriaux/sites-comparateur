@@ -1,0 +1,53 @@
+---
+import siteConfig from 'virtual:site-config';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
+
+// Renders nothing if the site hasn't declared an author. Sites pre-launch
+// (no real LinkedIn yet) can leave `author` unset and ship without this
+// block.
+const author = (siteConfig as { author?: AuthorMeta }).author;
+interface AuthorMeta {
+  name: string;
+  role: string;
+  bio: string;
+  photo?: string;
+  linkedinUrl?: string;
+  url?: string;
+}
+---
+{author && (
+  <aside class="not-prose mt-10 flex gap-4 items-start p-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-hero-bg)]">
+    {author.photo ? (
+      <img
+        src={author.photo}
+        alt={author.name}
+        width="64"
+        height="64"
+        class="w-16 h-16 rounded-full object-cover flex-shrink-0"
+        loading="lazy"
+      />
+    ) : (
+      <div
+        class="w-16 h-16 rounded-full flex-shrink-0 bg-[var(--color-accent-light)] flex items-center justify-center text-xl font-semibold text-[var(--color-primary-dark)]"
+        aria-hidden="true"
+      >
+        {author.name.split(' ').map(p => p[0]).slice(0, 2).join('')}
+      </div>
+    )}
+    <div class="text-sm">
+      <p class="font-semibold text-[var(--color-primary-dark)] m-0">
+        {s.authorByline} <span>{author.name}</span>
+      </p>
+      <p class="text-[var(--color-text-muted)] m-0 mb-1">{author.role}</p>
+      <p class="m-0">{author.bio}</p>
+      {author.linkedinUrl && (
+        <p class="m-0 mt-2">
+          <a href={author.linkedinUrl} rel="noopener" target="_blank" class="text-[var(--color-primary)] hover:underline">
+            LinkedIn →
+          </a>
+        </p>
+      )}
+    </div>
+  </aside>
+)}

@@ -123,20 +123,25 @@ function buildDisplayFilter(clauses) {
  * @param {string}   opts.database    Semrush database code ('fr', 'us', 'uk')
  * @param {number}   opts.minVolume   Server-side volume floor (Nq > minVolume)
  * @param {number}   opts.maxKD       Server-side KD ceiling (Kd < maxKD)
+ * @param {number}   [opts.maxVolume] Server-side volume ceiling (Nq < maxVolume)
  * @param {number}   [opts.limit]     Row limit (default 100)
  * @param {boolean}  [opts.noCache]   Bypass cache
  * @returns {Promise<{rows: object[], cached: boolean, cost: number}>}
  */
-export async function fetchBroadMatch({ phrase, database, minVolume, maxKD, limit = DEFAULT_LIMIT, noCache = false }) {
+export async function fetchBroadMatch({ phrase, database, minVolume, maxKD, maxVolume = null, limit = DEFAULT_LIMIT, noCache = false }) {
   ensureCacheDir();
 
   const columns = 'Ph,Nq,Cp,Co,Kd,In,Td';
   // `Gt` is strict (>), so "Nq > minVolume - 1" gives us "Nq >= minVolume".
   // Same for `Lt` (<) on KD: "Kd < maxKD + 1" gives us "Kd <= maxKD".
-  const filter = buildDisplayFilter([
+  const clauses = [
     { sign: '+', column: 'Nq', op: 'Gt', value: Math.max(0, minVolume - 1) },
     { sign: '+', column: 'Kd', op: 'Lt', value: maxKD + 1 },
-  ]);
+  ];
+  if (maxVolume != null) {
+    clauses.push({ sign: '+', column: 'Nq', op: 'Lt', value: maxVolume + 1 });
+  }
+  const filter = buildDisplayFilter(clauses);
 
   const key = cacheKey({ database, phrase, filter, limit, columns });
   const cacheFile = cachePath(key, database);

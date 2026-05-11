@@ -35,7 +35,7 @@ const articles = defineCollection({
     updatedAt: z.coerce.date(),
     heroImage: z.string().optional(),
     heroImageAlt: z.string().optional(),
-    sources: z.array(sourceEntry).min(2, 'Min 2 sources for grounding'),
+    sources: z.array(sourceEntry).min(3, 'Min 3 sources for grounding (anti scaled-content-abuse signal — see CLAUDE.md "Anti-spam AI")'),
     affiliateLinks: z.array(affiliateLink).default([]),
     groundingScore: z.string().optional(),
     draft: z.boolean().default(false),
