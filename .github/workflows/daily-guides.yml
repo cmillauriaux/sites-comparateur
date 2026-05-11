@@ -153,6 +153,9 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add data/ "sites/$NICHE/$MARKET/src/content/articles/"
+          # Hero + product images are written by the generator under public/images/;
+          # stage them too. The "|| true" tolerates missing dirs (e.g. guides have no products/).
+          git add "sites/$NICHE/$MARKET/public/images/" 2>/dev/null || true
           git diff --staged --quiet || git commit -m "content: daily $SITE pillar guide"
 
       - if: env.SKIP != '1'
