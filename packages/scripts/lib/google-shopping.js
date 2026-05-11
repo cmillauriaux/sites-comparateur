@@ -28,7 +28,8 @@ const BASE_URL = 'https://api.dataforseo.com/v3';
 const CACHE_DIR = resolve(DATA_DIR, 'google-shopping-cache');
 const CACHE_TTL_DAYS = 14;
 const POLL_INTERVAL_MS = 2000;        // 2s linear backoff
-const POLL_MAX_ATTEMPTS = 15;         // 30s total — most tasks complete in 5-10s
+const POLL_MAX_ATTEMPTS = 30;         // 60s total — most tasks complete in 5-10s,
+                                      // but cold-start spikes to 30-45s observed on FR/EU markets
 
 function ensureCacheDir() {
   if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
