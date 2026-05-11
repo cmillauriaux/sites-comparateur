@@ -127,6 +127,9 @@ jobs:
         name: Generate pillar (--cluster --guide-only --count 1)
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # Hero image fetch (free image sources) — guides still get a topical hero.
+          PEXELS_API_KEY:          ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY:         ${{ secrets.PIXABAY_API_KEY }}
           # No Amazon / Awin secrets needed — pillar pages are off-affiliate
           # and the validator blocks any leaked CTA. Image fetch is skipped
           # because guide intent has no product components.

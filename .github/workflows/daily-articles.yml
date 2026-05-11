@@ -139,6 +139,12 @@ jobs:
         name: Generate articles
         env:
           CLAUDE_CODE_OAUTH_TOKEN:    ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # DataForSEO is needed for the Google Shopping fallback when Amazon misses on a product.
+          DATAFORSEO_LOGIN:           ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD:        ${{ secrets.DATAFORSEO_PASSWORD }}
+          # Free image sources for hero image fetch (lib/hero-image.js).
+          PEXELS_API_KEY:             ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY:            ${{ secrets.PIXABAY_API_KEY }}
           AMAZON_AFFILIATE_ID_FR:     ${{ secrets.AMAZON_AFFILIATE_ID_FR }}
           AMAZON_AFFILIATE_ID_US:     ${{ secrets.AMAZON_AFFILIATE_ID_US }}
           AMAZON_AFFILIATE_ID_GB:     ${{ secrets.AMAZON_AFFILIATE_ID_GB }}
