@@ -58,10 +58,21 @@ if (workflow === 'daily-articles') {
   allow = cadence.allowInformational && slotMatches;
 }
 
+// Cross-workflow 1/day hard cap. daily-articles, daily-guides and the
+// weekly informational run on independent crontabs; without this check the
+// same site could publish a comparatif + a guide + an info piece on the
+// same day, which trips Google's scaled-content-abuse classifier. The
+// active-day mechanic already spreads publications across days within a
+// workflow — this extends the guarantee across workflows.
+if (allow && cadence.publishedToday > 0) {
+  allow = false;
+}
+
 const decision = allow ? 'run' : 'skip';
 const trace = [
   `stage=${cadence.stage}`,
   `published=${cadence.publishedCount}`,
+  `publishedToday=${cadence.publishedToday}`,
   `affCap=${cadence.affiliateCap}`,
   `guideCap=${cadence.guideCap}`,
   `info=${cadence.allowInformational}`,

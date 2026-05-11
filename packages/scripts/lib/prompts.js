@@ -946,6 +946,77 @@ Slug is fixed: "${articleSlug}". Do not change it.
 If sources are insufficient, write ONLY ERROR_INSUFFICIENT_SOURCES with nothing else.`;
 }
 
+/**
+ * Internal-linking block. Groups already-published articles by intent and
+ * tells the model which group(s) to prioritise based on the current article's
+ * intent. The hub-and-spoke layout is:
+ *
+ *   comparatif / avis   ──link to──>   guide / informational  (educate, then convert)
+ *   guide / informational ──link to──> comparatif / avis      (educate, then route to product picks)
+ *
+ *  In FR: comparatif = "/comparatifs/", avis = "/avis/", guide = "/guides/".
+ *  In EN: same mapping under /comparisons/, /reviews/, /guides/.
+ *
+ *  The model still has freedom to skip a link when no entry is topically
+ *  relevant — forced cross-links degrade UX and Google quality signals.
+ */
+function buildClusterBlock({ existingArticles, currentIntent, isFr }) {
+  const transactional = ['comparatif', 'avis'];
+  const editorial     = ['guide', 'informational'];
+
+  const transArticles = existingArticles.filter(a => transactional.includes(a.intent));
+  const editArticles  = existingArticles.filter(a => editorial.includes(a.intent));
+
+  // Pick which group is the PRIMARY target for outbound links.
+  const isTransactional = transactional.includes(currentIntent);
+  const primary   = isTransactional ? editArticles  : transArticles;
+  const secondary = isTransactional ? transArticles : editArticles;
+
+  const primaryLabelFr   = isTransactional ? 'GUIDES & ARTICLES INFORMATIONNELS' : 'COMPARATIFS & AVIS';
+  const secondaryLabelFr = isTransactional ? 'AUTRES COMPARATIFS DU MÊME UNIVERS' : 'AUTRES GUIDES DU MÊME UNIVERS';
+  const primaryLabelEn   = isTransactional ? 'GUIDES & INFORMATIONAL ARTICLES'   : 'COMPARISONS & REVIEWS';
+  const secondaryLabelEn = isTransactional ? 'OTHER COMPARISONS IN THIS SPACE'    : 'OTHER GUIDES IN THIS SPACE';
+
+  const formatLine = a => `- [${a.title}](${a.url})`;
+  const primaryList   = primary.length   ? primary.map(formatLine).join('\n')   : '(aucun pour l’instant)';
+  const secondaryList = secondary.length ? secondary.map(formatLine).join('\n') : '(aucun pour l’instant)';
+
+  if (isFr) {
+    return `\n==========================================
+MAILLAGE INTERNE — LIENS À INSÉRER DANS LE CORPS
+==========================================
+PRIORITÉ — ${primaryLabelFr}
+Insère au moins 2 liens markdown vers les articles ci-dessous quand l'angle de l'article courant rejoint leur sujet. Ces liens forment la branche montante/descendante du cluster sémantique attendu par Google.
+${primaryList}
+
+SECONDAIRE — ${secondaryLabelFr}
+1 lien complémentaire optionnel si un sujet est très proche thématiquement.
+${secondaryList}
+
+RÈGLES STRICTES :
+- N'invente JAMAIS d'URL ; n'utilise QUE celles listées ci-dessus.
+- Insère les liens dans la PROSE (introduction, transitions, conclusion), jamais dans les composants ProductCard / ComparisonTable.
+- Si aucune entrée n'est thématiquement proche, n'en force aucune — un mauvais lien dégrade plus qu'il n'aide.
+`;
+  }
+  return `\n==========================================
+INTERNAL LINKING — LINKS TO INSERT IN THE BODY
+==========================================
+PRIORITY — ${primaryLabelEn}
+Insert at least 2 markdown links into the articles below when the current article's angle overlaps theirs. These links form the up/down branch of the semantic cluster Google expects.
+${primaryList}
+
+SECONDARY — ${secondaryLabelEn}
+1 optional complementary link if a topic is very closely related.
+${secondaryList}
+
+STRICT RULES:
+- NEVER fabricate URLs; use ONLY those listed above.
+- Insert the links into PROSE (intro, transitions, conclusion), never inside ProductCard / ComparisonTable components.
+- If no entry is topically close, do not force any — a weak link hurts more than it helps.
+`;
+}
+
 export function buildPrompt(opts) {
   // Each source's body is wrapped in unique BEGIN/END markers so the model
   // can distinguish system instructions from scraped HTML text. A malicious
@@ -960,23 +1031,16 @@ ${s.content}
 <<<END_UNTRUSTED_SOURCE>>>`)
     .join('\n\n---\n\n');
 
-  // Internal-linking instruction. Empty when no prior articles exist
-  // (cold-start / new market) — the prompt then simply omits the section.
+  // Internal-linking instruction with directional hub-and-spoke guidance:
+  // transactional articles (comparatif / avis) prioritise linking OUT to
+  // informational guides; guide / informational articles prioritise linking
+  // OUT to the matching transactional pages. Empty when no prior articles
+  // exist (cold-start / new market) — the prompt then omits the section.
   const existingArticles = opts.existingArticles ?? [];
   const isFr = opts.market === 'fr';
-  const clusterBlock = existingArticles.length === 0 ? '' : (isFr
-    ? `\n==========================================
-ARTICLES DÉJÀ PUBLIÉS — INTERNAL LINKING
-==========================================
-Insère 2-3 liens markdown vers ces articles existants quand l'angle est pertinent (cluster SEO). Ne FORCE PAS un lien si aucun n'est thématiquement proche.
-${existingArticles.map(a => `- [${a.title}](${a.url})`).join('\n')}
-`
-    : `\n==========================================
-ALREADY-PUBLISHED ARTICLES — INTERNAL LINKING
-==========================================
-Insert 2-3 markdown links into these existing articles when topically relevant (SEO cluster). Do NOT force a link when no entry is a close topical match.
-${existingArticles.map(a => `- [${a.title}](${a.url})`).join('\n')}
-`);
+  const clusterBlock = existingArticles.length === 0
+    ? ''
+    : buildClusterBlock({ existingArticles, currentIntent: opts.intent, isFr });
 
   const today = new Date().toISOString();
   const isFrMarket = opts.market === 'fr';

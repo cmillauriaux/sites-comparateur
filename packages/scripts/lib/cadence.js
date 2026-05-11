@@ -14,7 +14,11 @@ import { readPublished } from './queue.js';
 
 const STAGES = [
   // Sorted by `min` ascending. The first stage whose `min` is ≤ count wins.
-  { name: 'mature',  min: 80, affiliateCap: 2, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 7 },
+  //
+  // affiliateCap is the per-workflow-run max. The cross-workflow 1/day rule
+  // (publishedToday() below) is the hard cap and supersedes this — affCap=1
+  // everywhere makes that intent explicit and avoids same-run double-publish.
+  { name: 'mature',  min: 80, affiliateCap: 1, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 7 },
   { name: 'ramping', min: 30, affiliateCap: 1, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 7 },
   { name: 'warming', min: 10, affiliateCap: 1, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 5 },
   { name: 'sandbox', min: 0,  affiliateCap: 1, guideCap: 0, allowInformational: false, activeDaysPerWeek: 4 },
@@ -33,6 +37,25 @@ function pickStage(publishedCount) {
  */
 export function countPublished(niche, market) {
   return readPublished().filter(e => e?.niche === niche && e?.market === market).length;
+}
+
+/**
+ * Count of articles already published today (UTC date) for (niche, market).
+ *
+ * Cross-workflow guard: daily-articles, daily-guides and weekly-informational
+ * all run on independent cron crontabs and could otherwise stack on the same
+ * day. Google's spam-detection looks for "n articles dropped at H+0 every X
+ * days" — keeping it strictly 1/day across workflows is the cheapest defence.
+ * cadence-cli rejects the run when this returns > 0.
+ */
+export function publishedToday(niche, market, today = new Date()) {
+  const dateStr = dateKey(today);
+  return readPublished().filter(e =>
+    e?.niche === niche &&
+    e?.market === market &&
+    typeof e.publishedAt === 'string' &&
+    e.publishedAt.startsWith(dateStr)
+  ).length;
 }
 
 /**
@@ -107,9 +130,11 @@ export function electedSlot(today, niche, market, numSlots) {
 export function getCadence(niche, market, { today = new Date(), publishedCount } = {}) {
   const count = publishedCount ?? countPublished(niche, market);
   const stage = pickStage(count);
+  const todayCount = publishedToday(niche, market, today);
   return {
     stage: stage.name,
     publishedCount: count,
+    publishedToday: todayCount,
     affiliateCap: stage.affiliateCap,
     guideCap: stage.guideCap,
     allowInformational: stage.allowInformational,

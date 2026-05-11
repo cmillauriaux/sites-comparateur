@@ -41,6 +41,18 @@ import { i18n } from '@comparateur/config';
 import { MARKET_SEMRUSH } from '@comparateur/config/niches';
 
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '2', 10);
+
+/** Best-effort intent reconstruction from a published URL, for the
+ *  internal-linking input. Falls back to 'comparatif' (the most common
+ *  intent in this codebase) when the path matches nothing. */
+function inferIntentFromUrl(url) {
+  if (!url) return 'comparatif';
+  if (/\/(avis|reviews)\//.test(url))           return 'avis';
+  if (/\/(comparatifs|comparisons)\//.test(url)) return 'comparatif';
+  if (/\/(guides|guide)\//.test(url))           return 'guide';
+  if (/\/(infos|informationnels|insights|articles)\//.test(url)) return 'informational';
+  return 'comparatif';
+}
 // 3 = anti scaled-content-abuse floor (matches Zod schema + validator).
 // Bumped from 2 in the anti-AI-spam pass — see CLAUDE.md "Anti-spam AI".
 const MIN_SOURCES = 3;
@@ -161,11 +173,18 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
   // 3. Build prompt and invoke Claude Code CLI
   // Internal-linking input: pass the 20 most recent published URLs in the
   // same (niche, market) so the model can hyperlink into them and form a
-  // SEO cluster instead of writing isolated pages.
+  // SEO cluster instead of writing isolated pages. We also tag each entry
+  // with its `intent` so the prompt can apply directional linking rules
+  // (comparatif ↔ guide hub-and-spoke).
   const existingArticles = readPublished()
     .filter(u => u.niche === niche && u.market === market && u.url)
     .slice(-20)
-    .map(u => ({ title: u.keyword, url: u.url }));
+    .map(u => ({
+      title: u.keyword,
+      url: u.url,
+      // Older entries pre-date the intent field — infer from the URL path.
+      intent: u.intent ?? inferIntentFromUrl(u.url),
+    }));
   const prompt = buildPrompt({
     keyword,
     intent,
@@ -408,7 +427,7 @@ async function generateOne(siteConfig) {
   writeQueue(queue);
 
   try {
-    const { publishedUrl } = await generateArticle(siteConfig, {
+    const { publishedUrl, finalIntent } = await generateArticle(siteConfig, {
       keyword: next.keyword,
       intent: next.intent,
     });
@@ -425,6 +444,7 @@ async function generateOne(siteConfig) {
       url: publishedUrl,
       niche, market,
       keyword: next.keyword,
+      intent: finalIntent,
       publishedAt: new Date().toISOString(),
       indexationStatus: 'pending',
     });
@@ -610,6 +630,7 @@ async function generateFromCluster(clusterId) {
       keyword: opp.primaryKeyword,
       secondaryKeywords: opp.secondaryKeywords || [],
       clusterId,
+      intent: finalIntent,
       publishedAt: new Date().toISOString(),
       indexationStatus: 'pending',
     });
@@ -640,13 +661,13 @@ async function run(targets) {
       console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
       continue;
     }
-    // Cadence ramp: the per-day affiliate cap depends on the site's maturity
-    // (count of already-published URLs). Sandbox sites get cap=1, mature
-    // sites get cap=2. The env-level `MAX_ARTICLES_PER_RUN` stays a hard
-    // ceiling — cadence can lower it, never raise it.
+    // Cadence ramp: the per-run cap depends on the site's maturity. Cross-
+    // workflow 1/day rule is enforced by also subtracting publishedToday so a
+    // run that bypassed cadence-cli (e.g. local invocation) still respects it.
     const cadence = getCadence(niche, market);
-    const cap = Math.min(MAX_ARTICLES_PER_RUN, cadence.affiliateCap);
-    console.log(`📊 cadence ${niche}/${market}: stage=${cadence.stage} published=${cadence.publishedCount} affCap=${cadence.affiliateCap} → run cap=${cap}`);
+    const stageCap = Math.min(MAX_ARTICLES_PER_RUN, cadence.affiliateCap);
+    const cap = Math.max(0, stageCap - cadence.publishedToday);
+    console.log(`📊 cadence ${niche}/${market}: stage=${cadence.stage} published=${cadence.publishedCount} publishedToday=${cadence.publishedToday} affCap=${cadence.affiliateCap} → run cap=${cap}`);
     let written = 0;
     for (let i = 0; i < cap; i++) {
       const url = await generateOne(siteConfig);
@@ -697,6 +718,7 @@ async function generateOneInformational(siteConfig) {
       url: publishedUrl,
       niche, market,
       keyword: next.keyword,
+      intent: 'informational',
       publishedAt: new Date().toISOString(),
       indexationStatus: 'pending',
       isInformational: true,
