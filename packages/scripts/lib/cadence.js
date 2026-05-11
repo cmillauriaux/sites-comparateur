@@ -18,10 +18,20 @@ const STAGES = [
   // affiliateCap is the per-workflow-run max. The cross-workflow 1/day rule
   // (publishedToday() below) is the hard cap and supersedes this — affCap=1
   // everywhere makes that intent explicit and avoids same-run double-publish.
-  { name: 'mature',  min: 80, affiliateCap: 1, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 7 },
-  { name: 'ramping', min: 30, affiliateCap: 1, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 7 },
-  { name: 'warming', min: 10, affiliateCap: 1, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 5 },
-  { name: 'sandbox', min: 0,  affiliateCap: 1, guideCap: 0, allowInformational: false, activeDaysPerWeek: 4 },
+  //
+  // activeDaysPerWeek = the slow-ramp dial. Cap publications PER WEEK so
+  // a young site doesn't burst onto Google's radar. Combined with the
+  // 4-slot hour election (06:11 / 10:37 / 14:23 / 18:47 UTC), publication
+  // hours also vary across the week — morning/midday/evening — so the
+  // timing doesn't read as a robot.
+  //
+  //   1 article/week → 1 bundle in ~3 weeks  (sandbox)
+  //   2 articles/week → 1 bundle in ~1.5 week (warming)
+  //   3 articles/week → 1 bundle per week     (ramping / mature)
+  { name: 'mature',  min: 80, affiliateCap: 1, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 3 },
+  { name: 'ramping', min: 30, affiliateCap: 1, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 3 },
+  { name: 'warming', min: 10, affiliateCap: 1, guideCap: 1, allowInformational: true,  activeDaysPerWeek: 2 },
+  { name: 'sandbox', min: 0,  affiliateCap: 1, guideCap: 0, allowInformational: false, activeDaysPerWeek: 1 },
 ];
 
 function pickStage(publishedCount) {

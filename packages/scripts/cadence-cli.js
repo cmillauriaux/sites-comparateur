@@ -20,7 +20,7 @@
 import { getCadence, electedSlot } from './lib/cadence.js';
 import { parseArgs } from './lib/site-config.js';
 
-const VALID_WORKFLOWS = new Set(['daily-articles', 'daily-guides', 'weekly-informational']);
+const VALID_WORKFLOWS = new Set(['daily-articles', 'daily-guides', 'weekly-informational', 'daily-content']);
 
 function fail(msg) {
   console.error(`cadence-cli: ${msg}`);
@@ -48,7 +48,10 @@ const slotMatches = slot === elected;
 
 // Per-workflow rule. Mirrors the table in CLAUDE.md "Cadence" section.
 let allow;
-if (workflow === 'daily-articles') {
+if (workflow === 'daily-articles' || workflow === 'daily-content') {
+  // daily-content unifies daily-articles + daily-guides into a single bundle-
+  // aware runner. Gate on activeToday + slot election; the picker inside the
+  // generator decides which slot to publish (comparatif / pillar / avis).
   allow = cadence.activeToday && cadence.affiliateCap > 0 && slotMatches;
 } else if (workflow === 'daily-guides') {
   allow = cadence.activeToday && cadence.guideCap > 0 && slotMatches;

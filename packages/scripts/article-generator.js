@@ -31,6 +31,7 @@ import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffi
 import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
 import { remediateLlmTics, isRemediableErrorSet } from './lib/article-remediator.js';
+import { pickNextBundleSlot, initBundle, markBundleSlotShipped, markBundleSlotFailed, BUNDLE_SLOTS, SLOT_INTENT, slugFromKeyword, bundleSlotUrl } from './lib/bundle.js';
 import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
 import { scrubInlineSourceList, stripBrokenInternalLinks } from './lib/article-postprocess.js';
@@ -282,10 +283,17 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     for (const m of written.matchAll(/<ProductCard\b[\s\S]*?\bname\s*=\s*(["'])([^"']+)\1/g)) productNames.add(m[2].trim());
   }
 
+  let topProductName = null;
+  let topProductAsin = null;
   if (productNames.size > 0) {
     const productList = [...productNames];
     console.log(`  🛒 Fetching ${productList.length} products from amazon (${market})…`);
     const { imageMap, asinMap, priceMap, nonAffiliateMap } = await fetchProductImages({ niche, market, articleSlug, products: productList });
+    // The "top product" is the first one in the Claude-extracted order — the
+    // model writes ProductCards in descending verdict-score, so [0] is the
+    // recommended winner. Used by the bundle picker to seed the avis slot.
+    topProductName = productList[0] ?? null;
+    topProductAsin = topProductName ? (asinMap[topProductName] ?? null) : null;
     let updated = injectImagePaths(written, imageMap);
     updated = injectImageAttributes(updated, imageMap);
     updated = injectAffiliateAsins(updated, asinMap);
@@ -427,7 +435,7 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
   const subdir = subdirByIntent[finalIntent] ?? slugs.slugGuides;
   const publishedUrl = `https://${siteConfig.domain}/${subdir}/${articleSlug}/`;
 
-  return { publishedUrl, articleSlug, outputPath, finalIntent };
+  return { publishedUrl, articleSlug, outputPath, finalIntent, topProductName, topProductAsin };
 }
 
 function readFrontmatterIntent(path) {
@@ -947,6 +955,105 @@ async function runTopClusters(targets, count, { longtail = false, guideOnly = fa
   console.log(`\n📊 Generated ${written} of ${picks.length} (${failed} failed).`);
 }
 
+// ─────────────────────────────────────────────────────── BUNDLE PATH
+// One-stop daily-content runner. For each target (niche, market):
+//
+//   1. Respect cadence (active-day + cross-workflow 1/day rule).
+//   2. Ask bundle.js for the next slot to ship (resume partial → start new).
+//   3. If no bundle work: fall back to the legacy queue picker (generateOne).
+//   4. Persist bundle state on success/failure so the next active day knows
+//      which slot to pick.
+//
+// Order of slots within a bundle is comparatif → pillar → avis, enforced by
+// pickNextBundleSlot. This guarantees every cross-link points at an
+// already-published URL — no fabricated forward references.
+async function runBundle(targets) {
+  const bypassCadence = process.env.BYPASS_CADENCE === 'true';
+
+  for (const { niche, market } of targets) {
+    const siteConfig = await loadSiteConfig(niche, market);
+    if (!isLaunched(siteConfig)) {
+      console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
+      continue;
+    }
+    const cadence = getCadence(niche, market);
+    if (!bypassCadence && cadence.publishedToday > 0) {
+      console.log(`⏭  ${niche}/${market}: publishedToday=${cadence.publishedToday} → skip (cross-workflow 1/day rule)`);
+      continue;
+    }
+
+    const siteOrigin = `https://${siteConfig.domain}`;
+    const priorities = readPriorities();
+    const pick = pickNextBundleSlot(priorities, niche, market);
+
+    if (!pick) {
+      console.log(`📦 ${niche}/${market}: no bundle work — falling back to queue path`);
+      const url = await generateOne(siteConfig);
+      console.log(url ? `📊 ${niche}/${market}: 1/1 queue article generated` : `📊 ${niche}/${market}: 0/1 (queue empty or failed)`);
+      continue;
+    }
+
+    if (pick.kind === 'bundle-fresh') initBundle(pick.opp, market);
+    const slotMeta = pick.opp.bundle[pick.slot];
+    console.log(`\n📦 BUNDLE ${pick.opp.id} → slot=${pick.slot} (${pick.kind})`);
+    console.log(`   keyword="${slotMeta.keyword}" slug="${slotMeta.slug}"`);
+
+    // Parent comparatif URL/title for pillar + avis slots — used by the
+    // prompts to insert mandatory cross-links into the live comparatif.
+    let parentComparatifUrl, parentComparatifTitle;
+    if (pick.slot !== 'comparatif') {
+      parentComparatifUrl   = pick.opp.bundle.comparatif.url;
+      parentComparatifTitle = pick.opp.bundle.comparatif.keyword;
+    }
+
+    try {
+      const { publishedUrl, finalIntent, topProductName, topProductAsin } = await generateArticle(siteConfig, {
+        keyword: slotMeta.keyword,
+        intent: SLOT_INTENT[pick.slot],
+        secondaryKeywords: pick.opp.secondaryKeywords || [],
+        parentComparatifUrl,
+        parentComparatifTitle,
+      });
+
+      // Persist bundle state + roll-up. Re-read priorities to avoid
+      // clobbering parallel mining writes.
+      const fresh = readPriorities();
+      const target = fresh?.[niche]?.[market]?.find(o => o.id === pick.opp.id);
+      if (target) {
+        if (!target.bundle) initBundle(target, market);
+        markBundleSlotShipped(target, pick.slot, {
+          url: publishedUrl,
+          publishedAt: new Date().toISOString(),
+          topProductName,
+          topProductAsin,
+        });
+        writePriorities(fresh);
+      }
+
+      appendPublished({
+        url: publishedUrl,
+        niche, market,
+        keyword: slotMeta.keyword,
+        bundleId: pick.opp.id,
+        bundleSlot: pick.slot,
+        intent: finalIntent,
+        publishedAt: new Date().toISOString(),
+        indexationStatus: 'pending',
+      });
+      console.log(`📊 ${niche}/${market}: bundle slot ${pick.slot} shipped → ${publishedUrl}`);
+    } catch (err) {
+      console.error(`❌ Bundle ${pick.opp.id} slot=${pick.slot} failed: ${err.message}`);
+      const fresh = readPriorities();
+      const target = fresh?.[niche]?.[market]?.find(o => o.id === pick.opp.id);
+      if (target?.bundle) {
+        target.bundle[pick.slot].errorCount = (target.bundle[pick.slot].errorCount || 0) + 1;
+        if (target.bundle[pick.slot].errorCount >= 3) markBundleSlotFailed(target, pick.slot, err.message);
+        writePriorities(fresh);
+      }
+    }
+  }
+}
+
 const args = parseArgs(process.argv.slice(2));
 
 if (args.informational === true) {
@@ -978,6 +1085,15 @@ if (args.informational === true) {
   const longtail = args.longtail === true;
   const guideOnly = args['guide-only'] === true || args.guideOnly === true;
   runTopClusters(targets, count, { longtail, guideOnly }).then(() => process.exit(0)).catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
+} else if (args.bundle === true) {
+  // --bundle → unified daily-content runner. Picks the next bundle slot
+  // from semrush-priorities; falls back to the queue when no bundle work
+  // is available; respects the cross-workflow 1/day cap.
+  const targets = resolveTargets(args);
+  runBundle(targets).then(() => process.exit(0)).catch(err => {
     console.error(err);
     process.exit(1);
   });
