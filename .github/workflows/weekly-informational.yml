@@ -121,6 +121,10 @@ jobs:
           # stage them too. The "|| true" tolerates missing dirs (e.g. guides have no products/).
           git add "sites/$NICHE/$MARKET/public/images/" 2>/dev/null || true
           git diff --staged --quiet || git commit -m "content: weekly informational $SITE"
+          # cloudflare/wrangler-action@v3 dirties package.json + pnpm-lock.yaml by
+          # auto-installing wrangler. Drop those reverts so safe-push's rebase
+          # can run (it refuses on unstaged changes).
+          git checkout -- package.json pnpm-lock.yaml 2>/dev/null || true
 
       - if: env.SKIP != '1'
         name: Safe push (rebase + retry)
