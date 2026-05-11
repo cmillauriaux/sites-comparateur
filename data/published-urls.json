@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "url": "https://jardinguide.fr/comparatifs/scie-sauteuse/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "scie sauteuse",
+    "bundleId": "jardin-bricolage-fr-scie-sauteuse",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-05-11T20:51:14.057Z",
+    "indexationStatus": "pending"
+  }
+]

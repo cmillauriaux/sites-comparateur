@@ -137,7 +137,7 @@
         "score": 1025,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.329Z",
         "generatedAt": null,
@@ -146,11 +146,11 @@
           "comparatif": {
             "keyword": "scie sauteuse",
             "slug": "scie-sauteuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/scie-sauteuse/",
+            "publishedAt": "2026-05-11T20:51:14.056Z",
+            "topProductName": "Bosch Professional GST 18 V-Li S",
+            "topProductAsin": "B00NLBHJ54"
           },
           "pillar": {
             "keyword": "comment choisir un scie sauteuse",
@@ -160,8 +160,8 @@
             "publishedAt": null
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
+            "keyword": "Bosch Professional GST 18 V-Li S avis",
+            "slug": "bosch-professional-gst-18-v-li-s-avis",
             "status": "pending",
             "url": null,
             "publishedAt": null
