@@ -8,6 +8,86 @@
  * English. The differences below are deliberate — do not "harmonise" them.
  */
 
+// Anti-LLM-stylometric guidance. Injected into every builder so the model
+// avoids the punctuation, transitional phrases, and structural tics that
+// signal AI authorship to readers (and, indirectly, to AI Overviews /
+// ChatGPT citation rankers). These are stylistic — not validator-blocking
+// on their own — but a soft scan in article-validator fails articles that
+// ignore them flagrantly.
+const ANTI_LLM_TICS_FR = `\
+==========================================
+STYLE — TICS LLM À ÉVITER (IMPORTANT)
+==========================================
+PONCTUATION :
+  - INTERDIT : tirets quadratins (—) et tirets demi-cadratins (–). Remplace-les
+    par une virgule, un point, deux-points, parenthèses ou point-virgule selon
+    le rythme. SEUL le trait d'union (-) dans les mots composés est autorisé.
+  - Pas de parenthèses explicatives systématiques (« la vitesse de rotation
+    (mesurée en tours par minute) ») : intègre la précision dans la phrase, ou
+    coupe-la si elle n'apporte rien.
+
+FORMULES BANNIES (zéro occurrence) :
+  - « il est important de noter », « il convient de souligner », « il va sans dire »
+  - « plongeons dans », « entrons dans le vif du sujet », « sans plus attendre »
+  - « en somme », « pour résumer », « cela étant dit », « cela dit »
+  - « à l'heure où », « dans cet article, nous allons », « force est de constater »
+  - « vous l'aurez compris », « comme vous pouvez l'imaginer »
+
+RYTHME :
+  - Alterne phrases courtes (5-12 mots) et longues (20-35 mots).
+  - JAMAIS plus de 3 phrases consécutives de longueur similaire.
+  - Pas de listes à puces de 4+ items quand 2-3 suffisent : la surstructuration
+    est un tic LLM.
+
+OPINION TRANCHÉE :
+  - Les Numériques ne hedge pas. À chaque sous-section critère, énonce un
+    jugement clair (« satisfaisant », « insuffisant pour ce prix », « meilleur
+    de sa catégorie en 2026 ») et appuie-le sur une source.
+  - Hedges vides INTERDITS : « peut être », « semble », « pourrait », « plutôt
+    bon », « globalement », « assez correct », « relativement », « somme toute ».
+
+CONNECTEURS :
+  - Ne réutilise pas le même connecteur deux fois dans l'article
+    (« cependant », « toutefois », « néanmoins », « par ailleurs », « en
+    revanche », « de plus », « en outre »). Varie ou supprime.
+`;
+
+const ANTI_LLM_TICS_EN = `\
+==========================================
+STYLE — LLM TICS TO AVOID (IMPORTANT)
+==========================================
+PUNCTUATION:
+  - FORBIDDEN: em dashes (—) and en dashes (–). Replace with comma, period,
+    colon, parentheses, or semicolon depending on rhythm. ONLY the hyphen (-)
+    in compound words is allowed.
+  - No systematic parenthetical asides ("the rotation speed (measured in
+    revolutions per minute)"): fold the detail into the sentence, or cut it.
+
+FORBIDDEN PHRASES (zero occurrences):
+  - "it is important to note", "it's worth noting", "needless to say"
+  - "let's dive in", "without further ado", "let's get started"
+  - "in essence", "to sum up", "that being said", "all things considered"
+  - "in this article, we will", "in conclusion", "ultimately"
+  - "you'll have understood", "as you can imagine"
+
+RHYTHM:
+  - Alternate short sentences (5-12 words) with long ones (20-35 words).
+  - NEVER more than 3 consecutive sentences of similar length.
+  - No bullet lists of 4+ items when 2-3 suffice: over-structuring is an LLM tic.
+
+OPINIONATED CALLS:
+  - Wirecutter / Which? do not hedge. At each criterion sub-section, state a
+    clear judgement ("satisfactory", "underwhelming at this price", "class
+    leader for 2026") and anchor it to a source.
+  - Empty hedges FORBIDDEN: "may be", "seems", "could be", "fairly good",
+    "overall decent", "relatively", "all in all", "somewhat".
+
+CONNECTORS:
+  - Do not reuse the same connector twice in one article ("however",
+    "moreover", "furthermore", "nevertheless", "on the other hand",
+    "additionally", "that said"). Vary or remove.
+`;
+
 const COMMON_COMPONENT_CONTRACT = `\
 ==========================================
 COMPONENTS / COMPOSANTS
@@ -243,6 +323,7 @@ introduire une variation naturelle d'un article à l'autre :
     conclusion, retenez que...", "Vous l'aurez compris..."). Cherche à
     ouvrir et conclure différemment d'un article à l'autre.
 
+${ANTI_LLM_TICS_FR}
 ==========================================
 FRONTMATTER YAML
 ==========================================
@@ -423,6 +504,7 @@ natural variation across articles:
     "In conclusion, remember that...", "You'll have understood..."). Vary
     your openings and closings article to article.
 
+${ANTI_LLM_TICS_EN}
 ==========================================
 YAML FRONTMATTER
 ==========================================
@@ -546,6 +628,7 @@ LONGUEUR
 ==========================================
 ${lengthBlockFr}
 
+${ANTI_LLM_TICS_FR}
 ==========================================
 FRONTMATTER YAML
 ==========================================
@@ -611,6 +694,7 @@ LENGTH
 ==========================================
 ${lengthBlockEn}
 
+${ANTI_LLM_TICS_EN}
 ==========================================
 YAML FRONTMATTER
 ==========================================

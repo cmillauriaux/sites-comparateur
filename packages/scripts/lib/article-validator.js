@@ -13,6 +13,49 @@ const MIN_IMAGE_COVERAGE = 0.8;     // ≥80% of products must carry a resolved 
 const MIN_PRODUCTS_FOR_GATE = 2;    // single-card pages skip the coverage check
 const MIN_GROUNDING_SOURCES = 3;    // anti scaled-content-abuse signal (see CLAUDE.md)
 
+// LLM-stylometric tic scan thresholds. Soft-fail design: small leaks happen
+// (the model occasionally slips an em-dash or "however") and blocking on
+// every one would reject otherwise-solid articles. The fail threshold is
+// deliberately indulgent — it catches articles that ignore the prompt's
+// anti-tic block entirely, not articles that have one slip.
+const LLM_TICS_WARN_THRESHOLD = 3;
+const LLM_TICS_FAIL_THRESHOLD = 6;
+
+// Phrases mirror prompts.js#ANTI_LLM_TICS_{FR,EN}. Keep in sync — if a phrase
+// is banned in the prompt but not scanned here, drift goes undetected.
+const LLM_TIC_PHRASES_FR = [
+  'il est important de noter',
+  'il convient de souligner',
+  'il va sans dire',
+  'plongeons dans',
+  'entrons dans le vif',
+  'sans plus attendre',
+  'en somme',
+  'pour résumer',
+  'cela étant dit',
+  "à l'heure où",
+  'dans cet article, nous allons',
+  'force est de constater',
+  "vous l'aurez compris",
+  'comme vous pouvez l\'imaginer',
+];
+const LLM_TIC_PHRASES_EN = [
+  'it is important to note',
+  "it's worth noting",
+  'needless to say',
+  "let's dive in",
+  'without further ado',
+  "let's get started",
+  'in essence',
+  'to sum up',
+  'that being said',
+  'all things considered',
+  'in this article, we will',
+  'in conclusion',
+  "you'll have understood",
+  'as you can imagine',
+];
+
 export function validateGeneratedArticle(content) {
   const errors = [];
 
@@ -76,7 +119,57 @@ export function validateGeneratedArticle(content) {
     }
   }
 
+  // LLM-tic scan on prose (same component-stripped body used by the price
+  // scan above). 3-5 hits → console.warn so the operator sees prompt drift
+  // accumulating; 6+ → hard fail because at that point the article ignored
+  // the anti-tic block in prompts.js outright.
+  const tics = scanLlmTics(body);
+  if (tics.count >= LLM_TICS_FAIL_THRESHOLD) {
+    errors.push(`LLM stylometric tics: ${tics.count} occurrences (${tics.summary})`);
+  } else if (tics.count >= LLM_TICS_WARN_THRESHOLD) {
+    console.warn(`  ⚠️  LLM stylometric tics: ${tics.count} occurrences (${tics.summary}) — prompt drift, not blocking`);
+  }
+
   return errors;
+}
+
+// Scan component-stripped prose for em/en-dashes and a curated list of LLM
+// transitional phrases. Returns the total count + a short summary string for
+// log output. Phrases are matched case-insensitively as substrings so common
+// inflections ("It is important to note", "It's important to note that")
+// both register.
+export function scanLlmTics(body) {
+  const hits = {};
+  let count = 0;
+
+  const dashes = body.match(/[—–]/g);
+  if (dashes && dashes.length > 0) {
+    hits['em/en-dashes'] = dashes.length;
+    count += dashes.length;
+  }
+
+  const lower = body.toLowerCase();
+  for (const phrase of [...LLM_TIC_PHRASES_FR, ...LLM_TIC_PHRASES_EN]) {
+    const needle = phrase.toLowerCase();
+    let idx = 0;
+    let n = 0;
+    while ((idx = lower.indexOf(needle, idx)) !== -1) {
+      n++;
+      idx += needle.length;
+    }
+    if (n > 0) {
+      hits[phrase] = n;
+      count += n;
+    }
+  }
+
+  const summary = Object.entries(hits)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 4)
+    .map(([k, v]) => `${k}×${v}`)
+    .join(', ');
+
+  return { count, hits, summary };
 }
 
 function readFrontmatterField(content, field) {
