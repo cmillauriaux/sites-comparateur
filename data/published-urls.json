@@ -42,5 +42,27 @@
     "intent": "comparatif",
     "publishedAt": "2026-05-12T21:18:31.551Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://cuisineexpert.fr/guides/comment-choisir-un-machine-a-cafe-a-grain-professionnelle/",
+    "niche": "cuisine",
+    "market": "fr",
+    "keyword": "comment choisir un machine a cafe a grain professionnelle",
+    "bundleId": "cuisine-fr-machine-a-cafe-a-grain-professionnelle",
+    "bundleSlot": "pillar",
+    "intent": "guide",
+    "publishedAt": "2026-05-12T21:36:59.414Z",
+    "indexationStatus": "pending"
+  },
+  {
+    "url": "https://cuisineexpert.fr/avis/jura-e6-avis/",
+    "niche": "cuisine",
+    "market": "fr",
+    "keyword": "Jura E6 avis",
+    "bundleId": "cuisine-fr-machine-a-cafe-a-grain-professionnelle",
+    "bundleSlot": "avis",
+    "intent": "avis",
+    "publishedAt": "2026-05-12T21:41:13.905Z",
+    "indexationStatus": "pending"
   }
 ]

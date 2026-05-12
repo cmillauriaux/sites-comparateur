@@ -8269,7 +8269,7 @@
         "score": 169,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "partial",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-12T21:14:52.499Z",
         "generatedAt": null,
@@ -8282,22 +8282,23 @@
             "status": "generated",
             "url": "https://cuisineexpert.fr/comparatifs/machine-a-cafe-a-grain-professionnelle/",
             "publishedAt": "2026-05-12T21:18:31.547Z",
-            "topProductName": "Jura Giga 10",
-            "topProductAsin": "B0CBMK9FN4"
+            "topProductName": "Jura E6 15440",
+            "topProductAsin": "B00VF9BDW4"
           },
           "pillar": {
             "keyword": "comment choisir un machine a cafe a grain professionnelle",
             "slug": "comment-choisir-un-machine-a-cafe-a-grain-professionnelle-1",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://cuisineexpert.fr/guides/comment-choisir-un-machine-a-cafe-a-grain-professionnelle/",
+            "publishedAt": "2026-05-12T21:36:59.411Z"
           },
           "avis": {
-            "keyword": "Jura Giga 10 avis",
-            "slug": "jura-giga-10-avis",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "keyword": "Jura E6 avis",
+            "slug": "jura-e6-avis",
+            "status": "generated",
+            "url": "https://cuisineexpert.fr/avis/jura-e6-avis/",
+            "publishedAt": "2026-05-12T21:41:13.897Z",
+            "errorCount": 0
           }
         }
       },
