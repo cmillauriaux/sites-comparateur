@@ -7,12 +7,13 @@
  *      { [url]: { clicks, impressions, ctr, position, fetchedAt } }
  *
  *   2. published-urls.json entries gain a `gsc:` field cloned from above so
- *      downstream scripts (dataforseo-keywords.js) don't need a join.
+ *      downstream scoring (e.g. semrush-prioritize.js if/when wired to use
+ *      lib/gsc-feedback.js) doesn't need a join.
  *
- * Score feedback is applied separately by dataforseo-keywords.js: this script
- * is read-only on the queue and only persists fresh metrics. That keeps the
- * GSC quota consumption disjoint from the daily article-generation pipeline
- * and makes the metrics inspectable as their own artefact.
+ * Score feedback application is the consumer's responsibility: this script
+ * is read-only on the published list and only persists fresh metrics. That
+ * keeps the GSC quota consumption disjoint from the article-generation
+ * pipeline and makes the metrics inspectable as their own artefact.
  *
  * Auth: same service account as gsc-indexing.js, but a different scope
  * (`webmasters.readonly`). The account must be added as a verified user

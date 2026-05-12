@@ -21,7 +21,7 @@
  * key are migrated lazily by initBundle() so existing data isn't lost.
  */
 import slugger from 'github-slugger';
-import { readPublished, readQueue } from './queue.js';
+import { readPublished } from './queue.js';
 
 const slug = new slugger();
 
@@ -158,7 +158,8 @@ export function markBundleSlotFailed(opp, slot, reason) {
  *      will be called by the caller after picking.
  *
  *  Returns null when the priorities registry holds no actionable bundle
- *  work for this (niche, market). Caller then falls back to the queue path.
+ *  work for this (niche, market). Caller should log + skip — the operator
+ *  is expected to re-run semrush-prioritize.js to refill the registry.
  */
 export function pickNextBundleSlot(priorities, niche, market) {
   const opps = priorities?.[niche]?.[market] || [];

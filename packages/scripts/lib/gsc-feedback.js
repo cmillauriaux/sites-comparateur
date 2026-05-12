@@ -1,6 +1,8 @@
 /**
- * Compute a per-keyword "GSC performance multiplier" that
- * `dataforseo-keywords.js` applies to a candidate's raw score.
+ * Compute a per-keyword "GSC performance multiplier" intended to be applied
+ * to a candidate's raw score. Not currently consumed by any pipeline
+ * (was wired to the now-removed dataforseo-keywords.js); kept for future
+ * integration into semrush-prioritize.js cluster scoring.
  *
  * The signal: when a published URL on a topically-similar keyword performs
  * poorly in Google Search Console after ≥30 days, future candidates sharing

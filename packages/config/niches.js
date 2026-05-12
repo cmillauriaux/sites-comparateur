@@ -56,8 +56,9 @@ export function parseSiteId(id) {
   return { niche, market };
 }
 
-// DataForSEO location + language codes per market. Used by
-// dataforseo-keywords.js when populating the queue.
+// DataForSEO location + language codes per market. Used by the product
+// enrichment pipeline (lib/google-shopping.js + lib/amazon-dfs.js) only —
+// keyword discovery is now Semrush-only (see MARKET_SEMRUSH below).
 export const MARKET_DATAFORSEO = {
   fr: { location_code: 2250, location_name: 'France',         language_code: 'fr', language_name: 'French' },
   us: { location_code: 2840, location_name: 'United States',  language_code: 'en', language_name: 'English' },

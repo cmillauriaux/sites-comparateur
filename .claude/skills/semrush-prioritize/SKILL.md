@@ -21,9 +21,11 @@ The user explicitly asks for one of:
 - "Mine Semrush for [niche]" / "scanne Semrush pour [niche]"
 - "/semrush-prioritize"
 
-Do NOT invoke for the daily auto pipeline — that uses DataForSEO via the
-GitHub Actions workflow. This skill is for the **manual** flow where the user
-wants to hand-pick articles to generate.
+The daily auto pipeline also consumes `data/semrush-priorities.json` (Semrush
+is the sole keyword source) and auto-refills it via `semrush-prioritize.js`
+when a (niche, market) bucket is empty. This skill is for the **interactive**
+flow where the user wants to hand-pick articles to generate — same registry,
+different entry point.
 
 ## Inputs the skill expects
 
@@ -122,5 +124,4 @@ confirm the published URL. Never paste the entire registry — it grows.
 - `packages/scripts/lib/cluster.js` — token-Jaccard greedy clustering
 - `packages/scripts/semrush-prioritize.js` — orchestrator
 - `packages/scripts/article-generator.js#generateFromCluster` — `--cluster` mode
-- `data/semrush-priorities.json` — registry (manual flow)
-- `data/keywords-queue.json` — separate, owned by the daily DataForSEO flow
+- `data/semrush-priorities.json` — single keyword registry consumed by both `--cluster` (manual) and `--bundle` (daily auto) modes

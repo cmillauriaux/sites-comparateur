@@ -16,7 +16,7 @@ The other three niches (sport-fitness, cuisine, maison-elec) have no `sites/<nic
 ## Reference projects (read these before improvising)
 
 - **[/Users/cedric/projects/perso/adult-visual-novel](/Users/cedric/projects/perso/adult-visual-novel)** — production Astro + Cloudflare Pages site that runs daily content generation via GitHub Actions calling the Claude Code CLI (`@anthropic-ai/claude-code`) with `CLAUDE_CODE_OAUTH_TOKEN`. Use its [scripts/generate-review.sh](/Users/cedric/projects/perso/adult-visual-novel/scripts/generate-review.sh) and [.github/workflows/generate-review.yml](/Users/cedric/projects/perso/adult-visual-novel/.github/workflows/generate-review.yml) as the canonical pattern: scrape sources first → build a `mktemp` prompt file with grounded data → invoke `claude_retry -p --dangerously-skip-permissions` → commit only `src/content/` and `public/images/`. The brief shows the Anthropic SDK approach (`article-generator.js` calling `client.messages.create`); **prefer the Claude Code CLI pattern from adult-visual-novel** unless explicitly asked otherwise — it inherits tool use (Write, Bash, scrapers) and is what the user already operates.
-- **[/Users/cedric/projects/perso/seo-analyzer](/Users/cedric/projects/perso/seo-analyzer)** — Python pipeline for DataForSEO + GSC. Reuse its scoring logic and DataForSEO call patterns ([seo_analyzer/fetch](/Users/cedric/projects/perso/seo-analyzer/seo_analyzer/fetch), [seo_analyzer/score](/Users/cedric/projects/perso/seo-analyzer/seo_analyzer/score)) rather than reimplementing. The brief's [`packages/scripts/dataforseo-keywords.js`](claude-code-guide-affiliation-sites.md) is a JS rewrite of the same idea — keep them aligned.
+- **[/Users/cedric/projects/perso/seo-analyzer](/Users/cedric/projects/perso/seo-analyzer)** — Python pipeline for DataForSEO + GSC. Useful reference for GSC API call patterns and scoring formulas ([seo_analyzer/fetch](/Users/cedric/projects/perso/seo-analyzer/seo_analyzer/fetch), [seo_analyzer/score](/Users/cedric/projects/perso/seo-analyzer/seo_analyzer/score)). Note: this repo no longer uses DataForSEO for keyword discovery — Semrush is the sole source via [`packages/scripts/semrush-prioritize.js`](packages/scripts/semrush-prioritize.js).
 
 ## Architecture — multi-niche × multi-market
 
@@ -35,13 +35,13 @@ sites/
 
 The single source of truth for what is actually wired up is [`packages/config/niches.js#ENABLED_SITES`](packages/config/niches.js). Pipelines, workflows, and `loadSiteConfig()` all gate off this list — adding a `(niche, market)` row is what turns a market on. Search `TODO_US_DOMAIN` / `TODO_GB_DOMAIN` to find every spot that still needs the real domain wired.
 
-Daily pipeline (per ENABLED_SITES row, GitHub Actions matrix, `max-parallel: 1` to serialize writes to `data/keywords-queue.json`):
-1. `dataforseo-keywords.js --niche <n> --market <m>` fills `data/keywords-queue.json[niche][market]` with `{keyword, volume, kd, cpc, score, intent, status, niche, market}`. DataForSEO `location_code` + `language_code` come from `MARKET_DATAFORSEO` in `niches.js`.
-2. `article-generator.js --niche <n> --market <m>` picks the highest-score `pending` keyword, scrapes the (niche, market) whitelist from [`packages/config/sources.config.js`](packages/config/sources.config.js), builds a per-market grounded prompt (Les Numériques voice for FR, Wirecutter voice for US, Which?/TechRadar voice for GB — see [`packages/scripts/lib/prompts.js`](packages/scripts/lib/prompts.js)), writes `sites/<niche>/<market>/src/content/articles/<slug>.mdx`, then post-fetches Amazon image+ASIN+price from the **correct marketplace** (`amazon.fr` / `amazon.com` / `amazon.co.uk`) and injects them.
+Daily pipeline (per ENABLED_SITES row, GitHub Actions matrix, `max-parallel: 1` to serialize writes to `data/semrush-priorities.json`):
+1. `semrush-prioritize.js --niche <n> --market <m>` fills `data/semrush-priorities.json[niche][market]` with topical clusters `{id, primaryKeyword, secondaryKeywords[], secondaryDetails[], score, intent, bundle, status, ...}`. Only triggered when the registry has zero pending opportunities for the pair. Semrush database codes come from `MARKET_SEMRUSH` in `niches.js` (fr→fr, us→us, gb→uk).
+2. `article-generator.js --niche <n> --market <m> --bundle` picks the next bundle slot (comparatif → pillar guide → avis) of the highest-score pending cluster, scrapes the (niche, market) whitelist from [`packages/config/sources.config.js`](packages/config/sources.config.js), builds a per-market grounded prompt (Les Numériques voice for FR, Wirecutter voice for US, Which?/TechRadar voice for GB — see [`packages/scripts/lib/prompts.js`](packages/scripts/lib/prompts.js)), writes `sites/<niche>/<market>/src/content/articles/<slug>.mdx`, then post-fetches Amazon image+ASIN+price from the **correct marketplace** (`amazon.fr` / `amazon.com` / `amazon.co.uk`) and injects them.
 3. `gsc-indexing.js` submits `pending` URLs to the GSC Indexing API (200/day cap tracked in `data/indexation-requests.json`). Use `--niche` / `--market` (or `--site <niche>-<market>`) to scope. Each (niche, market) is a separate GSC property since the domains differ.
-4. Weekly `update-articles.yml` refills the queue if empty, then refreshes the oldest published articles per (niche, market).
+4. Weekly `update-articles.yml` refreshes the oldest published articles per (niche, market) — re-scrapes sources and updates only what diverged.
 
-Shared state lives in `data/*.json` at the repo root and **must be committed by the workflow** so the next run sees it. The schema is `keywords-queue.json = { [niche]: { [market]: KeywordEntry[] } }` and `published-urls.json = PublishedUrl[]` where each entry carries `niche` and `market`.
+Shared state lives in `data/*.json` at the repo root and **must be committed by the workflow** so the next run sees it. The schemas are `semrush-priorities.json = { [niche]: { [market]: ClusterOpportunity[] } }` (the keyword backlog) and `published-urls.json = PublishedUrl[]` where each entry carries `niche` and `market`.
 
 ### Editorial voice per market
 
@@ -293,23 +293,37 @@ products: [ { name, score, asin?, awinId?, criteria: {...} } ]
 - Affiliation disclosure block (RGPD + Amazon/Awin TOS) must be present on every article — render it once via the `ArticleLayout`, don't ask the model to repeat it.
 - All four sites must each include `/mentions-legales` and `/politique-confidentialite` pages. Do not deploy a site missing these.
 
-## Manual editorial flow — Semrush cluster priorities
+## Editorial flow — Semrush cluster priorities
 
-Two parallel sources feed the writer:
+Semrush is the **sole** keyword source. Both the daily workflow and the
+manual flow consume the same `data/semrush-priorities.json` registry.
 
-| Pipeline                | Source         | Registry                       | Trigger          | Article shape           |
-|-------------------------|----------------|--------------------------------|------------------|-------------------------|
-| Daily auto              | DataForSEO     | `data/keywords-queue.json`     | GitHub Actions   | 1 keyword → 1 article   |
-| Manual cluster (Semrush)| Semrush API    | `data/semrush-priorities.json` | User (this repo) | 1 cluster → 1 article (primary + 4-7 secondaries) |
+| Pipeline                | Trigger                          | Article shape                                       |
+|-------------------------|----------------------------------|-----------------------------------------------------|
+| Daily auto (`--bundle`) | GitHub Actions (cadence-gated)   | 1 bundle slot/day → comparatif → pillar guide → avis |
+| Manual (`--cluster`)    | Operator (this repo)             | Hand-picked cluster → 1 article (primary + 4-7 secondaries) |
 
-Use the manual cluster flow when you want to hand-pick high-ROI Easy/Very-Easy
-opportunities (KD ≤ 29, vol ≥ 200) across a topical cluster — these articles
-typically capture 3-5× the addressable volume of a single-keyword piece.
+Clusters target high-ROI Easy/Very-Easy opportunities (KD ≤ 29, vol ≥ 200)
+across a topical group — these articles typically capture 3-5× the addressable
+volume of a single-keyword piece.
+
+The daily workflow auto-refills the priorities registry when `pending` opportunities
+hit zero for a (niche, market). To pre-fill manually before launch, or to swap
+the preset (e.g., `--longtail` for fresh sites), call `semrush-prioritize.js`
+directly.
 
 ```bash
 # 1. Mine Semrush + cluster + score (writes data/semrush-priorities.json)
 node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market fr
+node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market us
+node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market gb
 node packages/scripts/semrush-prioritize.js                # all enabled sites
+node packages/scripts/semrush-prioritize.js --longtail     # anti-sandbox preset (KD ≤ 19, vol 50-500, ≥3 tokens) — recommended for fresh US/GB sites
+node packages/scripts/semrush-prioritize.js --top 30       # bigger leaderboard
+node packages/scripts/semrush-prioritize.js --no-cache     # bypass 14-day disk cache
+
+# Market → Semrush database mapping (see MARKET_SEMRUSH in packages/config/niches.js):
+#   fr → fr, us → us, gb → uk (Semrush uses "uk" for the United Kingdom)
 
 # 2. Pick a cluster id from the printed top-N (or from the JSON), then:
 node packages/scripts/article-generator.js --cluster jardin-bricolage-fr-meilleur-robot-tondeuse-2026
@@ -324,17 +338,15 @@ this flow so it can be invoked conversationally.
 When `--cluster` succeeds, the article-generator:
 1. Writes the .mdx with `secondaryKeywords:` in the frontmatter (cluster-aware)
 2. Marks the opportunity `generated` in `data/semrush-priorities.json`
-3. **Absorbs** any matching keyword in `data/keywords-queue.json` (status →
-   `absorbed-by-cluster`) so the daily pipeline doesn't double-publish.
 
-Three invocation modes:
+Invocation modes:
 
 | Mode                                                | Behaviour                                                                  |
 |-----------------------------------------------------|----------------------------------------------------------------------------|
+| `--bundle`                                          | Daily-pipeline mode — picks the next bundle slot of the top cluster        |
 | `--cluster <id>`                                    | Generate that exact opportunity by id                                      |
 | `--cluster --count N`                               | Pick top N pending by score across resolved targets, stop on 1st failure   |
 | `--cluster --count N --longtail`                    | Same, but only clusters with primary ≥3 content tokens AND avgKD ≤ 19      |
-| (no `--cluster` flag)                               | Daily-pipeline mode — pulls from `keywords-queue.json`                     |
 
 **Long-tail mode (anti-sandbox).** New sites get throttled by Google for 1-3
 months; targeting head terms during that window wastes effort. Use `--longtail`
@@ -365,19 +377,19 @@ Required env: `SEMRUSH_API_KEY` in `.env` (Semrush Business plan or higher).
 ## CLI / commands cheatsheet
 
 ```bash
-# Refill the keyword queue for one (niche, market), or every ENABLED_SITES row
-node packages/scripts/dataforseo-keywords.js --niche jardin-bricolage --market fr
-node packages/scripts/dataforseo-keywords.js --site jardin-bricolage-us
-node packages/scripts/dataforseo-keywords.js                              # all enabled
-
-# Mine Semrush for cluster opportunities (manual editorial flow)
+# Mine Semrush for cluster opportunities (sole keyword source — fills data/semrush-priorities.json)
 node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market fr
+node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market us
+node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market gb
+node packages/scripts/semrush-prioritize.js                               # all ENABLED_SITES
 node packages/scripts/semrush-prioritize.js --top 30                      # bigger leaderboard
 node packages/scripts/semrush-prioritize.js --no-cache                    # bypass disk cache
 node packages/scripts/semrush-prioritize.js --longtail                    # anti-sandbox preset: KD ≤ 19, vol 50-500, ≥3 tokens
 
-# Generate the next article(s) — env MAX_ARTICLES_PER_RUN limits per (niche, market)
-node packages/scripts/article-generator.js --niche jardin-bricolage --market fr
+# Generate the next bundle slot (daily-pipeline mode) — env MAX_ARTICLES_PER_RUN limits per (niche, market)
+node packages/scripts/article-generator.js --niche jardin-bricolage --market fr --bundle
+
+# Or pick a specific cluster by id
 node packages/scripts/article-generator.js --cluster <id-from-priorities-json>
 
 # Auto-pick top N pending clusters from data/semrush-priorities.json (score-desc).
@@ -413,7 +425,7 @@ Local dev requires `.env` at the repo root with the variables listed in [section
 
 ## When extending the brief
 
-- Adding a niche → update [packages/config/sources.config.js](claude-code-guide-affiliation-sites.md), [packages/config/affiliate.config.js](claude-code-guide-affiliation-sites.md), `data/keywords-queue.json` (init `[]`), the GitHub Actions matrix in all three workflows, the niche list in `dataforseo-keywords.js#loadSiteConfigs`, **and** create the matching Cloudflare Pages project (`wrangler pages project create <niche>`) plus its custom domain. Forgetting any of these silently drops the niche from the pipeline.
+- Adding a niche → update [packages/config/sources.config.js](claude-code-guide-affiliation-sites.md), [packages/config/affiliate.config.js](claude-code-guide-affiliation-sites.md), add the seedKeywords/topicTokens to the site.config.js of each new (niche, market), the GitHub Actions matrix in all workflows, **and** create the matching Cloudflare Pages project (`wrangler pages project create <niche>`) plus its custom domain. Forgetting any of these silently drops the niche from the pipeline.
 
 ## Scraper bypass strategy
 
@@ -432,4 +444,4 @@ When you see a source failing in production logs:
 Don't add new "stealth" plugins reactively. The current setup beats lazy WAFs (Que Choisir's UA filter, Cdiscount's JS rendering, Amazon's basic bot check). Sources that beat it (Akamai Pro on big retailers) won't fall to incremental tweaks — accept them as misses or pay for a residential proxy.
 - Adding a source for an existing niche → add it to `sources.config.js`. If it needs a non-trivial search URL, also extend `buildSearchUrl()` in `article-generator.js` — the default `?q=` fallback breaks on most retailer sites.
 - Adding an affiliate program → add credentials to `.env` and GitHub Secrets, register it in `affiliate.config.js#programs`, and extend `buildAffiliateUrl()`. Then map at least one product to it in `affiliate.config.js#products` to test.
-- Tweaking the scoring formula in `dataforseo-keywords.js` → mirror the change in seo-analyzer's [seo_analyzer/score](/Users/cedric/projects/perso/seo-analyzer/seo_analyzer/score) so the two pipelines don't diverge.
+- Tweaking the scoring formula in `semrush-prioritize.js` → keep it consistent with the cluster-volume model documented in the script header; changes affect ranking across every (niche, market).

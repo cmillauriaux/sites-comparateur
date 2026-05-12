@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@10.15.0",
   "scripts": {
-    "keywords": "node packages/scripts/dataforseo-keywords.js",
+    "prioritize": "node packages/scripts/semrush-prioritize.js",
     "generate": "node packages/scripts/article-generator.js",
     "update": "node packages/scripts/content-updater.js",
     "indexing": "node packages/scripts/gsc-indexing.js",

@@ -1,22 +1,20 @@
 #!/usr/bin/env node
 /**
- * Weekly content refresh:
- *   1. If the (niche, market) queue has no pending entries → trigger
- *      DataForSEO refill for that pair.
- *   2. Otherwise pick the oldest published articles for that pair, re-scrape
- *      sources, and ask Claude to update only what diverged.
+ * Weekly content refresh: pick the oldest published articles per (niche,
+ * market), re-scrape their sources, and ask Claude to update only what
+ * diverged. Keyword discovery is no longer this script's job — see
+ * semrush-prioritize.js for that.
  *
  * Usage:
  *   node packages/scripts/content-updater.js --niche jardin-bricolage --market fr
  *   node packages/scripts/content-updater.js --site jardin-bricolage-us
  */
-import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import YAML from 'yaml';
 
-import { REPO_ROOT, SITES_DIR, requireEnv } from './lib/env.js';
-import { readQueue, readPublished, writePublished } from './lib/queue.js';
+import { SITES_DIR, requireEnv } from './lib/env.js';
+import { readPublished, writePublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveTargets, siteId, isLaunched } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
 import { getSourcesFor } from '@comparateur/config/sources';
@@ -26,15 +24,6 @@ const MIN_AGE_DAYS = parseInt(process.env.MIN_AGE_DAYS || '60', 10);
 
 function ageInDays(iso) {
   return (Date.now() - new Date(iso).getTime()) / 86400000;
-}
-
-function refillQueueViaCli(niche, market) {
-  console.log(`\n🔄 ${niche}/${market}: queue empty, refilling via dataforseo-keywords.js`);
-  const r = spawnSync('node', ['packages/scripts/dataforseo-keywords.js', '--niche', niche, '--market', market], {
-    stdio: 'inherit',
-    cwd: REPO_ROOT,
-  });
-  return r.status === 0;
 }
 
 function articlePathFor(siteConfig, urlEntry) {
@@ -233,15 +222,6 @@ async function run(targets) {
       console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
       continue;
     }
-    const queue = readQueue();
-    const pending = (queue?.[niche]?.[market] || []).filter(k => k.status === 'pending');
-
-    if (pending.length === 0) {
-      const ok = refillQueueViaCli(niche, market);
-      if (!ok) console.warn(`  ⚠️  refill failed for ${siteId(niche, market)}`);
-      continue;
-    }
-
     const candidates = readPublished()
       .filter(u => u.niche === niche && u.market === market && u.publishedAt && ageInDays(u.publishedAt) >= MIN_AGE_DAYS)
       .sort((a, b) => new Date(a.publishedAt) - new Date(b.publishedAt))

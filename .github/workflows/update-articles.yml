@@ -45,11 +45,9 @@ jobs:
       - name: Install Claude Code CLI
         run: npm install -g @anthropic-ai/claude-code
 
-      - name: Refresh content (or refill queue if empty)
+      - name: Refresh oldest articles
         env:
           CLAUDE_CODE_OAUTH_TOKEN:    ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          DATAFORSEO_LOGIN:           ${{ secrets.DATAFORSEO_LOGIN }}
-          DATAFORSEO_PASSWORD:        ${{ secrets.DATAFORSEO_PASSWORD }}
           AMAZON_AFFILIATE_ID_FR:     ${{ secrets.AMAZON_AFFILIATE_ID_FR }}
           AMAZON_AFFILIATE_ID_US:     ${{ secrets.AMAZON_AFFILIATE_ID_US }}
           AMAZON_AFFILIATE_ID_GB:     ${{ secrets.AMAZON_AFFILIATE_ID_GB }}

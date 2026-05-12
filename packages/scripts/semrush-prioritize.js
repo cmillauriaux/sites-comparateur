@@ -14,8 +14,9 @@
  *   4. Drop keywords already published (data/published-urls.json) or already
  *      in the priorities registry
  *   5. Cluster by token-Jaccard ≥ 0.6 (cluster.js)
- *   6. Score each cluster (same formula as dataforseo-keywords.js but on
- *      cluster totals so 5-keyword clusters don't get unfair boost)
+ *   6. Score each cluster: `(totalVolume / (avgKD+1)) * log(avgCPC+1.5)` —
+ *      applied on cluster aggregates so a 5-keyword cluster doesn't get an
+ *      unfair multiplicative boost vs a single-keyword opportunity
  *   7. Classify intent on the primary keyword via detectIntent (reused so the
  *      url subdir picked at generation time stays consistent)
  *   8. Merge into the registry

@@ -24,7 +24,7 @@ import slugger from 'github-slugger';
 import YAML from 'yaml';
 
 import { REPO_ROOT, SITES_DIR, DATA_DIR, requireEnv } from './lib/env.js';
-import { readQueue, writeQueue, appendPublished, getBucket, readPublished } from './lib/queue.js';
+import { appendPublished, readPublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveTargets, isLaunched } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
 import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices, injectMerchantUrls } from './lib/product-images.js';
@@ -158,21 +158,14 @@ function parseGitStatus(stdout) {
   );
 }
 
-function pickNextPending(queue, niche, market) {
-  const bucket = queue?.[niche]?.[market] || [];
-  return bucket
-    .filter(k => k.status === 'pending' && (k.errorCount || 0) < 3)
-    .sort((a, b) => b.score - a.score)[0];
-}
-
 /**
  * Core generation pipeline — pure function of (siteConfig, keyword inputs).
  *
- * Reused by both the queue-driven path (generateOne, the daily pipeline) and
- * the cluster-driven path (generateFromCluster, the manual Semrush flow).
- * The queue/registry bookkeeping (mark writing → published, errorCount, etc.)
- * lives in the wrappers — this function only knows how to turn a keyword brief
- * into a published .mdx, and throws on any failure.
+ * Used by the cluster-driven path (generateFromCluster, runTopClusters) and
+ * the bundle runner (runBundle). The registry bookkeeping (mark writing →
+ * published, errorCount, etc.) lives in the wrappers — this function only
+ * knows how to turn a keyword brief into a published .mdx, and throws on
+ * any failure.
  *
  * @returns {Promise<{publishedUrl: string, articleSlug: string, outputPath: string}>}
  */
@@ -542,72 +535,11 @@ function cleanupOutput(siteConfig, keyword) {
   } catch { /* best-effort */ }
 }
 
-// ───────────────────────────────────────────────────────── QUEUE-DRIVEN PATH
-// The daily pipeline. Picks the highest-score pending keyword from
-// keywords-queue.json, generates, and updates the queue + published-urls.json.
-
-async function generateOne(siteConfig) {
-  const { niche, market } = siteConfig;
-  const queue = readQueue();
-  const next = pickNextPending(queue, niche, market);
-
-  if (!next) {
-    console.log(`ℹ️  ${niche}/${market}: no pending keyword (queue empty or all errored). Run dataforseo-keywords or content-updater.`);
-    return null;
-  }
-
-  console.log(`\n✍️  ${niche}/${market}: "${next.keyword}" (vol=${next.volume}, kd=${next.kd}, score=${next.score}, intent=${next.intent})`);
-
-  // Reserve the slot to prevent parallel duplication.
-  next.status = 'writing';
-  writeQueue(queue);
-
-  try {
-    const { publishedUrl, finalIntent } = await generateArticle(siteConfig, {
-      keyword: next.keyword,
-      intent: next.intent,
-    });
-    const fresh = readQueue();
-    const bucket = getBucket(fresh, niche, market);
-    const idx = bucket.findIndex(k => k.keyword === next.keyword);
-    if (idx !== -1) {
-      bucket[idx].status = 'published';
-      bucket[idx].publishedUrl = publishedUrl;
-      bucket[idx].publishedAt = new Date().toISOString();
-      writeQueue(fresh);
-    }
-    appendPublished({
-      url: publishedUrl,
-      niche, market,
-      keyword: next.keyword,
-      intent: finalIntent,
-      publishedAt: new Date().toISOString(),
-      indexationStatus: 'pending',
-    });
-    console.log(`  ✅ Published: ${publishedUrl}`);
-    return publishedUrl;
-  } catch (err) {
-    console.error(`  ❌ Failed: ${err.message}`);
-    cleanupOutput(siteConfig, next.keyword);
-    const fresh = readQueue();
-    const bucket = fresh?.[niche]?.[market] || [];
-    const idx = bucket.findIndex(k => k.keyword === next.keyword);
-    if (idx !== -1) {
-      bucket[idx].status = 'pending';
-      bucket[idx].errorCount = (bucket[idx].errorCount || 0) + 1;
-      bucket[idx].lastError = err.message;
-      writeQueue(fresh);
-    }
-    return null;
-  }
-}
-
 // ──────────────────────────────────────────────────────── CLUSTER-DRIVEN PATH
-// The Semrush manual flow. Looks up an opportunity in semrush-priorities.json
-// by id, runs the same generation pipeline with secondary keywords injected
-// into the prompt, then marks the opportunity `generated` and absorbs any
-// matching keywords from keywords-queue.json so the daily pipeline doesn't
-// re-publish them.
+// The Semrush flow — sole keyword source. Looks up an opportunity in
+// semrush-priorities.json by id and runs the generation pipeline with
+// secondary keywords injected into the prompt, then marks the opportunity
+// `generated`.
 
 const PRIORITIES_PATH = resolve(DATA_DIR, 'semrush-priorities.json');
 
@@ -628,32 +560,6 @@ function findOpportunity(registry, clusterId) {
     }
   }
   return null;
-}
-
-/**
- * Mark every queue keyword that matches the cluster's primary or any secondary
- * as `absorbed-by-cluster` so daily-articles.yml doesn't re-publish the same
- * topic. Compare on lowercase trim — Semrush and DataForSEO routinely diverge
- * on case and trailing punctuation.
- */
-function absorbCoveredQueueKeywords(opp, publishedUrl) {
-  const queue = readQueue();
-  const bucket = queue?.[opp.niche]?.[opp.market];
-  if (!bucket) return 0;
-  const covered = new Set([opp.primaryKeyword, ...(opp.secondaryKeywords || [])]
-    .map(k => k.toLowerCase().trim()));
-  let absorbed = 0;
-  for (const k of bucket) {
-    if (k.status !== 'pending') continue;
-    if (covered.has((k.keyword || '').toLowerCase().trim())) {
-      k.status = 'absorbed-by-cluster';
-      k.absorbedBy = publishedUrl;
-      k.absorbedAt = new Date().toISOString();
-      absorbed++;
-    }
-  }
-  if (absorbed > 0) writeQueue(queue);
-  return absorbed;
 }
 
 /**
@@ -771,9 +677,6 @@ async function generateFromCluster(clusterId) {
       indexationStatus: 'pending',
     });
 
-    const absorbed = absorbCoveredQueueKeywords(opp, publishedUrl);
-    if (absorbed > 0) console.log(`  🔁 Absorbed ${absorbed} queue keyword(s) covered by this cluster`);
-
     console.log(`  ✅ Published: ${publishedUrl}`);
     return publishedUrl;
   } catch (err) {
@@ -787,113 +690,6 @@ async function generateFromCluster(clusterId) {
       writePriorities(fresh);
     }
     return null;
-  }
-}
-
-async function run(targets) {
-  for (const { niche, market } of targets) {
-    const siteConfig = await loadSiteConfig(niche, market);
-    if (!isLaunched(siteConfig)) {
-      console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
-      continue;
-    }
-    // Cadence ramp: the per-run cap depends on the site's maturity. Cross-
-    // workflow 1/day rule is enforced by also subtracting publishedToday so a
-    // run that bypassed cadence-cli (e.g. local invocation) still respects it.
-    const cadence = getCadence(niche, market);
-    const stageCap = Math.min(MAX_ARTICLES_PER_RUN, cadence.affiliateCap);
-    const cap = Math.max(0, stageCap - cadence.publishedToday);
-    console.log(`📊 cadence ${niche}/${market}: stage=${cadence.stage} published=${cadence.publishedCount} publishedToday=${cadence.publishedToday} affCap=${cadence.affiliateCap} → run cap=${cap}`);
-    let written = 0;
-    for (let i = 0; i < cap; i++) {
-      const url = await generateOne(siteConfig);
-      if (url) written++;
-      else break;
-    }
-    console.log(`\n📊 ${niche}/${market}: ${written}/${cap} articles generated`);
-  }
-}
-
-// ─────────────────────────────────────────────────────── INFORMATIONAL PATH
-// Weekly off-affiliate run. Picks the next pending keyword from the queue
-// and rewrites it with intent='informational' (no product components, no
-// affiliate links). Goal = dilute the affiliate-density signal that flags
-// scaled content abuse. ALWAYS exactly 1 article per (niche, market) per
-// invocation — this is a balance piece, not a volume play.
-async function generateOneInformational(siteConfig) {
-  const { niche, market } = siteConfig;
-  const queue = readQueue();
-  const next = pickNextPending(queue, niche, market);
-
-  if (!next) {
-    console.log(`ℹ️  ${niche}/${market}: no pending keyword for informational run.`);
-    return null;
-  }
-
-  console.log(`\n📚 ${niche}/${market}: INFORMATIONAL "${next.keyword}" (vol=${next.volume}, kd=${next.kd})`);
-
-  next.status = 'writing';
-  writeQueue(queue);
-
-  try {
-    const { publishedUrl } = await generateArticle(siteConfig, {
-      keyword: next.keyword,
-      intent: 'informational',
-    });
-    const fresh = readQueue();
-    const bucket = getBucket(fresh, niche, market);
-    const idx = bucket.findIndex(k => k.keyword === next.keyword);
-    if (idx !== -1) {
-      bucket[idx].status = 'published';
-      bucket[idx].publishedUrl = publishedUrl;
-      bucket[idx].publishedAt = new Date().toISOString();
-      bucket[idx].publishedAs = 'informational';
-      writeQueue(fresh);
-    }
-    appendPublished({
-      url: publishedUrl,
-      niche, market,
-      keyword: next.keyword,
-      intent: 'informational',
-      publishedAt: new Date().toISOString(),
-      indexationStatus: 'pending',
-      isInformational: true,
-    });
-    console.log(`  ✅ Published (informational): ${publishedUrl}`);
-    return publishedUrl;
-  } catch (err) {
-    console.error(`  ❌ Failed: ${err.message}`);
-    cleanupOutput(siteConfig, next.keyword);
-    const fresh = readQueue();
-    const bucket = fresh?.[niche]?.[market] || [];
-    const idx = bucket.findIndex(k => k.keyword === next.keyword);
-    if (idx !== -1) {
-      bucket[idx].status = 'pending';
-      bucket[idx].errorCount = (bucket[idx].errorCount || 0) + 1;
-      bucket[idx].lastError = err.message;
-      writeQueue(fresh);
-    }
-    return null;
-  }
-}
-
-async function runInformational(targets) {
-  for (const { niche, market } of targets) {
-    const siteConfig = await loadSiteConfig(niche, market);
-    if (!isLaunched(siteConfig)) {
-      console.warn(`⏭  ${niche}/${market}: skipping — domain still placeholder (${siteConfig.domain})`);
-      continue;
-    }
-    // Cadence gate: sandbox-stage sites publish ZERO informational pieces —
-    // we'd rather concentrate the tiny weekly budget on one comparatif.
-    // Warming+ stages allow it.
-    const cadence = getCadence(niche, market);
-    if (!cadence.allowInformational) {
-      console.log(`⏭  ${niche}/${market}: informational disabled at stage=${cadence.stage} (published=${cadence.publishedCount})`);
-      continue;
-    }
-    console.log(`📊 cadence ${niche}/${market}: stage=${cadence.stage} published=${cadence.publishedCount} → informational allowed`);
-    await generateOneInformational(siteConfig);
   }
 }
 
@@ -1019,7 +815,7 @@ async function runTopClusters(targets, count, { longtail = false, guideOnly = fa
 //
 //   1. Respect cadence (active-day + cross-workflow 1/day rule).
 //   2. Ask bundle.js for the next slot to ship (resume partial → start new).
-//   3. If no bundle work: fall back to the legacy queue picker (generateOne).
+//   3. If no bundle work: log + skip (operator runs semrush-prioritize.js).
 //   4. Persist bundle state on success/failure so the next active day knows
 //      which slot to pick.
 //
@@ -1046,9 +842,7 @@ async function runBundle(targets) {
     const pick = pickNextBundleSlot(priorities, niche, market);
 
     if (!pick) {
-      console.log(`📦 ${niche}/${market}: no bundle work — falling back to queue path`);
-      const url = await generateOne(siteConfig);
-      console.log(url ? `📊 ${niche}/${market}: 1/1 queue article generated` : `📊 ${niche}/${market}: 0/1 (queue empty or failed)`);
+      console.log(`📦 ${niche}/${market}: no bundle work pending. Run semrush-prioritize.js to refill data/semrush-priorities.json.`);
       continue;
     }
 
@@ -1122,17 +916,7 @@ async function runBundle(targets) {
 
 const args = parseArgs(process.argv.slice(2));
 
-if (args.informational === true) {
-  // Weekly off-affiliate run: 1 informational article per (niche, market).
-  // Forces intent='informational' regardless of what the queue entry was
-  // classified as — picks the same way as the daily run, just rewrites with
-  // a different brief.
-  const targets = resolveTargets(args);
-  runInformational(targets).then(() => process.exit(0)).catch(err => {
-    console.error(err);
-    process.exit(1);
-  });
-} else if (typeof args.cluster === 'string') {
+if (typeof args.cluster === 'string') {
   // --cluster <id> → generate that exact cluster
   generateFromCluster(args.cluster).then(() => process.exit(0)).catch(err => {
     console.error(err);
@@ -1156,17 +940,14 @@ if (args.informational === true) {
   });
 } else if (args.bundle === true) {
   // --bundle → unified daily-content runner. Picks the next bundle slot
-  // from semrush-priorities; falls back to the queue when no bundle work
-  // is available; respects the cross-workflow 1/day cap.
+  // from semrush-priorities and respects the cross-workflow 1/day cap.
   const targets = resolveTargets(args);
   runBundle(targets).then(() => process.exit(0)).catch(err => {
     console.error(err);
     process.exit(1);
   });
 } else {
-  const targets = resolveTargets(args);
-  run(targets).then(() => process.exit(0)).catch(err => {
-    console.error(err);
-    process.exit(1);
-  });
+  console.error('Usage: article-generator.js --bundle | --cluster [<id>] [--count N] [--longtail] [--guide-only]');
+  console.error('       (--niche/--market/--site flags scope the run; defaults to all ENABLED_SITES)');
+  process.exit(1);
 }

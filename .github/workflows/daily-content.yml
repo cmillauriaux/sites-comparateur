@@ -4,8 +4,9 @@ name: Daily Content Generation
 # weekly-informational with a single bundle-aware runner.
 #
 # Per active day, the article-generator picks the next slot of a topical
-# bundle (comparatif → pillar guide → avis) from data/semrush-priorities.json,
-# falling back to data/keywords-queue.json if no bundle work is pending.
+# bundle (comparatif → pillar guide → avis) from data/semrush-priorities.json.
+# When the priorities registry is empty for a (niche, market), this workflow
+# refills it via semrush-prioritize.js (--longtail for fresh sites).
 # The cross-workflow 1/day rule still applies (publishedToday > 0 → skip).
 #
 # Cadence: 1 → 2 → 3 articles per week as the site matures (sandbox →
@@ -119,19 +120,18 @@ jobs:
         run: npm install -g @anthropic-ai/claude-code
 
       - if: env.SKIP != '1'
-        name: Refill keyword queue if empty (DataForSEO)
+        name: Refill Semrush priorities if empty
         env:
-          DATAFORSEO_LOGIN:    ${{ secrets.DATAFORSEO_LOGIN }}
-          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+          SEMRUSH_API_KEY: ${{ secrets.SEMRUSH_API_KEY }}
         run: |
-          QUEUE_LEN=$(node -e "const q=require('./data/keywords-queue.json'); console.log((q[process.env.NICHE]?.[process.env.MARKET]||[]).filter(k=>k.status==='pending').length)")
-          echo "pending keywords for $SITE: $QUEUE_LEN"
-          if [ "$QUEUE_LEN" = "0" ]; then
-            node packages/scripts/dataforseo-keywords.js --niche "$NICHE" --market "$MARKET"
+          PENDING=$(node -e "const fs=require('fs');const p='./data/semrush-priorities.json';if(!fs.existsSync(p)){console.log(0);process.exit()}const r=JSON.parse(fs.readFileSync(p,'utf8'));const b=r[process.env.NICHE]?.[process.env.MARKET]||[];console.log(b.filter(o=>o.status!=='generated'&&o.status!=='rejected'&&(o.errorCount||0)<3).length)")
+          echo "pending opportunities for $SITE: $PENDING"
+          if [ "$PENDING" = "0" ]; then
+            node packages/scripts/semrush-prioritize.js --niche "$NICHE" --market "$MARKET" --longtail
           fi
 
       - if: env.SKIP != '1'
-        name: Generate next bundle slot (or queue fallback)
+        name: Generate next bundle slot
         env:
           CLAUDE_CODE_OAUTH_TOKEN:    ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           DATAFORSEO_LOGIN:           ${{ secrets.DATAFORSEO_LOGIN }}
