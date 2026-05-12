@@ -31,5 +31,16 @@
     "intent": "avis",
     "publishedAt": "2026-05-11T21:16:29.510Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://cuisineexpert.fr/comparatifs/machine-a-cafe-a-grain-professionnelle/",
+    "niche": "cuisine",
+    "market": "fr",
+    "keyword": "machine a cafe a grain professionnelle",
+    "bundleId": "cuisine-fr-machine-a-cafe-a-grain-professionnelle",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-05-12T21:18:31.551Z",
+    "indexationStatus": "pending"
   }
 ]

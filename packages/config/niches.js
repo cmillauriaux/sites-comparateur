@@ -27,6 +27,7 @@ export const ENABLED_SITES = [
   { niche: 'jardin-bricolage', market: 'fr' },
   { niche: 'jardin-bricolage', market: 'us' },
   { niche: 'jardin-bricolage', market: 'gb' },
+  { niche: 'cuisine',          market: 'fr' },
 ];
 
 export function isValidNiche(niche) {

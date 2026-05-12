@@ -1,0 +1,68 @@
+import mdx from '@astrojs/mdx';
+import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
+import icon from 'astro-icon';
+import pagefind from 'astro-pagefind';
+import { defineConfig } from 'astro/config';
+import { SITE_TEMPLATE_SRC, loadHreflangSiblings } from '@comparateur/site-template';
+import siteConfig from './site.config.js';
+
+const hreflangSiblings = await loadHreflangSiblings(siteConfig.niche);
+const fullSiteConfig = { ...siteConfig, hreflangSiblings };
+
+const virtualSiteConfigPlugin = {
+  name: 'virtual-site-config',
+  resolveId(id) {
+    if (id === 'virtual:site-config') return '\0virtual:site-config';
+  },
+  load(id) {
+    if (id === '\0virtual:site-config') return `export default ${JSON.stringify(fullSiteConfig)}`;
+  },
+};
+
+export default defineConfig({
+  output: 'static',
+  site: `https://${siteConfig.domain}`,
+  trailingSlash: 'always',
+  srcDir: SITE_TEMPLATE_SRC,
+  publicDir: './public',
+  build: { concurrency: 6 },
+
+  prefetch: { defaultStrategy: 'viewport' },
+
+  vite: {
+    plugins: [tailwindcss(), virtualSiteConfigPlugin],
+    envDir: '../../../',
+  },
+
+  i18n: {
+    defaultLocale: 'fr',
+    locales: ['fr'],
+    routing: { prefixDefaultLocale: false, redirectToDefaultLocale: false },
+  },
+
+  image: {
+    responsiveStyles: true,
+    layout: 'constrained',
+    service: {
+      config: {
+        jpeg: { mozjpeg: true },
+        webp: { effort: 6, alphaQuality: 80 },
+        avif: { effort: 4 },
+      },
+    },
+    remotePatterns: [
+      { protocol: 'https', hostname: '*.unsplash.com' },
+      { protocol: 'https', hostname: '*.pexels.com' },
+    ],
+  },
+
+  integrations: [
+    sitemap(),
+    mdx(),
+    pagefind(),
+    icon({
+      include: { lucide: ['arrow-right', 'check', 'star', 'shopping-cart', 'external-link', 'menu', 'x', 'search', 'rss'] },
+    }),
+  ],
+});
