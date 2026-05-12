@@ -6,7 +6,13 @@
  * spelling MUST switch with the locale: Les Numériques tone in French,
  * Wirecutter tone in American English, Which?/TechRadar tone in British
  * English. The differences below are deliberate — do not "harmonise" them.
+ *
+ * On top of the market filter, a niche voice profile (see voice-profiles.js)
+ * overlays sentence rhythm / opening / lexicon / section-order preferences
+ * so the 4 niches don't share a prose fingerprint.
  */
+
+import { buildVoiceBlock } from './voice-profiles.js';
 
 // Anti-LLM-stylometric guidance. Injected into every builder so the model
 // avoids the punctuation, transitional phrases, and structural tics that
@@ -271,6 +277,7 @@ Vocabulaire technique précis, JAMAIS de marketing ("révolutionnaire", "incroya
 
 EXCEPTION : tu peux nommer une source UNIQUEMENT si deux sources se contredisent franchement.
 
+${buildVoiceBlock({ niche: siteConfig.niche, keyword, slug: articleSlug, lang: 'fr' })}
 ==========================================
 PRIX — NE PAS INVENTER
 ==========================================
@@ -457,6 +464,7 @@ Precise technical vocabulary. NEVER marketing fluff ("revolutionary", "amazing")
 
 EXCEPTION: name a source ONLY when two sources clearly contradict each other.
 
+${buildVoiceBlock({ niche: siteConfig.niche, keyword, slug: articleSlug, lang: 'en' })}
 ==========================================
 PRICES — DO NOT INVENT
 ==========================================

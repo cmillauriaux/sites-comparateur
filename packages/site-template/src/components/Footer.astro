@@ -1,7 +1,7 @@
 ---
 import siteConfig from 'virtual:site-config';
 import { i18n } from '@comparateur/config';
-const s = i18n(siteConfig.market);
+const s = i18n(siteConfig.market, siteConfig);
 const year = new Date().getFullYear();
 const slugs = s.legalSlugs;
 ---

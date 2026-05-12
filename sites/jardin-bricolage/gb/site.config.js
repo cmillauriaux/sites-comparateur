@@ -46,10 +46,35 @@ export default {
     ],
   },
 
+  // Same archetype + font pair as the FR/US siblings; GB leans cooler/mossy
+  // so the three jardin-bricolage markets don't read as identical triplets.
   theme: {
-    primaryColor: '#2d6a4f',
-    accentColor: '#74c69d',
-    heroBackground: '#f0f7f4',
+    palette: {
+      primary:      '#3e6b54',
+      primaryDark:  '#284838',
+      accent:       '#8db58c',
+      accentLight:  '#bfd6be',
+      heroBg:       '#eef4ee',
+      text:         '#1f2937',
+      textMuted:    '#4b5563',
+      border:       '#e5e7eb',
+    },
+    typography: {
+      headingFont:    'Crimson Pro',
+      bodyFont:       'Inter',
+      headingWeight:  700,
+      bodyWeight:     400,
+    },
+    density: {
+      radius:           '0.5rem',
+      spacingScale:     1.0,
+      contentMaxWidth:  '72ch',
+    },
+    logo: {
+      archetype:    'leaf',
+      primaryFill:  '#3e6b54',
+      accentFill:   '#8db58c',
+    },
   },
 
   affiliatePrograms: ['amazon-gb'],   // add Awin UK merchants when wired

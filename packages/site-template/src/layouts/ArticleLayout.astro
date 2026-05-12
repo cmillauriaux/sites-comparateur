@@ -40,6 +40,21 @@ const articleUrl = `${baseUrl}${Astro.url.pathname}`;
 const isReview = data.intent === 'avis' && data.product;
 const isRoundup = data.intent === 'comparatif' && Array.isArray(data.products) && data.products.length > 0;
 
+// Publisher logo + sameAs strengthen the Organization node so it doesn't read
+// as a stub. `social` is optional in site.config.js; absent → no sameAs.
+const social = (siteConfig as { social?: Record<string, string | undefined> }).social ?? {};
+const sameAs = Object.values(social).filter((u): u is string => typeof u === 'string' && u.length > 0);
+const publisherSchema = {
+  '@type': 'Organization',
+  name: siteConfig.name,
+  url: baseUrl,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${baseUrl}/favicon.svg`,
+  },
+  ...(sameAs.length > 0 ? { sameAs } : {}),
+};
+
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': isReview ? 'Review' : 'Article',
@@ -49,11 +64,7 @@ const articleSchema = {
   dateModified: data.updatedAt.toISOString(),
   inLanguage: siteConfig.locale ?? 'fr-FR',
   url: articleUrl,
-  publisher: {
-    '@type': 'Organization',
-    name: siteConfig.name,
-    url: baseUrl,
-  },
+  publisher: publisherSchema,
   ...(authorSchema ? { author: authorSchema } : {}),
   ...(isReview && data.product && data.finalScore !== undefined ? {
     itemReviewed: { '@type': 'Product', name: data.product.name, brand: { '@type': 'Brand', name: data.product.developer ?? data.product.name } },

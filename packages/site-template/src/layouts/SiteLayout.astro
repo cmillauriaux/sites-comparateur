@@ -30,6 +30,37 @@ const ogLocale = siteLocale.replace('-', '_');
 const isHome = canonicalPath === '/' || canonicalPath === '';
 const siblings = (siteConfig.hreflangSiblings ?? []) as Array<{ market: string; locale: string; domain: string }>;
 const xDefault = siblings.find(s => s.market === 'fr') ?? siblings[0] ?? null;
+
+// Per-site theme: emit CSS variables + load the configured fonts. Falls
+// back to the global.css defaults when a site hasn't enriched its theme
+// block yet (e.g. sites scaffolded before this refactor).
+const theme = siteConfig.theme;
+const palette = theme?.palette;
+const typography = theme?.typography;
+const density = theme?.density;
+
+// bunny.net Fonts — Google Fonts-compatible API without third-party cookies.
+// Skipped when typography is absent (theme not enriched) to avoid a 404
+// stylesheet request.
+const fontsHref = typography
+  ? `https://fonts.bunny.net/css?family=${encodeURIComponent(typography.headingFont)}:wght@${typography.headingWeight ?? 700}|${encodeURIComponent(typography.bodyFont)}:wght@${typography.bodyWeight ?? 400}&display=swap`
+  : null;
+
+const themeCss = [
+  palette && `--color-primary: ${palette.primary};`,
+  palette && `--color-primary-dark: ${palette.primaryDark};`,
+  palette && `--color-accent: ${palette.accent};`,
+  palette && `--color-accent-light: ${palette.accentLight};`,
+  palette && `--color-hero-bg: ${palette.heroBg};`,
+  palette && `--color-text: ${palette.text};`,
+  palette && `--color-text-muted: ${palette.textMuted};`,
+  palette && `--color-border: ${palette.border};`,
+  density && `--radius: ${density.radius};`,
+  density && `--spacing-scale: ${density.spacingScale};`,
+  density && `--max-w-prose: ${density.contentMaxWidth};`,
+  typography && `--font-heading: "${typography.headingFont}", ui-serif, Georgia, serif;`,
+  typography && `--font-body: "${typography.bodyFont}", ui-sans-serif, system-ui, sans-serif;`,
+].filter(Boolean).join(' ');
 ---
 <!doctype html>
 <html lang={htmlLang}>
@@ -58,6 +89,9 @@ const xDefault = siblings.find(s => s.market === 'fr') ?? siblings[0] ?? null;
     {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
     <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} — RSS`} href="/rss.xml" />
+    {fontsHref && <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />}
+    {fontsHref && <link rel="stylesheet" href={fontsHref} />}
+    {themeCss && <style set:html={`:root { ${themeCss} }`} is:inline />}
     <UmamiAnalytics />
   </head>
   <body class="min-h-screen flex flex-col">

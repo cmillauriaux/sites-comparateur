@@ -11,7 +11,10 @@
 @source "../../../../sites/*/*/src/content/**/*.{md,mdx}";
 @source "../../../../sites/*/*/src/pages/**/*.{astro,html,md,mdx}";
 
-/* JardinGuide — vert jardin */
+/* Defaults — overridden per-site by SiteLayout.astro which emits an inline
+   <style> with values from site.config.js#theme. Keep these in sync with
+   the jardin-bricolage/fr palette so a site that hasn't enriched its
+   theme block still renders sanely. */
 :root {
   --color-primary:    #2d6a4f;
   --color-primary-dark: #1b4332;
@@ -30,6 +33,11 @@
 
   --max-w-prose:      72ch;
   --max-w-page:       1200px;
+
+  --radius:           0.5rem;
+  --spacing-scale:    1;
+  --font-heading:     ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  --font-body:        ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 @theme {
@@ -45,8 +53,12 @@ html { scroll-behavior: smooth; }
 body {
   color: var(--color-text);
   background: var(--color-bg);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }
 
 @layer base {
@@ -54,6 +66,6 @@ body {
   a:hover { color: var(--color-primary-dark); }
 }
 
-.prose :where(h1, h2, h3) { color: var(--color-primary-dark); }
+.prose :where(h1, h2, h3, h4) { font-family: var(--font-heading); color: var(--color-primary-dark); }
 .prose :where(a) { text-decoration-thickness: 1px; }
 .prose :where(table) { font-size: 0.9rem; }

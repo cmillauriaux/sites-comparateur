@@ -56,13 +56,51 @@ export default {
     ],
   },
 
+  // Per-site visual identity injected as CSS variables in <head> by SiteLayout,
+  // and consumed by the Logo component for the SVG archetype. Varying these
+  // across (niche, market) breaks the shared-template fingerprint that
+  // would otherwise let Google cluster all 12 sites as one network.
   theme: {
-    primaryColor: '#2d6a4f',
-    accentColor: '#74c69d',
-    heroBackground: '#f0f7f4',
+    palette: {
+      primary:      '#2d6a4f',
+      primaryDark:  '#1b4332',
+      accent:       '#74c69d',
+      accentLight:  '#b7e4c7',
+      heroBg:       '#f0f7f4',
+      text:         '#1f2937',
+      textMuted:    '#4b5563',
+      border:       '#e5e7eb',
+    },
+    typography: {
+      headingFont:    'Crimson Pro',  // serif, garden-editorial feel
+      bodyFont:       'Inter',
+      headingWeight:  700,
+      bodyWeight:     400,
+    },
+    density: {
+      radius:           '0.5rem',     // comfortable, neither sharp nor pillowy
+      spacingScale:     1.0,
+      contentMaxWidth:  '72ch',
+    },
+    logo: {
+      archetype:    'leaf',
+      primaryFill:  '#2d6a4f',
+      accentFill:   '#74c69d',
+    },
   },
 
   affiliatePrograms: ['amazon-fr', 'awin-leroy-merlin', 'awin-mr-bricolage', 'awin-castorama'],
+
+  // Publisher Organization sameAs — populates the JSON-LD social proof
+  // graph rendered by ArticleLayout + index. Leave entries undefined until
+  // each profile exists; the schema filters empty strings so partial
+  // population is fine. NEVER ship a URL that 404s.
+  social: {
+    // facebook:  'https://www.facebook.com/jardinguide',
+    // instagram: 'https://www.instagram.com/jardinguide',
+    // twitter:   'https://twitter.com/jardinguide',
+    // linkedin:  'https://www.linkedin.com/company/jardinguide',
+  },
 
   // Editorial author. Drives the AuthorBio block + JSON-LD `author: Person`
   // (E-E-A-T signal — hands-on background backs the editorial voice). The

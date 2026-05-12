@@ -1,6 +1,7 @@
 ---
 import siteConfig from 'virtual:site-config';
 import { i18n } from '@comparateur/config';
+import Logo from './Logo.astro';
 const s = i18n(siteConfig.market);
 
 const navItems = [
@@ -13,12 +14,7 @@ const navItems = [
 <header class="border-b border-[var(--color-border)] bg-white sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/85">
   <div class="mx-auto max-w-[var(--max-w-page)] px-4 h-14 flex items-center justify-between">
     <a href="/" class="flex items-center gap-2 font-semibold text-lg text-[var(--color-primary-dark)]">
-      <svg aria-hidden="true" class="h-7 w-7" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="6" fill="#2d6a4f"/>
-        <path d="M16 27 V17" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M16 18 C 10.5 18, 7.5 13.5, 9 9 C 14 9, 16 13.5, 16 18 Z" fill="#95d5b2"/>
-        <path d="M16 18 C 21.5 18, 24.5 13.5, 23 9 C 18 9, 16 13.5, 16 18 Z" fill="#74c69d"/>
-      </svg>
+      <Logo class="h-7 w-7" />
       <span>{siteConfig.name}</span>
     </a>
     <nav class="flex items-center gap-6 text-sm">

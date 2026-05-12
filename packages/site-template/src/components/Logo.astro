@@ -1,0 +1,48 @@
+---
+import siteConfig from 'virtual:site-config';
+
+// Rendered inside the Header, sized via the parent's class (h-7 w-7 by
+// default). The archetype + fills come from site.config.js#theme.logo, so
+// each (niche, market) ships a distinct SVG — not just a recoloured copy of
+// the same paths.
+
+interface Props {
+  /** Override the configured archetype/fills (useful in design tests). */
+  archetype?: 'leaf' | 'bolt' | 'bowl' | 'mountain';
+  primaryFill?: string;
+  accentFill?: string;
+  class?: string;
+}
+
+const logo = siteConfig.theme?.logo;
+const archetype = Astro.props.archetype ?? logo?.archetype ?? 'leaf';
+const primaryFill = Astro.props.primaryFill ?? logo?.primaryFill ?? '#2d6a4f';
+const accentFill  = Astro.props.accentFill  ?? logo?.accentFill  ?? '#74c69d';
+const className   = Astro.props.class ?? 'h-7 w-7';
+---
+<svg aria-hidden="true" class={className} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="6" fill={primaryFill} />
+  {archetype === 'leaf' && (
+    <g>
+      <path d="M16 27 V17" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
+      <path d="M16 18 C 10.5 18, 7.5 13.5, 9 9 C 14 9, 16 13.5, 16 18 Z" fill="#ffffff" fill-opacity="0.55" />
+      <path d="M16 18 C 21.5 18, 24.5 13.5, 23 9 C 18 9, 16 13.5, 16 18 Z" fill={accentFill} />
+    </g>
+  )}
+  {archetype === 'bolt' && (
+    <path d="M18 5 L9 18 H15 L13 27 L23 13 H17 Z" fill={accentFill} stroke="#ffffff" stroke-width="0.6" stroke-linejoin="round" />
+  )}
+  {archetype === 'bowl' && (
+    <g>
+      <path d="M11 11 C 11 9.5, 13 8.5, 14 10 M16 10 C 16 8.5, 18 7.5, 19 9 M21 11 C 21 9.5, 23 8.5, 24 10" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" fill="none" />
+      <path d="M6 16 H26 A10 10 0 0 1 6 16 Z" fill={accentFill} />
+      <rect x="4" y="24" width="24" height="1.8" rx="0.9" fill="#ffffff" />
+    </g>
+  )}
+  {archetype === 'mountain' && (
+    <g>
+      <circle cx="22" cy="11" r="3" fill="#ffffff" fill-opacity="0.85" />
+      <path d="M4 26 L12 14 L18 21 L22 17 L28 26 Z" fill={accentFill} stroke="#ffffff" stroke-width="0.6" stroke-linejoin="round" />
+    </g>
+  )}
+</svg>

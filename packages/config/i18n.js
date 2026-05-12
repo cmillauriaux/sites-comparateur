@@ -230,8 +230,23 @@ const strings = {
   },
 };
 
-export function t(market) {
-  return strings[market] || strings.fr;
+/**
+ * Return the i18n bundle for a market, optionally merging per-site overrides.
+ *
+ * The second arg is the site's full siteConfig (NOT just the overrides) so
+ * call sites can pass `i18n(siteConfig.market, siteConfig)` without
+ * destructuring; absent → returns the default bundle.
+ *
+ * Currently the only overridable key is `legalSlugs` (used to vary the URL
+ * of the legal pages across niches so the 12 sites don't share the same
+ * /mentions-legales pattern). Extend here when more overrides are needed
+ * — never inline a merge at call sites.
+ */
+export function t(market, siteConfig) {
+  const base = strings[market] || strings.fr;
+  const overrides = siteConfig && siteConfig.legalSlugs;
+  if (!overrides) return base;
+  return { ...base, legalSlugs: { ...base.legalSlugs, ...overrides } };
 }
 
 export default strings;

@@ -46,10 +46,36 @@ export default {
     ],
   },
 
+  // Same archetype + font pair as the FR sibling (jardin-bricolage niche
+  // identity), distinct shades so the three markets don't form an obvious
+  // triplet under DOM/CSS comparison. US leans brighter/sharper.
   theme: {
-    primaryColor: '#2d6a4f',
-    accentColor: '#74c69d',
-    heroBackground: '#f0f7f4',
+    palette: {
+      primary:      '#1a7a3e',
+      primaryDark:  '#0f5128',
+      accent:       '#5fb47a',
+      accentLight:  '#a8d8b5',
+      heroBg:       '#eef7ef',
+      text:         '#111827',
+      textMuted:    '#4b5563',
+      border:       '#e5e7eb',
+    },
+    typography: {
+      headingFont:    'Crimson Pro',
+      bodyFont:       'Inter',
+      headingWeight:  700,
+      bodyWeight:     400,
+    },
+    density: {
+      radius:           '0.5rem',
+      spacingScale:     1.0,
+      contentMaxWidth:  '72ch',
+    },
+    logo: {
+      archetype:    'leaf',
+      primaryFill:  '#1a7a3e',
+      accentFill:   '#5fb47a',
+    },
   },
 
   affiliatePrograms: ['amazon-us'],   // add CJ/Impact merchants when wired
