@@ -13,13 +13,10 @@ const MIN_IMAGE_COVERAGE = 0.8;     // ≥80% of products must carry a resolved 
 const MIN_PRODUCTS_FOR_GATE = 2;    // single-card pages skip the coverage check
 const MIN_GROUNDING_SOURCES = 3;    // anti scaled-content-abuse signal (see CLAUDE.md)
 
-// LLM-stylometric tic scan thresholds. Soft-fail design: small leaks happen
-// (the model occasionally slips an em-dash or "however") and blocking on
-// every one would reject otherwise-solid articles. The fail threshold is
-// deliberately indulgent — it catches articles that ignore the prompt's
-// anti-tic block entirely, not articles that have one slip.
+// LLM-stylometric tic scan threshold. Warn-only: the prompt already injects
+// ANTI_LLM_TICS_{FR,EN} so this scan is pure instrumentation, kept for
+// drift visibility (see ARCHITECTURE-SEO §12.4). Never blocks publication.
 const LLM_TICS_WARN_THRESHOLD = 3;
-const LLM_TICS_FAIL_THRESHOLD = 6;
 
 // Phrases mirror prompts.js#ANTI_LLM_TICS_{FR,EN}. Keep in sync — if a phrase
 // is banned in the prompt but not scanned here, drift goes undetected.
@@ -125,13 +122,9 @@ export function validateGeneratedArticle(content) {
   }
 
   // LLM-tic scan on prose (same component-stripped body used by the price
-  // scan above). 3-5 hits → console.warn so the operator sees prompt drift
-  // accumulating; 6+ → hard fail because at that point the article ignored
-  // the anti-tic block in prompts.js outright.
+  // scan above). Warn-only — kept as a free measurement of prompt drift.
   const tics = scanLlmTics(body);
-  if (tics.count >= LLM_TICS_FAIL_THRESHOLD) {
-    errors.push(`LLM stylometric tics: ${tics.count} occurrences (${tics.summary})`);
-  } else if (tics.count >= LLM_TICS_WARN_THRESHOLD) {
+  if (tics.count >= LLM_TICS_WARN_THRESHOLD) {
     console.warn(`  ⚠️  LLM stylometric tics: ${tics.count} occurrences (${tics.summary}) — prompt drift, not blocking`);
   }
 

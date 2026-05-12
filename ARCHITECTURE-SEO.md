@@ -68,9 +68,8 @@ Modes d'invocation :
 7. **Validation** ([`article-validator.js`](packages/scripts/lib/article-validator.js)) :
    - `sources ≥ 3` (Zod + check JS).
    - Density affiliée : `≥3 CTAs` sur intent=avis/comparatif, `0` sur informational/guide.
-   - Pas de stylometric tics (em-dash, banned phrases — cf. §3.3).
-8. **Remediation** ([`article-remediator.js`](packages/scripts/lib/article-remediator.js)) : si l'échec est *stylistique recoverable*, un pass ciblé "strip these N tics" est lancé (coût ~30 s vs ~5-7 min pour un full regen).
-9. Mark `published`, append `data/published-urls.json`, update bundle siblings, commit.
+   - Stylometric tics (em-dash, banned phrases — cf. §3.3) : **scan warn-only**, jamais bloquant. Cf. §12.4.
+8. Mark `published`, append `data/published-urls.json`, update bundle siblings, commit.
 
 ### 3.2. Bundle topique — [`lib/bundle.js`](packages/scripts/lib/bundle.js)
 
@@ -304,8 +303,8 @@ DataForSEO supprimé comme source de keywords. Semrush est désormais la source 
 ### 12.4. Anti-LLM-tics — utile ou superstition ?
 
 - Les règles "pas de em-dash, pas de 'let's dive in'" sont basées sur l'idée que Google a un classifier stylométrique. **Aucune preuve publique** que c'est le cas — Google's scaled-content-abuse classifier est documenté comme behavioral, pas stylistique.
-- Coût : un remediation pass supplémentaire ([`article-remediator.js`](packages/scripts/lib/article-remediator.js)) qui consomme des tokens.
-- **Hypothèse à challenger** : supprimer les règles stylométriques et garder uniquement les structural rules (longueur range, FAQ count variable, etc.). Mesurer si les positions changent.
+- **État actuel (2026-05-12)** : conformément à l'option 2 retenue, les instructions `ANTI_LLM_TICS_{FR,EN}` restent dans le prompt (coût nul, déjà présentes), mais le **validator est passé en warn-only** (`LLM_TICS_FAIL_THRESHOLD` supprimé) et `article-remediator.js` a été retiré. Plus aucun appel Claude supplémentaire dû aux tics.
+- Le scan regex local (`scanLlmTics`) est conservé pour instrumentation : il log la dérive sans bloquer. Permettra un A/B futur si on veut retirer les blocs anti-tics du prompt.
 
 ### 12.5. Densité affiliée ≤3 CTAs — calibration
 
@@ -324,11 +323,23 @@ DataForSEO supprimé comme source de keywords. Semrush est désormais la source 
 - DataForSEO On-Page API ou Bright Data résoudraient → ~$200/mois supplémentaires.
 - **Arbitrage** : couverture de sources premium vs coût. Si les bundles ont besoin des prix Leroy Merlin pour ranker sur "leroy merlin tondeuse", le proxy devient ROI-positif.
 
-### 12.8. JSON-LD Review individuelles dans les comparatifs
+### 12.8. JSON-LD Review individuelles dans les comparatifs — parsées ou code mort ?
 
-- Chaque produit d'un comparatif émet un `Review` JSON-LD distinct → potentiel pour des Review rich results multiples sur une seule URL.
-- Risque : Google a tightening les guidelines sur les self-Reviews (third-party reviews uniquement depuis 2019). Nos `Review` sont auto-générés par l'auteur du site.
-- **À vérifier** : ces Review sont-elles effectivement parsées par Google ou silently dropped ? Si dropped, code mort. Si parsées, est-ce qu'on viole les guidelines ?
+Comparatifs → 1 `ItemList` avec N `Review` nestés (1 par produit, [`ArticleLayout.astro:67-88`](packages/site-template/src/layouts/ArticleLayout.astro)). Avis → l'article entier est un `Review` avec `reviewRating /10` ([`ArticleLayout.astro:58-62`](packages/site-template/src/layouts/ArticleLayout.astro)).
+
+**Ce qui n'est PAS un risque** (à corriger dans la culture du repo) : Google n'interdit pas les Review de produits tiers publiées par un site éditorial. La règle anti-self-Reviews de 2019 vise les `LocalBusiness`/`Organization` qui se review eux-mêmes ou les `aggregateRating` fabriqués en interne sur leurs propres services. Notre cas (site éditorial, `itemReviewed` = produit tiers identifié par ASIN/marque externe) est exactement le pattern Wirecutter / Les Numériques — autorisé.
+
+**Les vrais risques** :
+
+1. **Rich snippets en chute libre depuis ~2020.** Google a massivement réduit la fréquence d'affichage des étoiles de Review en SERP, même pour du markup valide. Le JSON-LD passe la validation mais ne génère plus de visuel. → Probable code qui ne bouge aucune aiguille. **À mesurer** : GSC > Enhancements > "Review snippets" sur jardin-bricolage-fr — combien d'impressions de rich result effectif vs simple ligne bleue ?
+
+2. **Bug `brand` fallback** ([`ArticleLayout.astro:59`](packages/site-template/src/layouts/ArticleLayout.astro#L59)) : `brand: { name: data.product.developer ?? data.product.name }`. Quand `developer` n'est pas extrait, la marque devient le nom complet du produit ("Bosch Rotak 40-37" devient à la fois `product.name` ET `brand.name`). JSON-LD sémantiquement malformé → Google peut silently drop le snippet entier. **Bug réel, indépendant de la politique** — à corriger même si la décision sur la suite du §12.8 va vers "supprimer le markup".
+
+3. **Combo `ItemList` + `Review` nestés non-standard.** Supporté individuellement mais le rich result attendu pour un comparatif serait plutôt `Product` avec `offers` — ce qu'on ne peut pas émettre légitimement car on n'est pas le vendeur. À tester sur [Rich Results Test](https://search.google.com/test/rich-results) avec 3 URLs live pour voir ce que Google parse vs ignore.
+
+4. **Intégrité `author.sameAs`.** Si `siteConfig.author.linkedinUrl` est set mais le profil n'existe pas, le `sameAs` du JSON-LD claim explicitement une identité fictive. Plus saillant pour les quality raters que le simple bio sur la page. Déjà tracké comme manual responsibility dans CLAUDE.md mais à re-souligner ici car le JSON-LD le rend "machine-checkable".
+
+**Décision attendue** : garder le markup (si #1 montre qu'il génère encore des rich results) + fixer #2 ; ou supprimer Review/ItemList et garder uniquement Article + BreadcrumbList + FAQPage (qui eux marchent toujours bien). Sans la mesure GSC, on ne peut pas trancher.
 
 ### 12.9. Auto-ramp basé sur le count, pas sur GSC signal
 

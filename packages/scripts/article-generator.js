@@ -30,7 +30,6 @@ import { scrapeSourcesForKeyword } from './lib/scrape.js';
 import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices, injectMerchantUrls } from './lib/product-images.js';
 import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
-import { remediateLlmTics, isRemediableErrorSet } from './lib/article-remediator.js';
 import { pickNextBundleSlot, initBundle, markBundleSlotShipped, markBundleSlotFailed, BUNDLE_SLOTS, SLOT_INTENT, slugFromKeyword, bundleSlotUrl } from './lib/bundle.js';
 import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
@@ -391,16 +390,7 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     }
 
     writeFileSync(outputPath, updated);
-    let validationErrors = validateGeneratedArticle(updated);
-    if (validationErrors.length > 0 && isRemediableErrorSet(validationErrors)) {
-      const rewritten = remediateLlmTics(outputPath);
-      if (rewritten) {
-        updated = rewritten;
-        validationErrors = [];
-      } else {
-        validationErrors = validateGeneratedArticle(readFileSync(outputPath, 'utf-8'));
-      }
-    }
+    const validationErrors = validateGeneratedArticle(updated);
     if (validationErrors.length > 0) {
       throw new Error(`article validation failed: ${validationErrors.join('; ')}`);
     }
@@ -437,16 +427,7 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
       finalContent = linkCheck.content;
     }
     if (finalContent !== written) writeFileSync(outputPath, finalContent);
-    let validationErrors = validateGeneratedArticle(finalContent);
-    if (validationErrors.length > 0 && isRemediableErrorSet(validationErrors)) {
-      const rewritten = remediateLlmTics(outputPath);
-      if (rewritten) {
-        finalContent = rewritten;
-        validationErrors = [];
-      } else {
-        validationErrors = validateGeneratedArticle(readFileSync(outputPath, 'utf-8'));
-      }
-    }
+    const validationErrors = validateGeneratedArticle(finalContent);
     if (validationErrors.length > 0) {
       throw new Error(`article validation failed: ${validationErrors.join('; ')}`);
     }
