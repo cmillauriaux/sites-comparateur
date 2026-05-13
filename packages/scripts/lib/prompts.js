@@ -740,30 +740,51 @@ function buildGuidePrompt({ keyword, scrapedSources, siteConfig, articleSlug, ou
 
   const parentBlockFr = hasParent ? `\
 ==========================================
-LIEN ÉDITORIAL OBLIGATOIRE VERS LE COMPARATIF
+LIENS ÉDITORIAUX OBLIGATOIRES VERS LE COMPARATIF
 ==========================================
 Ce guide est le point d'entrée d'un cluster. Tu DOIS insérer le lien markdown
-suivant DEUX FOIS :
-  1. Dans un encart à la fin de l'introduction (après le H1 et les 2-3 phrases
-     d'intro), formaté ainsi :
-     > Pressé·e ? Voir directement [${parentComparatifTitle}](${parentComparatifUrl}).
-  2. Dans la section finale "## En résumé" / "## Notre verdict", formaté ainsi :
-     Une fois les critères en tête, jette un œil à [${parentComparatifTitle}](${parentComparatifUrl}) pour le passage à l'achat.
+vers [${parentComparatifTitle}](${parentComparatifUrl}) TROIS FOIS, à des
+emplacements différents pour densifier le maillage interne :
 
-Pas d'autres formulations. Pas de <AffiliateButton>. Le lien est en markdown pur.` : '';
+  1. Encart à la fin de l'introduction (après le H1 et les 2-3 phrases d'intro) :
+     > Pressé·e ? Voir directement [${parentComparatifTitle}](${parentComparatifUrl}).
+
+  2. Au milieu du corps — dans la section "## Profils d'usage", quand tu cites
+     un profil-type (occasionnel / régulier / intensif), insère naturellement :
+     "Voir [notre sélection ${parentComparatifTitle}](${parentComparatifUrl})
+     pour la liste détaillée des modèles à privilégier."
+     UNE seule occurrence dans cette section, intégrée dans la prose normale —
+     pas un encart séparé.
+
+  3. Section finale "## En résumé" / "## Notre verdict" :
+     "Une fois les critères en tête, jette un œil à [${parentComparatifTitle}](${parentComparatifUrl}) pour le passage à l'achat."
+
+Pas d'autres formulations. Pas de <AffiliateButton>. Liens en markdown pur.
+N'INSÈRE PAS un quatrième lien — trois est l'objectif éditorial.` : '';
 
   const parentBlockEn = hasParent ? `\
 ==========================================
-MANDATORY EDITORIAL LINK TO PARENT COMPARISON
+MANDATORY EDITORIAL LINKS TO PARENT COMPARISON
 ==========================================
-This guide is the entry point of a cluster. You MUST insert the following
-markdown link TWICE:
-  1. In a callout at the end of the intro (after the H1 and 2-3 intro sentences):
-     > Short on time? Go straight to [${parentComparatifTitle}](${parentComparatifUrl}).
-  2. In the closing "## Takeaway" / "## Bottom line" section:
-     With these criteria in hand, head to [${parentComparatifTitle}](${parentComparatifUrl}) to make your pick.
+This guide is the entry point of a cluster. You MUST insert the markdown
+link to [${parentComparatifTitle}](${parentComparatifUrl}) THREE TIMES at
+different anchors to densify the internal-linking graph:
 
-No other wording. No <AffiliateButton>. Pure markdown link.` : '';
+  1. Callout at the end of the intro (after the H1 and 2-3 intro sentences):
+     > Short on time? Go straight to [${parentComparatifTitle}](${parentComparatifUrl}).
+
+  2. Mid-body — inside "## Use-case profiles", when describing a profile
+     (occasional / regular / heavy-duty), insert naturally:
+     "See [our ${parentComparatifTitle} pick list](${parentComparatifUrl})
+     for the specific models that fit this profile."
+     ONE occurrence in that section, woven into normal prose — not a
+     separate callout.
+
+  3. Closing "## Takeaway" / "## Bottom line" section:
+     "With these criteria in hand, head to [${parentComparatifTitle}](${parentComparatifUrl}) to make your pick."
+
+No other wording. No <AffiliateButton>. Pure markdown links.
+DO NOT insert a fourth link — three is the editorial target.` : '';
 
   // Structure varies based on whether a parent comparatif exists. Without
   // a known URL, the model used to invent a plausible one (e.g.

@@ -27,7 +27,15 @@ import {
 import { injectInlineImages } from './lib/inline-images.js';
 import { fetchProductGallery } from './lib/amazon-gallery.js';
 import { closeBrowser } from './lib/browser.js';
+import { applyAvisRetroLinks } from './lib/cross-links.js';
+import { DATA_DIR } from './lib/env.js';
 import Slugger from 'github-slugger';
+
+function readPriorities() {
+  const path = resolve(DATA_DIR, 'semrush-priorities.json');
+  if (!existsSync(path)) return {};
+  try { return JSON.parse(readFileSync(path, 'utf-8')); } catch { return {}; }
+}
 const slugger = new Slugger();
 
 const args = parseArgs(process.argv.slice(2));
@@ -179,6 +187,23 @@ async function repairOne({ niche, market, articleSlug }) {
     console.log(`   ✏  rewrote ${articleSlug}.mdx`);
   } else {
     console.log(`   ✓ no changes`);
+  }
+
+  // For avis articles, also retro-link the parent comparatif + pillar
+  // guide so readers can navigate from those pages to this avis via body
+  // callouts (not just the sidebar). Idempotent — the cross-link module
+  // skips files that already carry the avis-link marker.
+  if (intent === 'avis') {
+    const priorities = readPriorities();
+    const opps = priorities?.[niche]?.[market] || [];
+    // Find the bundle whose avis slug matches this article.
+    const opp = opps.find(o => o.bundle?.avis?.slug === articleSlug);
+    if (opp?.bundle) {
+      const { patched } = applyAvisRetroLinks({ niche, market }, opp.bundle);
+      if (patched.length > 0) {
+        console.log(`   🔗 retro-linked avis into: ${patched.join(', ')}`);
+      }
+    }
   }
 }
 

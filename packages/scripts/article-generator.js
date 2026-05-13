@@ -37,6 +37,7 @@ import { scrubInlineSourceList, scrubMdxImports, stripBrokenInternalLinks } from
 import { fetchArticleHero } from './lib/hero-image.js';
 import { injectInlineImages } from './lib/inline-images.js';
 import { fetchProductGallery } from './lib/amazon-gallery.js';
+import { applyAvisRetroLinks } from './lib/cross-links.js';
 import { tokenize } from './lib/cluster.js';
 import { extractTopicFromKeyword } from './lib/intent.js';
 import { getCadence } from './lib/cadence.js';
@@ -903,6 +904,19 @@ async function runBundle(targets) {
         // both the comparatif and the pillar gain the final sibling. The
         // layout's "Articles liés" section consumes the frontmatter field.
         refreshBundleSiblings(siteConfig, target);
+
+        // After the avis specifically: inject "Notre test détaillé"
+        // body callouts into the comparatif (under the ProductCard of the
+        // reviewed product) and the pillar guide (before the FAQ). The
+        // sidebar block alone isn't enough — readers landing on the
+        // comparatif rarely look at sidebars, but they DO read the body
+        // around products that interest them.
+        if (pick.slot === 'avis') {
+          const { patched } = applyAvisRetroLinks(siteConfig, target.bundle);
+          if (patched.length > 0) {
+            console.log(`  🔗 retro-linked avis into: ${patched.join(', ')}`);
+          }
+        }
       }
 
       appendPublished({

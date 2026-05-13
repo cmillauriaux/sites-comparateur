@@ -22,6 +22,7 @@
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
+import { load as loadHTML } from 'cheerio';
 import { DATA_DIR } from './env.js';
 import { fetchWithBrowser } from './browser.js';
 
