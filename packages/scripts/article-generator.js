@@ -161,6 +161,25 @@ function stripAffiliateComponents(content) {
 }
 
 /**
+ * Force-rewrite `publishedAt` + `updatedAt` on disk. The prompt template
+ * already injects the backdated value, but Claude occasionally falls back to
+ * the real date, so we re-stamp the frontmatter after generation. Used by
+ * the --seed flow to make a fresh site look like it has weeks of history.
+ */
+function setPublishedAtFrontmatter(path, isoString) {
+  if (!isoString) return;
+  const content = readFileSync(path, 'utf-8');
+  const m = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!m) return;
+  let frontmatter;
+  try { frontmatter = YAML.parse(m[1]) ?? {}; } catch { return; }
+  frontmatter.publishedAt = isoString;
+  frontmatter.updatedAt = isoString;
+  const yamlText = YAML.stringify(frontmatter, { lineWidth: 0 }).trimEnd();
+  writeFileSync(path, `---\n${yamlText}\n---\n${m[2]}`);
+}
+
+/**
  * Set a top-level frontmatter scalar field. Used by the avis no-affiliate
  * fallback to flag the article so validator + Astro schema both know to skip
  * the affiliate gate.
@@ -175,7 +194,7 @@ function setFrontmatterField(content, field, value) {
   return `---\n${yamlText}\n---\n${m[2]}`;
 }
 
-async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords = [], parentComparatifUrl, parentComparatifTitle }) {
+async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords = [], parentComparatifUrl, parentComparatifTitle, publishedAt }) {
   const { niche, market } = siteConfig;
 
   // 1. Scrape sources whitelisted for this (niche, market)
@@ -231,6 +250,10 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     // parent comparatif. Undefined for other intents.
     parentComparatifUrl,
     parentComparatifTitle,
+    // Backdate hint for the seed/bootstrap flow. When set, the prompt template
+    // emits `publishedAt: "<past-date>"`; we still force-rewrite the frontmatter
+    // below since Claude may ignore the hint and use the real date.
+    today: publishedAt,
   });
 
   // Snapshot the dirty paths BEFORE invoking Claude so we can diff against the
@@ -483,6 +506,11 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
   // single-product structure → article frontmatter intent="avis"). The URL
   // must follow the frontmatter or it 404s in production (Astro builds the
   // path off `data.intent`).
+  // Backdate override (seed flow): force the frontmatter timestamps to the
+  // requested past date. Runs last so it survives every prior frontmatter
+  // mutation (hero, faq, noAffiliate, etc.).
+  if (publishedAt) setPublishedAtFrontmatter(outputPath, publishedAt);
+
   const finalIntent = readFrontmatterIntent(outputPath) ?? intent;
   const slugs = i18n(market);
   const subdirByIntent = {
@@ -953,6 +981,238 @@ async function runBundle(targets) {
   }
 }
 
+// ──────────────────────────────────────────────────────── SEED (BOOTSTRAP) PATH
+// One-shot seeding for a brand-new site. Generates N complete bundles
+// (comparatif + pillar + avis = 3 articles each) back-to-back, bypassing
+// cadence, and backdates `publishedAt` so the corpus reads as if the site
+// has weeks of publishing history. The cross-workflow 1/day rule is the
+// thing we explicitly DEFEAT here — that's the whole point of seeding.
+//
+// Schedule: 8-week window. Bundles are evenly spaced (~12 days apart);
+// inside each bundle the comparatif → pillar → avis slots are 3 then 2
+// days apart (matching the natural daily-pipeline rhythm). Hours are
+// jittered across 08-21 UTC so the timestamps don't all sit on the same
+// minute.
+const SEED_TOTAL_DAYS = 56;
+const SEED_SLOT_OFFSETS = [0, 3, 5];   // days INTO the bundle for comp / pillar / avis
+const SEED_MIN_DAYS_AGO = 3;           // most-recent slot can't be today (would defeat the "natural rhythm" pretense)
+
+/**
+ * Precompute the chronological publishedAt schedule for `count` bundles
+ * (3 slots each). Result is sorted ascending so the i-th element pairs
+ * with the i-th slot consumed by pickNextBundleSlot. The picker always
+ * finishes a partial bundle before starting a new one, so consumption
+ * order is comp_A → pillar_A → avis_A → comp_B → … and the schedule
+ * follows that pattern by construction.
+ */
+function buildSeedSchedule(count, { now = Date.now(), anchorMs = null } = {}) {
+  const dayMs = 86_400_000;
+  // Most-recent bundle's last slot lands at SEED_MIN_DAYS_AGO. Bundle 0's
+  // first slot lands at SEED_TOTAL_DAYS (full window) — UNLESS we're resuming
+  // a seed (anchorMs = latest publishedAt of an already-seeded slot), in
+  // which case we start ~12 days after the anchor so the new bundles read
+  // chronologically AFTER the existing ones instead of overlapping.
+  const bundleSpanDays = Math.max(...SEED_SLOT_OFFSETS);          // 5
+  const newestBundleStart = SEED_MIN_DAYS_AGO + bundleSpanDays;    // 8
+  let oldestBundleStart = SEED_TOTAL_DAYS;                          // 56 (default)
+  if (anchorMs !== null) {
+    const anchorDaysAgo = (now - anchorMs) / dayMs;
+    // 12-day stride between bundles is the natural rhythm; -bundleSpanDays
+    // backs us off from the anchor's last slot so the new comparatif doesn't
+    // collide with the anchor's avis (which was 5 days INTO that bundle).
+    oldestBundleStart = Math.max(newestBundleStart, anchorDaysAgo - 12 + bundleSpanDays);
+  }
+  const stride = count > 1 ? (oldestBundleStart - newestBundleStart) / (count - 1) : 0;
+
+  const schedule = [];
+  for (let i = 0; i < count; i++) {
+    const bundleStartDaysAgo = oldestBundleStart - i * stride;
+    for (const offset of SEED_SLOT_OFFSETS) {
+      const jitter = (Math.random() - 0.5) * 1.5;                  // ±0.75 day
+      const daysAgo = Math.max(SEED_MIN_DAYS_AGO, bundleStartDaysAgo - offset + jitter);
+      const hour = 8 + Math.floor(Math.random() * 14);             // 08-21 UTC
+      const minute = Math.floor(Math.random() * 60);
+      const second = Math.floor(Math.random() * 60);
+      const d = new Date(now - daysAgo * dayMs);
+      d.setUTCHours(hour, minute, second, 0);
+      schedule.push(d.toISOString());
+    }
+  }
+  schedule.sort();   // chronological — bundle i's slots come before bundle i+1's
+  return schedule;
+}
+
+async function runSeed(targets, count) {
+  if (targets.length !== 1) {
+    throw new Error(`--seed targets exactly one (niche, market). Got ${targets.length}. Use --niche X --market Y.`);
+  }
+  const { niche, market } = targets[0];
+
+  const siteConfig = await loadSiteConfig(niche, market);
+  if (!isLaunched(siteConfig)) {
+    throw new Error(`${niche}/${market}: domain still placeholder (${siteConfig.domain}). Wire the real domain in site.config.js before seeding.`);
+  }
+
+  // Pre-flight: registry must hold ≥count pending comparatif opportunities
+  // for this (niche, market). Otherwise we'd run out mid-seed and ship a
+  // partial corpus. Tell the operator to run semrush-prioritize first.
+  const registry = readPriorities();
+  const opps = registry?.[niche]?.[market] || [];
+  const pendingComparatifs = opps.filter(o =>
+    o.status !== 'generated' &&
+    o.status !== 'rejected' &&
+    (o.errorCount || 0) < 3 &&
+    // Either a fresh opp (intent='comparatif') or a partial bundle whose
+    // comparatif slot is still pending.
+    ((!o.bundle && o.intent === 'comparatif') ||
+     (o.bundle?.comparatif?.status === 'pending'))
+  );
+  if (pendingComparatifs.length < count) {
+    throw new Error(
+      `${niche}/${market}: need ${count} pending comparatif opportunities, have ${pendingComparatifs.length}.\n` +
+      `   Run: node packages/scripts/semrush-prioritize.js --niche ${niche} --market ${market} --longtail`
+    );
+  }
+
+  // Resume-aware anchor: latest publishedAt of any already-shipped SEED slot.
+  // We filter on `seedRun === true` (set below in appendPublished). Filtering
+  // on `bundleSlot` alone is wrong because cron-generated bundle ships ALSO
+  // carry that field — using them as anchor would push the new schedule
+  // up against "today" and collapse the backdate window (seen on the FR
+  // resume run: ~6 days squeezed onto 4 calendar days). seedRun is the
+  // explicit signal that an entry was intentionally backdated.
+  const seedShipped = readPublished()
+    .filter(e => e.niche === niche && e.market === market && e.seedRun === true && e.publishedAt);
+  const anchorMs = seedShipped.length === 0
+    ? null
+    : Math.max(...seedShipped.map(e => new Date(e.publishedAt).getTime()));
+
+  // Pre-clean: any partial bundle slot left with errorCount ≥ 1 from a prior
+  // seed run gets force-marked failed. Without this the picker would re-pick
+  // the same broken slot and likely fail again (e.g., obscure product with
+  // insufficient sources won't suddenly gain sources). Seed is one-shot —
+  // we trade the daily mode's 3-strikes budget for forward progress.
+  {
+    const fresh = readPriorities();
+    let cleaned = 0;
+    for (const opp of (fresh?.[niche]?.[market] || [])) {
+      if (!opp.bundle) continue;
+      for (const slot of BUNDLE_SLOTS) {
+        const s = opp.bundle[slot];
+        if (s?.status === 'pending' && (s.errorCount || 0) >= 1) {
+          markBundleSlotFailed(opp, slot, s.lastError ?? 'sealed-by-seed-resume');
+          cleaned++;
+        }
+      }
+    }
+    if (cleaned > 0) {
+      writePriorities(fresh);
+      console.log(`🧹 Sealed ${cleaned} previously-failing slot${cleaned > 1 ? 's' : ''} so the picker skips them.`);
+    }
+  }
+
+  const schedule = buildSeedSchedule(count, { anchorMs });
+  if (anchorMs !== null) {
+    const daysAgo = ((Date.now() - anchorMs) / 86_400_000).toFixed(1);
+    console.log(`\n🌱 SEED ${niche}/${market}: resuming after anchor (latest seed publishedAt = ${daysAgo}d ago)`);
+  }
+  console.log(`\n🌱 SEED ${niche}/${market}: ${count} bundles (${count * 3} articles)`);
+  console.log(`   Schedule (oldest → newest):`);
+  for (let i = 0; i < schedule.length; i++) {
+    const slot = ['comparatif', 'pillar', 'avis'][i % 3];
+    const bundleIdx = Math.floor(i / 3) + 1;
+    console.log(`     bundle ${bundleIdx}/${count}  ${slot.padEnd(10)}  ${schedule[i]}`);
+  }
+  console.log();
+
+  let shipped = 0;
+  for (const publishedAt of schedule) {
+    const fresh = readPriorities();
+    const pick = pickNextBundleSlot(fresh, niche, market);
+    if (!pick) {
+      console.warn(`⚠️  No more bundle work pending after ${shipped} ship(s). Run semrush-prioritize and retry.`);
+      break;
+    }
+    if (pick.kind === 'bundle-fresh') initBundle(pick.opp, market);
+    const slotMeta = pick.opp.bundle[pick.slot];
+    console.log(`\n📦 [${shipped + 1}/${schedule.length}] BUNDLE ${pick.opp.id} → slot=${pick.slot}  publishedAt=${publishedAt}`);
+    console.log(`   keyword="${slotMeta.keyword}" slug="${slotMeta.slug}"`);
+
+    let parentComparatifUrl, parentComparatifTitle;
+    if (pick.slot !== 'comparatif') {
+      parentComparatifUrl   = pick.opp.bundle.comparatif.url;
+      parentComparatifTitle = pick.opp.bundle.comparatif.keyword;
+    }
+
+    try {
+      const { publishedUrl, finalIntent, topProductName, topProductAsin } = await generateArticle(siteConfig, {
+        keyword: slotMeta.keyword,
+        intent: SLOT_INTENT[pick.slot],
+        secondaryKeywords: pick.opp.secondaryKeywords || [],
+        parentComparatifUrl,
+        parentComparatifTitle,
+        publishedAt,
+      });
+
+      const after = readPriorities();
+      const target = after?.[niche]?.[market]?.find(o => o.id === pick.opp.id);
+      if (target) {
+        if (!target.bundle) initBundle(target, market);
+        markBundleSlotShipped(target, pick.slot, {
+          url: publishedUrl,
+          publishedAt,
+          topProductName,
+          topProductAsin,
+        });
+        writePriorities(after);
+        refreshBundleSiblings(siteConfig, target);
+        if (pick.slot === 'avis') {
+          const { patched } = applyAvisRetroLinks(siteConfig, target.bundle);
+          if (patched.length > 0) console.log(`  🔗 retro-linked avis into: ${patched.join(', ')}`);
+        }
+      }
+
+      appendPublished({
+        url: publishedUrl,
+        niche, market,
+        keyword: slotMeta.keyword,
+        bundleId: pick.opp.id,
+        bundleSlot: pick.slot,
+        intent: finalIntent,
+        publishedAt,
+        indexationStatus: 'pending',
+        // Distinguishes seed-shipped (backdated) entries from cron/manual
+        // bundle ships. Read by the anchor logic when resuming a seed so
+        // we don't confuse "real article shipped today" with "seed entry
+        // intentionally dated 8 weeks ago".
+        seedRun: true,
+      });
+      shipped++;
+      console.log(`  ✅ ${publishedUrl}`);
+    } catch (err) {
+      console.error(`❌ slot=${pick.slot} failed: ${err.message}`);
+      const after = readPriorities();
+      const target = after?.[niche]?.[market]?.find(o => o.id === pick.opp.id);
+      if (target?.bundle) {
+        // Seed mode: one strike → marked failed. Daily mode keeps a
+        // 3-strikes budget; in seed we want forward progress instead of
+        // retrying the same obscure-product avis 3× in a row.
+        target.bundle[pick.slot].errorCount = (target.bundle[pick.slot].errorCount || 0) + 1;
+        markBundleSlotFailed(target, pick.slot, err.message);
+        writePriorities(after);
+      }
+      // If comparatif fails the bundle is unusable (pillar + avis depend on
+      // its URL / top product) — the picker will naturally fall through to
+      // the next opportunity since the comparatif slot is now `failed`.
+      // For pillar/avis failures the bundle survives partially. Continue.
+      console.error(`   ↳ slot sealed as failed; moving to next bundle.`);
+      continue;
+    }
+  }
+
+  console.log(`\n🌱 Seed done: ${shipped}/${schedule.length} articles shipped for ${niche}/${market}.`);
+}
+
 const args = parseArgs(process.argv.slice(2));
 
 if (typeof args.cluster === 'string') {
@@ -985,8 +1245,24 @@ if (typeof args.cluster === 'string') {
     console.error(err);
     process.exit(1);
   });
+} else if (args.seed === true) {
+  // --seed → bootstrap a fresh (niche, market) with N complete bundles
+  // (= 3N articles: N comparatifs + N pillars + N avis), backdated over
+  // 8 weeks. Bypasses cadence. Expects the priorities registry already
+  // primed with ≥N pending comparatif opportunities for the target.
+  const count = parseInt(args.bundles ?? '5', 10);
+  if (!Number.isFinite(count) || count < 1) {
+    console.error(`Invalid --bundles: ${args.bundles}`);
+    process.exit(1);
+  }
+  const targets = resolveTargets(args);
+  runSeed(targets, count).then(() => process.exit(0)).catch(err => {
+    console.error(`❌ ${err.message}`);
+    process.exit(1);
+  });
 } else {
   console.error('Usage: article-generator.js --bundle | --cluster [<id>] [--count N] [--longtail] [--guide-only]');
+  console.error('       article-generator.js --seed --niche X --market Y [--bundles 5]');
   console.error('       (--niche/--market/--site flags scope the run; defaults to all ENABLED_SITES)');
   process.exit(1);
 }

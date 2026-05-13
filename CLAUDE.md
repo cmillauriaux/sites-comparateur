@@ -180,6 +180,33 @@ cadence, or affiliation density.
   signal of programmatic generation. Same for `updatedAt` — leave it equal
   to `publishedAt` until you genuinely re-edit. Use `git filter-branch` /
   `rebase` only on local backlog imports, never on already-pushed history.
+
+  **The `--seed` flow automates this.** Run locally before pointing GSC at
+  the new site:
+
+  ```bash
+  # 1) Prime the registry with anti-sandbox long-tail clusters
+  node packages/scripts/semrush-prioritize.js --niche jardin-bricolage --market us --longtail
+
+  # 2) Ship 5 complete bundles (= 5 avis + 5 guides + 5 comparatifs = 15 articles),
+  #    backdated over the past 8 weeks with natural rhythm (~1 bundle/12 days,
+  #    slots within a bundle 2-3 days apart, hours jittered 08-21 UTC).
+  node packages/scripts/article-generator.js --seed --niche jardin-bricolage --market us --bundles 5
+  ```
+
+  `--seed` bypasses cadence (the whole point — sandbox stage would otherwise
+  block guides + cap at 1 article/day) and force-rewrites `publishedAt` +
+  `updatedAt` in the frontmatter, `bundle.<slot>.publishedAt` in the
+  registry, and the `publishedAt` field in `published-urls.json`. Schedule
+  is derived from `buildSeedSchedule()` in [`article-generator.js`](packages/scripts/article-generator.js) —
+  edit the `SEED_TOTAL_DAYS` / `SEED_SLOT_OFFSETS` / `SEED_MIN_DAYS_AGO`
+  constants there if you need a different window.
+
+  After `--seed` the site sits at 15 published articles → stage `warming`,
+  so the cron workflows can ramp from there without bulk-publish flags.
+  Pre-flight check: the priorities registry must hold ≥`--bundles` pending
+  comparatif opportunities for the (niche, market), otherwise the run
+  errors out before any Claude call (no wasted credits).
 - **Post-launch cadence — automatic ramp.** The pipeline self-throttles
   based on how many articles each (niche, market) has already published
   (read from `data/published-urls.json`). The single source of truth is

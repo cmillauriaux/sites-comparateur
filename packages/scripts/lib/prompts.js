@@ -1080,7 +1080,10 @@ ${s.content}
     ? ''
     : buildClusterBlock({ existingArticles, currentIntent: opts.intent, isFr });
 
-  const today = new Date().toISOString();
+  // `opts.today` lets the seed/backdate flow inject a past timestamp so the
+  // generated frontmatter looks like the article was published weeks ago.
+  // Default = real-time clock (the daily pipeline path).
+  const today = opts.today ?? new Date().toISOString();
   const isFrMarket = opts.market === 'fr';
   const secondaryBlock = isFrMarket
     ? buildSecondaryKeywordsBlockFr(opts.secondaryKeywords)
