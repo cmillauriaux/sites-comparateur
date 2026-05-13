@@ -69,19 +69,28 @@ const SKIP_H2_PATTERNS = [
 ];
 
 function pickSpaced(positions, count) {
+  // Always work from the editorial-only pool — boilerplate H2s (Verdict,
+  // FAQ, Conclusion, Sources) make poor anchors for inline photos. If the
+  // editorial pool can't supply `count` distinct anchors, we accept fewer
+  // rather than fall back to boilerplate H2s.
   const editorial = positions.filter(p => !SKIP_H2_PATTERNS.some(re => re.test(p.text)));
-  const pool = editorial.length >= count + 1 ? editorial : positions;
-  if (pool.length === 0) return [];
+  // Drop the FIRST H2 — an image right after the intro paragraph competes
+  // with the hero photo for visual attention.
+  const candidates = editorial.slice(1);
+  if (candidates.length === 0 || count <= 0) return [];
 
-  const candidates = pool.slice(1);
-  if (candidates.length === 0) return [];
+  const n = Math.min(count, candidates.length);
+  if (n === 1) return [candidates[Math.floor(candidates.length / 2)]];
 
-  if (count === 1) {
-    return [candidates[Math.floor(candidates.length / 2)]];
+  // Evenly spaced indices across [0, candidates.length-1]. For n=2 → 1/3
+  // and 2/3 split; for n=3 → 1/4, 2/4, 3/4; etc.
+  const picks = [];
+  for (let i = 1; i <= n; i++) {
+    const idx = Math.floor(candidates.length * i / (n + 1));
+    const pick = candidates[Math.min(idx, candidates.length - 1)];
+    if (pick && !picks.some(p => p.index === pick.index)) picks.push(pick);
   }
-  const a = candidates[Math.floor(candidates.length * 1 / 3)];
-  const b = candidates[Math.floor(candidates.length * 2 / 3)];
-  return a && b && a.index !== b.index ? [a, b] : [a].filter(Boolean);
+  return picks;
 }
 
 async function downloadImage(url, outputPath) {
@@ -114,23 +123,50 @@ function readHeroPhotoId({ niche, market, articleSlug }) {
 }
 
 /**
+ * Inject inline images at H2 boundaries in long articles.
+ *
+ * Two source modes (mutually exclusive):
+ *
+ *   - **Pexels mode** (default): when `productImages` is empty/omitted. Used
+ *     for comparatif / guide articles where the reader is browsing a
+ *     category. Searches Pexels via the FR→EN categorical dictionary on
+ *     keyword + title + description + H2s.
+ *
+ *   - **Product-gallery mode**: when `productImages` is a non-empty array
+ *     of URLs. Used for avis articles — readers want to see the actual
+ *     product from multiple angles, not generic stock photos. URLs are
+ *     downloaded as-is and placed at H2 boundaries with the product name
+ *     as alt text.
+ *
  * @param {object} opts
  * @param {string} opts.niche
  * @param {'fr'|'us'|'gb'} opts.market
  * @param {string} opts.articleSlug
  * @param {string} opts.content
  * @param {string} opts.keyword
+ * @param {string[]} [opts.productImages]   URLs of product gallery images
+ *                                          (avis mode). When set, Pexels
+ *                                          is bypassed.
+ * @param {string}   [opts.productAlt]      Alt text for product-gallery
+ *                                          images (e.g. "Bosch GST 18 V-Li S").
  * @param {boolean} [opts.verbose]
  * @returns {{ content: string, count: number }}
  */
-export async function injectInlineImages({ niche, market, articleSlug, content, keyword, verbose = true }) {
+export async function injectInlineImages({ niche, market, articleSlug, content, keyword, productImages = [], productAlt = '', verbose = true }) {
   const words = countBodyWords(content);
   if (words < MIN_WORDS_FOR_1) return { content, count: 0 };
 
   const allH2 = findH2Positions(content);
   if (allH2.length < MIN_H2_COUNT) return { content, count: 0 };
 
-  const target = words >= MIN_WORDS_FOR_2 ? 2 : 1;
+  const galleryMode = productImages.length > 0;
+  // Product-gallery mode picks more images than the Pexels default — readers
+  // of an avis expect to see the product itself, not just one mid-article
+  // photo. Capped at the number of available H2 picks AND the gallery size.
+  const targetPexels = words >= MIN_WORDS_FOR_2 ? 2 : 1;
+  const target = galleryMode
+    ? Math.min(productImages.length, Math.max(2, words >= MIN_WORDS_FOR_2 ? 4 : 3))
+    : targetPexels;
   const picks = pickSpaced(allH2, target);
   if (picks.length === 0) return { content, count: 0 };
 
@@ -140,6 +176,36 @@ export async function injectInlineImages({ niche, market, articleSlug, content, 
 
   const dir = resolve(SITES_DIR, niche, market, 'public/images/inline', articleSlug);
   mkdirSync(dir, { recursive: true });
+
+  // Product-gallery mode — skip Pexels entirely. Download N URLs at the
+  // chosen H2 anchors and insert.
+  if (galleryMode) {
+    const insertions = [];
+    for (let i = 0; i < picks.length; i++) {
+      const h2 = picks[i];
+      const url = productImages[i];
+      if (!url) break;
+      const localPath = join(dir, `${i + 1}.jpg`);
+      const publicPath = `/images/inline/${articleSlug}/${i + 1}.jpg`;
+      try {
+        await downloadImage(url, localPath);
+      } catch (err) {
+        if (verbose) console.warn(`    ⚠️  product gallery #${i + 1} download failed: ${err.message}`);
+        continue;
+      }
+      const alt = (productAlt || h2.text || keyword).replace(/"/g, '').replace(/\]/g, '');
+      const markdown = `![${alt}](${publicPath})\n\n`;
+      insertions.push({ index: h2.index, markdown });
+      if (verbose) console.log(`    🖼  inline #${i + 1}: ${publicPath} (gallery, source=amazon)`);
+    }
+    if (insertions.length === 0) return { content, count: 0 };
+    insertions.sort((a, b) => b.index - a.index);
+    let out = content;
+    for (const { index, markdown } of insertions) {
+      out = out.slice(0, index) + markdown + out.slice(index);
+    }
+    return { content: out, count: insertions.length };
+  }
 
   // Query strategy for inline images is stricter than the hero. We ONLY use
   // queries that resolved through the FR→EN categorical dictionary OR fall

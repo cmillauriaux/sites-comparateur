@@ -25,6 +25,10 @@ import {
   injectMerchantUrls,
 } from './lib/product-images.js';
 import { injectInlineImages } from './lib/inline-images.js';
+import { fetchProductGallery } from './lib/amazon-gallery.js';
+import { closeBrowser } from './lib/browser.js';
+import Slugger from 'github-slugger';
+const slugger = new Slugger();
 
 const args = parseArgs(process.argv.slice(2));
 
@@ -39,6 +43,12 @@ function readFrontmatter(content) {
 function readKeyword(content) {
   const fm = readFrontmatter(content);
   const m = fm.match(/^keyword:\s*(.+)$/m);
+  return m?.[1].trim().replace(/^["']|["']$/g, '') ?? null;
+}
+
+function readIntent(content) {
+  const fm = readFrontmatter(content);
+  const m = fm.match(/^intent:\s*(.+)$/m);
   return m?.[1].trim().replace(/^["']|["']$/g, '') ?? null;
 }
 
@@ -132,8 +142,35 @@ async function repairOne({ niche, market, articleSlug }) {
   if (content !== beforeStrip) console.log(`   🧹 stripped existing inline image markdown`);
   if (existsSync(inlineDir)) rmSync(inlineDir, { recursive: true, force: true });
 
+  // Avis articles get inline images from the product's Amazon gallery
+  // (multiple angles of the actual product). Everything else falls back to
+  // the Pexels inline path.
+  let productImages = [];
+  let productAlt = '';
+  const intent = readIntent(content);
+  if (intent === 'avis' && productNames.length > 0) {
+    const primaryName = productNames[0];
+    // Re-read the sidecar to pick up the asin we just wrote.
+    slugger.reset();
+    const productSlug = slugger.slug(primaryName);
+    const sidecar = resolve(SITES_DIR, niche, market, 'public/images/products', articleSlug, `${productSlug}.json`);
+    if (existsSync(sidecar)) {
+      try {
+        const meta = JSON.parse(readFileSync(sidecar, 'utf-8'));
+        if (meta.asin) {
+          const gallery = await fetchProductGallery(meta.asin, { market });
+          // Skip the first image — it's already the ProductCard main shot.
+          productImages = gallery.slice(1);
+          productAlt = primaryName;
+          console.log(`   📸 product gallery: ${productImages.length} additional images for ${primaryName}`);
+        }
+      } catch { /* ignore, fall back to Pexels */ }
+    }
+  }
+
   const { content: withInline, count: inlineCount } = await injectInlineImages({
     niche, market, articleSlug, content, keyword,
+    productImages, productAlt,
   });
   if (inlineCount > 0) content = withInline;
 
@@ -169,4 +206,6 @@ async function main() {
   }
 }
 
-main().catch(err => { console.error(err); process.exit(1); });
+main()
+  .catch(err => { console.error(err); process.exit(1); })
+  .finally(() => closeBrowser());

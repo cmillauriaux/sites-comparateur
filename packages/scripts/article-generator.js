@@ -36,6 +36,7 @@ import { scrubRawPrices } from './lib/price-scrubber.js';
 import { scrubInlineSourceList, scrubMdxImports, stripBrokenInternalLinks } from './lib/article-postprocess.js';
 import { fetchArticleHero } from './lib/hero-image.js';
 import { injectInlineImages } from './lib/inline-images.js';
+import { fetchProductGallery } from './lib/amazon-gallery.js';
 import { tokenize } from './lib/cluster.js';
 import { extractTopicFromKeyword } from './lib/intent.js';
 import { getCadence } from './lib/cadence.js';
@@ -453,10 +454,28 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
   // is persisted so we can exclude the hero's photo id from the inline pool
   // (no duplicate photo across the same article). Failures are non-fatal —
   // an article ships without inline images rather than failing the run.
+  //
+  // Avis articles with a resolved Amazon ASIN get inline images from the
+  // product's own gallery (multiple angles of the actual product). Other
+  // intents — and avis whose product fell to the Google Shopping fallback
+  // (no ASIN) — fall back to the Pexels categorical path.
   try {
     const current = readFileSync(outputPath, 'utf-8');
+    let productImages = [];
+    let productAlt = '';
+    const finalIntentNow = readFrontmatterIntent(outputPath) ?? intent;
+    if (finalIntentNow === 'avis' && topProductAsin) {
+      const gallery = await fetchProductGallery(topProductAsin, { market });
+      // Skip the first image — it's the ProductCard main shot.
+      productImages = gallery.slice(1);
+      productAlt = topProductName ?? '';
+      if (productImages.length > 0) {
+        console.log(`  📸 product gallery: ${productImages.length} additional images for ${topProductName}`);
+      }
+    }
     const { content: withInline, count } = await injectInlineImages({
       niche, market, articleSlug, content: current, keyword,
+      productImages, productAlt,
     });
     if (count > 0) writeFileSync(outputPath, withInline);
   } catch (err) {
