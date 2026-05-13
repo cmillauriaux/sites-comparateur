@@ -234,7 +234,7 @@
         "score": 1017,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.330Z",
         "generatedAt": null,
@@ -243,25 +243,25 @@
           "comparatif": {
             "keyword": "tondeuse à gazon",
             "slug": "tondeuse-à-gazon",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/tondeuse-à-gazon/",
+            "publishedAt": "2026-03-19T21:37:27.000Z",
+            "topProductName": "Scheppach MS173-51 E",
+            "topProductAsin": "B09RB55VV5"
           },
           "pillar": {
             "keyword": "comment choisir un tondeuse à gazon",
             "slug": "comment-choisir-un-tondeuse-à-gazon",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/guides/comment-choisir-un-tondeuse-à-gazon/",
+            "publishedAt": "2026-03-21T11:29:54.000Z"
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "keyword": "Scheppach MS173-51 E avis",
+            "slug": "scheppach-ms173-51-e-avis",
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/scheppach-ms173-51-e-avis/",
+            "publishedAt": "2026-03-23T14:06:29.000Z"
           }
         }
       },
@@ -403,7 +403,7 @@
         "score": 888,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "generatedAt": null,
@@ -412,25 +412,27 @@
           "comparatif": {
             "keyword": "robot tondeuse parkside",
             "slug": "robot-tondeuse-parkside",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/robot-tondeuse-parkside/",
+            "publishedAt": "2026-03-30T13:20:24.000Z",
+            "topProductName": "Parkside PAMRS 1000 A1",
+            "topProductAsin": "B07Q4DJH4R"
           },
           "pillar": {
             "keyword": "comment choisir un robot tondeuse parkside",
             "slug": "comment-choisir-un-robot-tondeuse-parkside",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/guides/comment-choisir-un-robot-tondeuse-parkside/",
+            "publishedAt": "2026-04-01T09:46:16.000Z"
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
+            "keyword": "Parkside PAMRS 1000 A1 avis",
+            "slug": "parkside-pamrs-1000-a1-avis",
+            "status": "failed",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1,
+            "lastError": "sealed-by-seed-resume"
           }
         }
       },
@@ -500,7 +502,7 @@
         "score": 884,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "generatedAt": null,
@@ -509,25 +511,27 @@
           "comparatif": {
             "keyword": "chaine tronconneuse",
             "slug": "chaine-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/chaine-tronconneuse/",
+            "publishedAt": "2026-05-05T14:22:56.000Z",
+            "topProductName": "Oregon Lot de 3 Chaîne 3/8 LP 35 cm 50 maillons",
             "topProductAsin": null
           },
           "pillar": {
             "keyword": "comment choisir un chaine tronconneuse",
             "slug": "comment-choisir-un-chaine-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/guides/comment-choisir-un-chaine-tronconneuse/",
+            "publishedAt": "2026-05-05T14:42:55.000Z"
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
+            "keyword": "Oregon Lot de 3 Chaîne 3/8 LP 35 cm 50 maillons avis",
+            "slug": "oregon-lot-de-3-chaîne-38-lp-35-cm-50-maillons-avis",
+            "status": "failed",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1,
+            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/oregon-lot-de-3-chaîne-38-lp-35-cm-50-maillons-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           }
         }
       },
@@ -597,7 +601,7 @@
         "score": 843,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "generatedAt": null,
@@ -606,25 +610,27 @@
           "comparatif": {
             "keyword": "nettoyeur haute pression sans fil",
             "slug": "nettoyeur-haute-pression-sans-fil",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/nettoyeur-haute-pression-sans-fil/",
+            "publishedAt": "2026-05-06T09:41:13.000Z",
+            "topProductName": "Kärcher HD 4/11 C Bp",
+            "topProductAsin": "B0854YT269"
           },
           "pillar": {
             "keyword": "comment choisir un nettoyeur haute pression sans fil",
             "slug": "comment-choisir-un-nettoyeur-haute-pression-sans-fil",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/guides/comment-choisir-un-nettoyeur-haute-pression-sans-fil/",
+            "publishedAt": "2026-05-08T10:20:08.000Z"
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
+            "keyword": "Kärcher HD 4/11 C Bp avis",
+            "slug": "kärcher-hd-411-c-bp-avis",
+            "status": "failed",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1,
+            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/kärcher-hd-411-c-bp-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           }
         }
       },
@@ -694,7 +700,7 @@
         "score": 558,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "generatedAt": null,
@@ -703,25 +709,27 @@
           "comparatif": {
             "keyword": "souffleur de feuilles",
             "slug": "souffleur-de-feuilles",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/souffleur-de-feuilles/",
+            "publishedAt": "2026-05-09T13:00:07.000Z",
+            "topProductName": "Stihl BGA 60",
+            "topProductAsin": "B08KQ88D14"
           },
           "pillar": {
             "keyword": "comment choisir un souffleur de feuilles",
             "slug": "comment-choisir-un-souffleur-de-feuilles",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/guides/comment-choisir-un-souffleur-de-feuilles/",
+            "publishedAt": "2026-05-09T21:59:32.000Z"
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
+            "keyword": "Stihl BGA 60 avis",
+            "slug": "stihl-bga-60-avis",
+            "status": "failed",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1,
+            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/stihl-bga-60-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           }
         }
       },
@@ -791,7 +799,7 @@
         "score": 553,
         "intent": "comparatif",
         "semrushIntent": "navigational",
-        "status": "pending",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "generatedAt": null,
@@ -800,25 +808,25 @@
           "comparatif": {
             "keyword": "tondeuse husqvarna robot",
             "slug": "tondeuse-husqvarna-robot",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/tondeuse-husqvarna-robot/",
+            "publishedAt": "2026-05-10T14:25:16.000Z",
+            "topProductName": "Husqvarna Automower 310 Mark II",
+            "topProductAsin": "B0DNZL4RYW"
           },
           "pillar": {
             "keyword": "comment choisir un tondeuse husqvarna robot",
             "slug": "comment-choisir-un-tondeuse-husqvarna-robot",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/guides/comment-choisir-un-tondeuse-husqvarna-robot/",
+            "publishedAt": "2026-05-10T14:56:24.000Z"
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "keyword": "Husqvarna Automower 310 Mark II avis",
+            "slug": "husqvarna-automower-310-mark-ii-avis",
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/husqvarna-automower-310-mark-ii-avis/",
+            "publishedAt": "2026-05-10T21:15:37.000Z"
           }
         }
       },
