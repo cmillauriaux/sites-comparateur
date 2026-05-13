@@ -35,6 +35,7 @@ import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
 import { scrubInlineSourceList, scrubMdxImports, stripBrokenInternalLinks } from './lib/article-postprocess.js';
 import { fetchArticleHero } from './lib/hero-image.js';
+import { injectInlineImages } from './lib/inline-images.js';
 import { tokenize } from './lib/cluster.js';
 import { extractTopicFromKeyword } from './lib/intent.js';
 import { getCadence } from './lib/cadence.js';
@@ -446,6 +447,20 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     if (hero) injectHeroFrontmatter(outputPath, hero);
   } catch (err) {
     console.warn(`  ⚠️  hero fetch failed: ${err.message}`);
+  }
+
+  // Inline images at H2 boundaries (long articles only). Runs after the hero
+  // is persisted so we can exclude the hero's photo id from the inline pool
+  // (no duplicate photo across the same article). Failures are non-fatal —
+  // an article ships without inline images rather than failing the run.
+  try {
+    const current = readFileSync(outputPath, 'utf-8');
+    const { content: withInline, count } = await injectInlineImages({
+      niche, market, articleSlug, content: current, keyword,
+    });
+    if (count > 0) writeFileSync(outputPath, withInline);
+  } catch (err) {
+    console.warn(`  ⚠️  inline image injection failed: ${err.message}`);
   }
 
   // 6. Compute the published URL. The intent → subdir mapping comes from the

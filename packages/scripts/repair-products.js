@@ -1,0 +1,172 @@
+#!/usr/bin/env node
+/**
+ * One-shot repair for articles whose product attributes (asin/price/image)
+ * were resolved by an earlier, looser matcher. Wipes the cached sidecars for
+ * the article's products, re-runs fetchProductImages with the current
+ * matcher, strips the stale attributes from the .mdx, and re-injects.
+ *
+ * Also (idempotent) injects inline images for long articles that pre-date
+ * the inline-image pipeline.
+ *
+ * Usage:
+ *   node packages/scripts/repair-products.js --niche cuisine --market fr --slug machine-a-cafe-a-grain-professionnelle
+ *   node packages/scripts/repair-products.js --niche cuisine --market fr --all   # all articles in this (niche, market)
+ */
+import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync, rmSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { SITES_DIR } from './lib/env.js';
+import { loadSiteConfig, parseArgs, resolveTargets } from './lib/site-config.js';
+import {
+  fetchProductImages,
+  injectImagePaths,
+  injectImageAttributes,
+  injectAffiliateAsins,
+  injectPrices,
+  injectMerchantUrls,
+} from './lib/product-images.js';
+import { injectInlineImages } from './lib/inline-images.js';
+
+const args = parseArgs(process.argv.slice(2));
+
+const PRODUCT_CARD_RE = /<ProductCard\b([\s\S]*?)\/>/g;
+const COMPARISON_TABLE_RE = /(<ComparisonTable\b[\s\S]*?products=\{\[)([\s\S]*?)(\]\}[\s\S]*?\/?>)/g;
+
+function readFrontmatter(content) {
+  const m = content.match(/^---\n([\s\S]*?)\n---/);
+  return m?.[1] ?? '';
+}
+
+function readKeyword(content) {
+  const fm = readFrontmatter(content);
+  const m = fm.match(/^keyword:\s*(.+)$/m);
+  return m?.[1].trim().replace(/^["']|["']$/g, '') ?? null;
+}
+
+function extractProductNames(content) {
+  const names = new Set();
+  for (const m of content.matchAll(PRODUCT_CARD_RE)) {
+    const body = m[1];
+    const name = body.match(/\bname\s*=\s*(["'])([^"']+)\1/)?.[2];
+    if (name) names.add(name.trim());
+  }
+  for (const m of content.matchAll(COMPARISON_TABLE_RE)) {
+    const arr = m[2];
+    for (const sub of arr.matchAll(/\bname\s*:\s*(["'])([^"']+)\1/g)) {
+      names.add(sub[2].trim());
+    }
+  }
+  return [...names];
+}
+
+function stripAttr(attr) {
+  // Match `attr="..."` (with leading whitespace) and `, attr: "..."` inside
+  // ComparisonTable product objects. Used to wipe stale asin/price/image
+  // before re-injection.
+  return [
+    new RegExp(`\\s+${attr}\\s*=\\s*"[^"]*"`, 'g'),
+    new RegExp(`,\\s*${attr}\\s*:\\s*"[^"]*"`, 'g'),
+  ];
+}
+
+function stripStaleAttrs(content) {
+  let out = content;
+  for (const a of ['asin', 'price', 'image', 'merchantUrl', 'merchant']) {
+    for (const re of stripAttr(a)) out = out.replace(re, '');
+  }
+  return out;
+}
+
+function clearSidecars(niche, market, articleSlug, productNames) {
+  const dir = resolve(SITES_DIR, niche, market, 'public/images/products', articleSlug);
+  if (!existsSync(dir)) return;
+  // We can't slugify the product name here without importing slugger — but
+  // sidecars are siblings to .jpg files with matching base. Just nuke the
+  // whole directory: fetchProductImages re-creates it.
+  rmSync(dir, { recursive: true, force: true });
+}
+
+async function repairOne({ niche, market, articleSlug }) {
+  const path = resolve(SITES_DIR, niche, market, 'src/content/articles', `${articleSlug}.mdx`);
+  if (!existsSync(path)) {
+    console.warn(`  ⚠️  ${articleSlug}: file not found at ${path}`);
+    return;
+  }
+  const original = readFileSync(path, 'utf-8');
+  const productNames = extractProductNames(original);
+  const keyword = readKeyword(original) ?? articleSlug.replace(/-/g, ' ');
+
+  console.log(`📦 ${niche}/${market}/${articleSlug}`);
+  console.log(`   ${productNames.length} product${productNames.length === 1 ? '' : 's'}: ${productNames.join(', ') || '(none)'}`);
+
+  let content = original;
+
+  if (productNames.length > 0) {
+    // 1) Wipe sidecars so the new matcher decides afresh.
+    clearSidecars(niche, market, articleSlug, productNames);
+
+    // 2) Strip stale attributes (asin/price/image/merchantUrl/merchant) so
+    //    the next inject pass doesn't see them as already-set and skip.
+    content = stripStaleAttrs(content);
+
+    // 3) Re-fetch with current matcher.
+    const { imageMap, asinMap, priceMap, nonAffiliateMap } = await fetchProductImages({
+      niche, market, articleSlug, products: productNames,
+    });
+
+    // 4) Re-inject the resolved attributes (same order as the generator).
+    content = injectImagePaths(content, imageMap);
+    content = injectImageAttributes(content, imageMap);
+    content = injectAffiliateAsins(content, asinMap);
+    content = injectPrices(content, priceMap);
+    content = injectMerchantUrls(content, nonAffiliateMap);
+  }
+
+  // 5) Inline images — idempotent rebuild. Strip any existing
+  //    `![alt](/images/inline/<slug>/...)` markdown lines AND wipe the dir
+  //    so the new query strategy (keyword-anchored, cuisine vocab) runs
+  //    fresh. Skipping when present would lock in earlier off-topic photos.
+  const inlineDir = resolve(SITES_DIR, niche, market, 'public/images/inline', articleSlug);
+  const inlineRe = new RegExp(`^!\\[[^\\]]*\\]\\(/images/inline/${articleSlug}/[^)]+\\)\\n+`, 'gm');
+  const beforeStrip = content;
+  content = content.replace(inlineRe, '');
+  if (content !== beforeStrip) console.log(`   🧹 stripped existing inline image markdown`);
+  if (existsSync(inlineDir)) rmSync(inlineDir, { recursive: true, force: true });
+
+  const { content: withInline, count: inlineCount } = await injectInlineImages({
+    niche, market, articleSlug, content, keyword,
+  });
+  if (inlineCount > 0) content = withInline;
+
+  if (content !== original) {
+    writeFileSync(path, content);
+    console.log(`   ✏  rewrote ${articleSlug}.mdx`);
+  } else {
+    console.log(`   ✓ no changes`);
+  }
+}
+
+async function main() {
+  const targets = resolveTargets(args);
+  if (targets.length === 0) {
+    console.error('No targets resolved. Pass --niche and --market.');
+    process.exit(1);
+  }
+  for (const { niche, market } of targets) {
+    await loadSiteConfig(niche, market);
+    const articlesDir = resolve(SITES_DIR, niche, market, 'src/content/articles');
+    const slugs = args.slug
+      ? [args.slug]
+      : args.all
+        ? readdirSync(articlesDir).filter(f => f.endsWith('.mdx')).map(f => f.replace(/\.mdx$/, ''))
+        : [];
+    if (slugs.length === 0) {
+      console.error(`No slugs to repair for ${niche}/${market}. Pass --slug <slug> or --all.`);
+      continue;
+    }
+    for (const slug of slugs) {
+      await repairOne({ niche, market, articleSlug: slug });
+    }
+  }
+}
+
+main().catch(err => { console.error(err); process.exit(1); });

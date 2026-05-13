@@ -73,6 +73,8 @@ if (isNonAffiliate) {
       : "border-2 border-[var(--color-primary)] bg-white text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white",
   ]}
 >
-  <slot>{label}{!isNonAffiliate && product ? ` — ${product}` : ''}</slot>
+  {isNonAffiliate
+    ? <span>{label}{product ? ` — ${product}` : ''}</span>
+    : <slot>{label}{product ? ` — ${product}` : ''}</slot>}
   <span aria-hidden="true">→</span>
 </a>

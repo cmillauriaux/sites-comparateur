@@ -68,8 +68,13 @@ export async function findAmazonProduct(productName, { market = 'fr' } = {}) {
       if (!best || cand.adjusted > best.adjusted) best = cand;
     }
 
-    if (!best || best.score < MIN_TITLE_MATCH) {
-      return { imageUrl: null, asin: null, price: null, title: null, matchScore: best?.score ?? 0 };
+    // Acceptance gate uses ADJUSTED score (raw - accessory - price-low penalty).
+    // Raw score alone lets through screen protectors / spare parts that happen
+    // to contain the full product name in their title — exactly the kind of
+    // match we want to reject. The accessory + price penalties are calibrated
+    // precisely so this gate filters them.
+    if (!best || best.adjusted < MIN_TITLE_MATCH) {
+      return { imageUrl: null, asin: null, price: null, title: null, matchScore: best?.adjusted ?? 0 };
     }
 
     return {
@@ -159,13 +164,12 @@ const UNIT_SUFFIX_RE = /^[0-9.,]+(V|W|kW|A|Ah|mA|mAh|kg|lb|lbs|in|ft|hp|psi|bar|
 function buildModelIdFallbacks(productName) {
   const withBrand = buildModelIdQuery(productName);
   if (!withBrand) return [];
-  // Strip the leading brand word from `withBrand` to get the SKU-only form.
-  // We assume the brand is everything up to the first space (or the full
-  // string if there's no space).
-  const firstSpace = withBrand.indexOf(' ');
-  const skuOnly = firstSpace > 0 ? withBrand.slice(firstSpace + 1) : null;
-  // Keep both, deduping if they're identical.
-  return [withBrand, skuOnly].filter((v, i, a) => v && a.indexOf(v) === i);
+  // NEVER fall back to SKU-only ("E6", "DCD771") — a 2-3 char alphanumeric
+  // token without a brand matches anything that happens to contain it
+  // (scooters, light bulbs, knockoff brands). The brand-required hard gate
+  // in scoreTitleMatch would catch most, but skipping the bad query entirely
+  // avoids burning a DataForSEO call on it.
+  return [withBrand];
 }
 
 /**
@@ -245,11 +249,33 @@ const tokenize = (s) =>
     .split(/[^a-z0-9]+/)
     .filter(t => t && t.length >= 2);
 
+// Strip all non-alphanumerics + accents and lowercase. Used by the brand-
+// required gate so spelling variations like "De'Longhi" / "De Longhi" /
+// "DeLonghi" all collapse to "delonghi" and match equivalently.
+const stripToAlnum = (s) =>
+  s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+
 function scoreTitleMatch(query, title) {
   const qTokens = tokenize(query);
   const tTokensArr = tokenize(title);
   const tTokens = new Set(tTokensArr);
   if (qTokens.length === 0) return { score: 0, accessory: false };
+
+  // Hard gate 0 — brand-required. The first whitespace-separated word of the
+  // ORIGINAL query (almost always the brand, e.g. "Jura" / "Sage" / "DeLonghi")
+  // MUST appear as a substring in the punctuation-stripped title. Catches
+  // cross-category mismatches that score gates miss — e.g. fallback query "E6"
+  // matching an "EVERCROSS E6 Trottinette" listing with a perfect token score
+  // because they happen to share the SKU-like suffix.
+  // Skipped for short first words (< 3 chars) like "Le"/"La"/"The".
+  const firstWord = query.trim().split(/\s+/)[0];
+  const brandKey = stripToAlnum(firstWord);
+  if (brandKey.length >= 3) {
+    const titleKey = stripToAlnum(title);
+    if (!titleKey.includes(brandKey)) {
+      return { score: 0, accessory: false, reason: 'brand-missing' };
+    }
+  }
 
   // Hard gate 1 — model identifier match. Tokens that mix letters AND digits
   // (sc3, sv450, i7, m18) are model identifiers; ALL of them must appear in

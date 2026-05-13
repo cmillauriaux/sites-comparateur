@@ -31,18 +31,25 @@ import { IMAGE_QUERIES } from '@comparateur/config/images';
 const PEXELS_URL = 'https://api.pexels.com/v1/search';
 const PIXABAY_URL = 'https://pixabay.com/api/';
 
-async function searchPexels(query) {
+async function searchPexels(query, { excludeIds = new Set() } = {}) {
   const key = process.env.PEXELS_API_KEY;
   if (!key) return null;
-  const url = `${PEXELS_URL}?query=${encodeURIComponent(query)}&per_page=3&orientation=landscape`;
+  const url = `${PEXELS_URL}?query=${encodeURIComponent(query)}&per_page=8&orientation=landscape`;
   const res = await fetch(url, { headers: { Authorization: key } });
   if (!res.ok) return null;
   const data = await res.json();
-  const photo = data.photos?.[0];
+  // Skip already-used photo ids so a multi-image article doesn't show the
+  // same hero photo twice (hero + inline). When everything is excluded, fall
+  // back to the first result rather than returning null — duplicate beats
+  // missing.
+  const photos = data.photos || [];
+  const fresh = photos.find(p => !excludeIds.has(p.id));
+  const photo = fresh || photos[0];
   // Prefer `large2x` for retina, fall back to `large`. `original` is too big
   // for a hero (often 4000+ px) — Cloudflare image optimization handles
   // resizing at the CDN.
   return photo ? {
+    id: photo.id,
     url: photo.src?.large2x || photo.src?.large || null,
     alt: photo.alt || null,
     source: 'pexels',
@@ -50,15 +57,18 @@ async function searchPexels(query) {
   } : null;
 }
 
-async function searchPixabay(query) {
+async function searchPixabay(query, { excludeIds = new Set() } = {}) {
   const key = process.env.PIXABAY_API_KEY;
   if (!key) return null;
-  const url = `${PIXABAY_URL}?key=${encodeURIComponent(key)}&q=${encodeURIComponent(query)}&per_page=3&orientation=horizontal&image_type=photo&safesearch=true`;
+  const url = `${PIXABAY_URL}?key=${encodeURIComponent(key)}&q=${encodeURIComponent(query)}&per_page=8&orientation=horizontal&image_type=photo&safesearch=true`;
   const res = await fetch(url);
   if (!res.ok) return null;
   const data = await res.json();
-  const hit = data.hits?.[0];
+  const hits = data.hits || [];
+  const fresh = hits.find(h => !excludeIds.has(h.id));
+  const hit = fresh || hits[0];
   return hit ? {
+    id: hit.id,
     url: hit.largeImageURL || hit.webformatURL || null,
     alt: hit.tags || null,
     source: 'pixabay',
@@ -87,6 +97,13 @@ const BRAND_TOKENS = [
   'stihl', 'husqvarna', 'gardena', 'flymo', 'mcculloch', 'oleo mac', 'oleomac',
   // Pressure washers
   'karcher', 'kärcher', 'lavor', 'kranzle', 'nilfisk', 'stihl',
+  // Cuisine — coffee
+  'jura', 'sage', 'krups', 'melitta', 'delonghi', "de'longhi", 'de longhi',
+  'philips', 'siemens', 'saeco', 'gaggia', 'rocket', 'breville', 'nespresso',
+  // Cuisine — kitchen appliances
+  'moulinex', 'magimix', 'kenwood', 'kitchenaid', 'kitchen aid', 'tefal',
+  'seb', 'ninja', 'thermomix', 'vorwerk', 'instant pot', 'cookeo', 'companion',
+  'monsieur cuisine', 'lidl', 'silvercrest',
   // Generic e-commerce / retailer
   'brico depot', 'brico-depot', 'leroy merlin', 'castorama', 'manomano',
   'amazon', 'cdiscount', 'darty', 'fnac', 'boulanger', 'carrefour',
@@ -137,6 +154,56 @@ const FR_TO_EN_QUERY = [
   // Watering / garden infrastructure
   ['arrosage',               'garden watering'],
   ['tuyau',                  'garden hose'],
+  // Cuisine — coffee
+  ['machine a cafe a grain', 'bean to cup coffee machine kitchen'],
+  ['machine a cafe a grains', 'bean to cup coffee machine kitchen'],
+  ['machine a grains',        'bean to cup coffee machine kitchen'],
+  ['machine a grain',         'bean to cup coffee machine kitchen'],
+  ['machine a cafe',         'espresso machine coffee'],
+  ['machine a café',         'espresso machine coffee'],
+  ['cafetiere italienne',    'moka pot coffee italian'],
+  ['cafetiere',              'coffee maker kitchen'],
+  ['cafetière',              'coffee maker kitchen'],
+  ['expresso',               'espresso coffee machine'],
+  ['espresso',               'espresso coffee machine'],
+  ['barista',                'barista coffee shop espresso'],
+  ['moulin a cafe',          'coffee grinder beans'],
+  ['broyeur cafe',           'coffee grinder beans'],
+  ['cafe grain',             'coffee beans roasted'],
+  // Cuisine — cooking appliances
+  ['air fryer',              'air fryer kitchen'],
+  ['airfryer',               'air fryer kitchen'],
+  ['friteuse sans huile',    'air fryer kitchen'],
+  ['friteuse',               'deep fryer kitchen'],
+  ['robot patissier',        'stand mixer baking kitchen'],
+  ['robot pâtissier',        'stand mixer baking kitchen'],
+  ['robot multifonction',    'food processor kitchen'],
+  ['robot cuisine',          'food processor kitchen'],
+  ['multicuiseur',           'multi cooker pressure kitchen'],
+  ['autocuiseur',            'pressure cooker pot kitchen'],
+  ['mixeur plongeant',       'hand blender immersion kitchen'],
+  ['mixeur',                 'blender smoothie kitchen'],
+  ['blender chauffant',      'soup maker blender kitchen'],
+  ['blender',                'blender smoothie kitchen'],
+  ['extracteur de jus',      'juicer fresh fruit kitchen'],
+  ['centrifugeuse',          'juicer fresh fruit kitchen'],
+  ['hachoir',                'food chopper kitchen'],
+  ['gaufrier',               'waffle maker kitchen'],
+  ['grille pain',            'toaster bread kitchen'],
+  ['grille-pain',            'toaster bread kitchen'],
+  ['toaster',                'toaster bread kitchen'],
+  ['mini four',              'mini oven kitchen counter'],
+  ['mini-four',              'mini oven kitchen counter'],
+  ['micro ondes',            'microwave oven kitchen'],
+  ['micro-ondes',            'microwave oven kitchen'],
+  ['plancha',                'plancha grill cooking'],
+  ['crepiere',               'crepe maker kitchen'],
+  ['crêpière',               'crepe maker kitchen'],
+  ['raclette',               'raclette cheese cooking'],
+  ['fondue',                 'fondue cheese cooking'],
+  // Cuisine generics
+  ['cuisson',                'cooking food kitchen'],
+  ['cuisine',                'kitchen cooking'],
   // Generic fallbacks (last resort)
   ['outillage',              'power tools workshop'],
   ['outil',                  'tools workshop'],
@@ -152,8 +219,16 @@ function stripBrandsAndNormalize(keyword) {
   return s.replace(/\s+/g, ' ').trim();
 }
 
+// Sort the dictionary by needle length descending ONCE at module load. The
+// table is hand-maintained in a niche-then-specificity order which is easy
+// to read, but `categoricalEnQuery` returns the FIRST hit — so "tuyau" (5
+// chars) used to win over "machine a cafe a grain" (21 chars) when both
+// appear in the same scan target. Sorting by length forces the most
+// specific term to match first regardless of authoring order.
+const FR_TO_EN_QUERY_SORTED = [...FR_TO_EN_QUERY].sort((a, b) => b[0].length - a[0].length);
+
 function categoricalEnQuery(normalized) {
-  for (const [needle, enQuery] of FR_TO_EN_QUERY) {
+  for (const [needle, enQuery] of FR_TO_EN_QUERY_SORTED) {
     if (normalized.includes(needle)) return enQuery;
   }
   return null;
@@ -226,12 +301,13 @@ export async function fetchArticleHero({ niche, market, articleSlug, keyword, ve
         query: q,
         alt: match.alt || keyword,
         source: match.source,
+        photoId: match.id ?? null,
         photographer: match.photographer ?? null,
         fetchedAt: new Date().toISOString(),
       };
       await import('node:fs').then(fs => fs.promises.writeFile(sidecarPath, JSON.stringify(meta, null, 2) + '\n'));
       if (verbose) console.log(`    🖼  hero: ${publicPath} (query="${q}", source=${match.source})`);
-      return { publicPath, alt: meta.alt, source: match.source };
+      return { publicPath, alt: meta.alt, source: match.source, photoId: match.id ?? null };
     } catch (err) {
       if (verbose) console.warn(`    ⚠️  hero download failed for "${q}": ${err.message}`);
       continue;
@@ -241,3 +317,8 @@ export async function fetchArticleHero({ niche, market, articleSlug, keyword, ve
   if (verbose) console.warn(`    ⚠️  no hero image found for "${keyword}" — article ships without one`);
   return null;
 }
+
+// Re-exports for sibling modules (inline-images.js) that share the same
+// Pexels/Pixabay cascade. Kept private to the scripts package — not a public
+// API.
+export { searchPexels, searchPixabay, buildQueries, stripBrandsAndNormalize, categoricalEnQuery };
