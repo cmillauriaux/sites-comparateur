@@ -38,6 +38,7 @@ import { fetchArticleHero } from './lib/hero-image.js';
 import { injectInlineImages } from './lib/inline-images.js';
 import { fetchProductGallery } from './lib/amazon-gallery.js';
 import { applyAvisRetroLinks } from './lib/cross-links.js';
+import { refreshBundleSiblings } from './lib/bundle-siblings.js';
 import { tokenize } from './lib/cluster.js';
 import { extractTopicFromKeyword } from './lib/intent.js';
 import { getCadence } from './lib/cadence.js';
@@ -77,36 +78,8 @@ function buildPublishedUrlSet(niche, market) {
  * siblings list (excluding the slot itself so an article never lists
  * itself among its "related" siblings).
  */
-function refreshBundleSiblings(siteConfig, opp) {
-  if (!opp?.bundle) return;
-  const { niche, market } = siteConfig;
-  const articlesDir = resolve(SITES_DIR, niche, market, 'src/content/articles');
-
-  // All generated slots — these are the URLs we'll cross-reference.
-  const generated = [];
-  for (const slot of ['comparatif', 'pillar', 'avis']) {
-    const s = opp.bundle[slot];
-    if (s?.status === 'generated' && s.url && s.slug && s.keyword) {
-      generated.push({ slot, title: s.keyword, url: s.url, slug: s.slug });
-    }
-  }
-  if (generated.length === 0) return;
-
-  for (const target of generated) {
-    const path = `${articlesDir}/${target.slug}.mdx`;
-    if (!existsSync(path)) continue;
-    const siblings = generated
-      .filter(g => g.slug !== target.slug)
-      .map(({ slot, title, url }) => ({ slot, title, url }));
-    try {
-      const original = readFileSync(path, 'utf-8');
-      const updated = setFrontmatterField(original, 'bundleSiblings', siblings);
-      if (updated !== original) writeFileSync(path, updated);
-    } catch (err) {
-      console.warn(`  ⚠️  refreshBundleSiblings(${target.slug}): ${err.message}`);
-    }
-  }
-}
+// refreshBundleSiblings moved to lib/bundle-siblings.js so the repair
+// script can call it too. See the imports above.
 
 /** Best-effort intent reconstruction from a published URL, for the
  *  internal-linking input. Falls back to 'comparatif' (the most common
@@ -444,11 +417,29 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
   // here — otherwise every article would ship with the same generic
   // /images/hero.jpg (niche-level photo from fetch-pillar-images.js), which
   // reads as templated content and breaks topic-image relevance.
-  try {
-    const hero = await fetchArticleHero({ niche, market, articleSlug, keyword });
-    if (hero) injectHeroFrontmatter(outputPath, hero);
-  } catch (err) {
-    console.warn(`  ⚠️  hero fetch failed: ${err.message}`);
+  // Avis articles: prefer the actual product photo as hero (the reader is
+  // here to see THIS product, not a stock-photo category shot). Falls back
+  // to Pexels when no product image was resolved.
+  let usedProductHero = false;
+  if (intent === 'avis' && topProductName) {
+    // The product image was already downloaded and the path is in the
+    // ProductCard via injectImagePaths. Re-derive the same path.
+    const productSlug = new slugger().slug(topProductName);
+    const productPath = `/images/products/${articleSlug}/${productSlug}.jpg`;
+    const onDisk = resolve(SITES_DIR, niche, market, 'public', productPath.replace(/^\//, ''));
+    if (existsSync(onDisk)) {
+      setAvisHeroFromProduct(outputPath, { publicPath: productPath, alt: topProductName });
+      usedProductHero = true;
+      console.log(`  🖼  avis hero → product photo (${productPath})`);
+    }
+  }
+  if (!usedProductHero) {
+    try {
+      const hero = await fetchArticleHero({ niche, market, articleSlug, keyword });
+      if (hero) injectHeroFrontmatter(outputPath, hero);
+    } catch (err) {
+      console.warn(`  ⚠️  hero fetch failed: ${err.message}`);
+    }
   }
 
   // Inline images at H2 boundaries (long articles only). Runs after the hero
@@ -531,6 +522,25 @@ function injectHeroFrontmatter(path, hero) {
   if (frontmatter.heroImage && frontmatter.heroImageAlt) return;
   frontmatter.heroImage = frontmatter.heroImage ?? hero.publicPath;
   frontmatter.heroImageAlt = frontmatter.heroImageAlt ?? hero.alt;
+  const yamlText = YAML.stringify(frontmatter, { lineWidth: 0 }).trimEnd();
+  writeFileSync(path, `---\n${yamlText}\n---\n${m[2]}`);
+}
+
+/**
+ * For avis articles, replace the (often weak) Pexels hero with an actual
+ * product photo. Same call site as injectHeroFrontmatter but force-writes
+ * the field (a stale Pexels hero is worse than the product image — an avis
+ * reader expects to see the thing they're considering).
+ */
+function setAvisHeroFromProduct(path, { publicPath, alt }) {
+  if (!publicPath) return;
+  const content = readFileSync(path, 'utf-8');
+  const m = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!m) return;
+  let frontmatter;
+  try { frontmatter = YAML.parse(m[1]) ?? {}; } catch { return; }
+  frontmatter.heroImage = publicPath;
+  frontmatter.heroImageAlt = alt || frontmatter.heroImageAlt || '';
   const yamlText = YAML.stringify(frontmatter, { lineWidth: 0 }).trimEnd();
   writeFileSync(path, `---\n${yamlText}\n---\n${m[2]}`);
 }

@@ -28,6 +28,7 @@ import { injectInlineImages } from './lib/inline-images.js';
 import { fetchProductGallery } from './lib/amazon-gallery.js';
 import { closeBrowser } from './lib/browser.js';
 import { applyAvisRetroLinks } from './lib/cross-links.js';
+import { refreshBundleSiblings } from './lib/bundle-siblings.js';
 import { DATA_DIR } from './lib/env.js';
 import Slugger from 'github-slugger';
 
@@ -174,6 +175,20 @@ async function repairOne({ niche, market, articleSlug }) {
         }
       } catch { /* ignore, fall back to Pexels */ }
     }
+
+    // Replace the stale Pexels hero with the actual product photo. Avis
+    // readers expect to see the product, not a category stock shot.
+    const productPath = `/images/products/${articleSlug}/${productSlug}.jpg`;
+    const onDisk = resolve(SITES_DIR, niche, market, 'public', productPath.replace(/^\//, ''));
+    if (existsSync(onDisk)) {
+      content = content.replace(/^heroImage:\s*.+$/m, `heroImage: ${productPath}`);
+      content = content.replace(/^heroImageAlt:\s*.+$/m, `heroImageAlt: ${primaryName}`);
+      // Insert if missing entirely.
+      if (!/^heroImage:/m.test(content)) {
+        content = content.replace(/^---\n/, `---\nheroImage: ${productPath}\nheroImageAlt: ${primaryName}\n`);
+      }
+      console.log(`   🖼  avis hero → product photo (${productPath})`);
+    }
   }
 
   const { content: withInline, count: inlineCount } = await injectInlineImages({
@@ -203,6 +218,21 @@ async function repairOne({ niche, market, articleSlug }) {
       if (patched.length > 0) {
         console.log(`   🔗 retro-linked avis into: ${patched.join(', ')}`);
       }
+    }
+  }
+
+  // Refresh bundleSiblings frontmatter on EVERY sibling of this article's
+  // bundle, regardless of intent. Catches stale "machine a cafe a grain
+  // professionnelle" raw-keyword titles in the sidebar — replaces them
+  // with the editorial title from each sibling's frontmatter.
+  const priorities = readPriorities();
+  const opps = priorities?.[niche]?.[market] || [];
+  const myUrl = `${articleSlug}/`;
+  const myOpp = opps.find(o => o.bundle && Object.values(o.bundle).some(s => s?.url?.endsWith(`/${articleSlug}/`)));
+  if (myOpp) {
+    const { patched: patchedSiblings } = refreshBundleSiblings({ niche, market }, myOpp);
+    if (patchedSiblings.length > 0) {
+      console.log(`   🧾 refreshed bundleSiblings on: ${patchedSiblings.join(', ')}`);
     }
   }
 }
