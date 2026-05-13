@@ -152,10 +152,15 @@ async function repairOne({ niche, market, articleSlug }) {
   if (existsSync(inlineDir)) rmSync(inlineDir, { recursive: true, force: true });
 
   // Avis articles get inline images from the product's Amazon gallery
-  // (multiple angles of the actual product). Everything else falls back to
-  // the Pexels inline path.
+  // (multiple angles of the actual product) when available. If the gallery
+  // can't be extracted (Amazon serves a stripped page to headless Playwright
+  // — no #imageBlock in the static HTML), we deliberately SKIP inline images
+  // rather than fall back to Pexels stock photos: a generic category shot in
+  // a single-product review is worse than no inline image at all. The hero
+  // (product photo) + ProductCard carry the visual weight.
   let productImages = [];
   let productAlt = '';
+  let skipInline = false;
   const intent = readIntent(content);
   if (intent === 'avis' && productNames.length > 0) {
     const primaryName = productNames[0];
@@ -173,8 +178,9 @@ async function repairOne({ niche, market, articleSlug }) {
           productAlt = primaryName;
           console.log(`   📸 product gallery: ${productImages.length} additional images for ${primaryName}`);
         }
-      } catch { /* ignore, fall back to Pexels */ }
+      } catch { /* ignore */ }
     }
+    if (productImages.length === 0) skipInline = true;
 
     // Replace the stale Pexels hero with the actual product photo. Avis
     // readers expect to see the product, not a category stock shot.
@@ -191,11 +197,15 @@ async function repairOne({ niche, market, articleSlug }) {
     }
   }
 
-  const { content: withInline, count: inlineCount } = await injectInlineImages({
-    niche, market, articleSlug, content, keyword,
-    productImages, productAlt,
-  });
-  if (inlineCount > 0) content = withInline;
+  if (!skipInline) {
+    const { content: withInline, count: inlineCount } = await injectInlineImages({
+      niche, market, articleSlug, content, keyword,
+      productImages, productAlt,
+    });
+    if (inlineCount > 0) content = withInline;
+  } else {
+    console.log(`   ⏭  inline images skipped (avis without gallery → product hero alone)`);
+  }
 
   if (content !== original) {
     writeFileSync(path, content);

@@ -74,24 +74,36 @@ export async function fetchProductGallery(asin, { market = 'fr', max = 6, noCach
     return [];
   }
 
-  // Extract from `data-a-dynamic-image="{...}"` attributes. The JSON inside
-  // is HTML-encoded (`&quot;`) and maps image URL → [width, height] for
-  // multiple resolutions of the same image. We:
-  //   1. Find every attribute value.
-  //   2. HTML-decode + JSON-parse it.
-  //   3. Pick the highest-resolution URL per attribute (largest w*h).
-  //   4. Dedupe by image ID (Amazon URL path between /I/ and the next .).
-  // Image ID stays stable across resolution variants, so two attributes
-  // with the same ID = same product photo at different sizes — we only
-  // want one of them.
-  const attrRe = /data-a-dynamic-image="(\{(?:[^"]|&quot;)*?\})"/g;
+  // Scope extraction to the MAIN product gallery only. Amazon /dp/ pages
+  // contain `data-a-dynamic-image` attributes in two distinct regions:
+  //   1. The main image carousel (#imageBlock / #altImages) — what we want.
+  //   2. Recommendation/sponsored widgets (anonCarousel1, anonCarousel2,
+  //      sims-fbt, etc.) — these mix in unrelated products' photos. The
+  //      Bosch GST avis was shipping a Wolfcraft handle from there.
+  //
+  // We use cheerio so we can ask "is this attribute inside a real gallery
+  // container?" instead of "is this attribute in the first N bytes of HTML?".
+  // The latter approach breaks when Amazon reorders sections.
+  //
+  // CAVEAT: Amazon serves a stripped page to headless Playwright — the
+  // /dp/ page often lacks #imageBlock entirely (the carousel is hydrated
+  // client-side from a JSON blob that bot detection strips). In that case
+  // the gallery comes back empty and the caller (article-generator,
+  // repair-products) skips inline images for the avis rather than fall
+  // back to widget-contaminated photos.
+  const $ = loadHTML(html);
+  const galleryAttrs = $(
+    '#imageBlock [data-a-dynamic-image], ' +
+    '#altImages [data-a-dynamic-image], ' +
+    '#main-image-container [data-a-dynamic-image], ' +
+    '#imgTagWrapperId [data-a-dynamic-image], ' +
+    '#imageBlockNew_feature_div [data-a-dynamic-image]'
+  ).map((_, el) => $(el).attr('data-a-dynamic-image')).get();
+
   const byId = new Map();   // image-id → highest-res URL
-  let m;
-  while ((m = attrRe.exec(html)) !== null) {
-    const decoded = m[1].replace(/&quot;/g, '"');
+  for (const raw of galleryAttrs) {
     let obj;
-    try { obj = JSON.parse(decoded); } catch { continue; }
-    // Find the largest variant in this attribute.
+    try { obj = JSON.parse(raw); } catch { continue; }   // cheerio already HTML-decoded
     let best = null;
     for (const [url, dims] of Object.entries(obj)) {
       if (!url.startsWith('https://') || !Array.isArray(dims)) continue;
@@ -101,11 +113,10 @@ export async function fetchProductGallery(asin, { market = 'fr', max = 6, noCach
     if (!best) continue;
     // Image ID = path segment after /I/ up to the first . (e.g.
     // "81D1w+QuF2L" in ".../I/81D1w+QuF2L._AC_SX679_.jpg"). Different IDs
-    // = different angles; same ID = same angle, different resolution.
+    // = different angles; same ID = same angle at different sizes.
     const idMatch = best.url.match(/\/I\/([^.\/]+)/);
     if (!idMatch) continue;
     const id = idMatch[1];
-    // Keep the highest-area URL per ID.
     const prev = byId.get(id);
     if (!prev || best.area > prev.area) byId.set(id, best);
   }
