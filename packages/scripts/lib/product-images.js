@@ -16,6 +16,7 @@ import slugger from 'github-slugger';
 import { SITES_DIR } from './env.js';
 import { findGoogleShoppingProduct } from './google-shopping.js';
 import { searchAmazonProducts } from './amazon-dfs.js';
+import { evaluateMatch, PRICE_FLOOR, PRICE_LOW_PENALTY, MIN_TITLE_MATCH, tokenize } from './match.js';
 
 const slug = new slugger();
 
@@ -94,53 +95,9 @@ export async function findAmazonProduct(productName, { market = 'fr' } = {}) {
 // How many search-result blocks to scan before giving up. Past N, ranking falls
 // off a cliff and we're better off returning null than picking noise.
 const MAX_BLOCKS_TO_INSPECT = 8;
-
-// Minimum match score (in [0,1]) to accept a result. Anything below this and
-// we treat the search as failed (return null rather than wrong product).
-const MIN_TITLE_MATCH = 0.5;
-
-// Below this price, a listing is treated as "almost certainly an accessory"
-// and gets a heavy soft penalty in the candidate ranking. Tuned for the
-// jardin/electro/sport niches where headline products are at the lower bound
-// of these floors. Same magnitude across markets — currency conversion is
-// approximate enough that finer tuning is not warranted.
-const PRICE_FLOOR = { fr: 40, us: 40, gb: 35 };
-const PRICE_LOW_PENALTY = 0.4;
-
-// STRONG accessory signals — words that, when in the title's prefix, identify
-// the listing as an accessory rather than the headline product. Penalty is
-// large enough to push a perfect-match score below the acceptance threshold.
-//
-// Note on power-tool listings: "kit" / "set" / "pack" are excluded because on
-// amazon.com / .co.uk the legitimate bundled product is routinely titled e.g.
-// "DeWalt 20V MAX Cordless Drill/Driver Kit (DCD771C2)" — penalising those
-// would reject the headline product. Accessory-only listings still get caught
-// via STRONG signals like "compatible" / "remplacement" / "replacement" or
-// the cheap-price soft gate (PRICE_FLOOR).
-const STRONG_ACCESSORY_TOKENS = new Set([
-  'compatible', 'compatibles',
-  'rechange', 'rechanges', 'remplacement', 'remplacements', 'replacement', 'replacements',
-  'lot', 'lots', 'sachet', 'sachets',
-  'chiffon', 'chiffons', 'lingette', 'lingettes',
-]);
-const STRONG_ACCESSORY_PENALTY = 0.6;
-const PREFIX_CHARS_FOR_STRONG = 80;     // only check strong signals near the title start
-
-// WEAK signals — accessory-typical nouns. Penalty is mild because legitimate
-// products often list "filtres inclus" / "accessoires fournis" as features.
-const WEAK_ACCESSORY_TOKENS = new Set([
-  'filtre', 'filtres', 'cartouche', 'cartouches',
-  'brosse', 'brosses', 'recharge', 'recharges',
-  'housse', 'housses',
-  'tube', 'tuyau', 'buse', 'embout', 'embouts',
-  'joint', 'joints', 'patin', 'patins',
-  'lingette', 'lingettes', 'tampon', 'tampons', 'chiffon', 'chiffons',
-  'sac', 'sacs',
-  'lame', 'lames',
-  'fixation', 'support',
-  'coque', 'coques', 'protection',
-]);
-const WEAK_ACCESSORY_PENALTY = 0.15;
+// The matcher gates + constants now live in lib/match.js (shared with
+// google-shopping.js). PRICE_FLOOR / PRICE_LOW_PENALTY / MIN_TITLE_MATCH /
+// tokenize / evaluateMatch are imported above.
 
 /**
  * Build a focused fallback query when the full product name yields no Amazon
@@ -237,86 +194,10 @@ function buildModelIdQuery(productName) {
   return `${brand} ${bestRun}`;
 }
 
-// Tokenize for fuzzy product matching:
-//  - lowercase + accent strip (NFD)
-//  - collapse "<short letters> <digit>" → "<lettersdigit>" so "SC 3", "i 7",
-//    "M 18" become single tokens that can match "SC3", "i7", "M18" in queries.
-//  - alphanum split, drop tokens shorter than 2 chars
-const tokenize = (s) =>
-  s.toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/([a-z]{1,4})\s+(\d+)/g, '$1$2')
-    .split(/[^a-z0-9]+/)
-    .filter(t => t && t.length >= 2);
-
-// Strip all non-alphanumerics + accents and lowercase. Used by the brand-
-// required gate so spelling variations like "De'Longhi" / "De Longhi" /
-// "DeLonghi" all collapse to "delonghi" and match equivalently.
-const stripToAlnum = (s) =>
-  s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
-
-function scoreTitleMatch(query, title) {
-  const qTokens = tokenize(query);
-  const tTokensArr = tokenize(title);
-  const tTokens = new Set(tTokensArr);
-  if (qTokens.length === 0) return { score: 0, accessory: false };
-
-  // Hard gate 0 — brand-required. The first whitespace-separated word of the
-  // ORIGINAL query (almost always the brand, e.g. "Jura" / "Sage" / "DeLonghi")
-  // MUST appear as a substring in the punctuation-stripped title. Catches
-  // cross-category mismatches that score gates miss — e.g. fallback query "E6"
-  // matching an "EVERCROSS E6 Trottinette" listing with a perfect token score
-  // because they happen to share the SKU-like suffix.
-  // Skipped for short first words (< 3 chars) like "Le"/"La"/"The".
-  const firstWord = query.trim().split(/\s+/)[0];
-  const brandKey = stripToAlnum(firstWord);
-  if (brandKey.length >= 3) {
-    const titleKey = stripToAlnum(title);
-    if (!titleKey.includes(brandKey)) {
-      return { score: 0, accessory: false, reason: 'brand-missing' };
-    }
-  }
-
-  // Hard gate 1 — model identifier match. Tokens that mix letters AND digits
-  // (sc3, sv450, i7, m18) are model identifiers; ALL of them must appear in
-  // the title — but as a substring inside any title token, not as an exact
-  // token. Amazon listings frequently append a SKU suffix to the bare model
-  // (DCD999 → DCD999B for the bare tool, XPH14 → XPH14T for the kit). Exact
-  // token matching would reject those legitimate hits; substring lets them
-  // through while still blocking unrelated products.
-  // Pure numeric tokens are not used as a gate because titles also contain
-  // spec values ("3,2 bar", "1 500 W") that match by chance.
-  const qAlphanumMix = qTokens.filter(t => /[a-z]/.test(t) && /\d/.test(t));
-  if (qAlphanumMix.length > 0) {
-    const allFound = qAlphanumMix.every(qt =>
-      tTokensArr.some(tt => tt.includes(qt))
-    );
-    if (!allFound) {
-      return { score: 0, accessory: false, reason: 'model-id-mismatch' };
-    }
-  }
-
-  // Substring match for fuzzy alignment ("easy" matches "easyfix").
-  const matched = qTokens.filter(qt => tTokensArr.some(tt => tt.includes(qt))).length;
-  let score = matched / qTokens.length;
-
-  // Strong accessory signal: only counts if it appears near the start of the
-  // title (where product-type words live), not when it's just describing
-  // included accessories or features further along.
-  const titleLow = title.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-  const prefixTokens = new Set(tokenize(titleLow.slice(0, PREFIX_CHARS_FOR_STRONG)));
-  const strong = [...prefixTokens].some(t => STRONG_ACCESSORY_TOKENS.has(t));
-
-  let penalty = 0;
-  if (strong) {
-    penalty = STRONG_ACCESSORY_PENALTY;
-  } else if ([...tTokens].some(t => WEAK_ACCESSORY_TOKENS.has(t))) {
-    penalty = WEAK_ACCESSORY_PENALTY;
-  }
-  score -= penalty;
-
-  return { score, accessory: penalty > 0 };
-}
+// scoreTitleMatch / tokenize / accessory tokens now live in lib/match.js
+// (re-exported as evaluateMatch). Wrapper kept here so the call sites below
+// can keep using the local name without touching the rest of the file.
+const scoreTitleMatch = evaluateMatch;
 
 async function downloadTo(url, outputPath) {
   mkdirSync(dirname(outputPath), { recursive: true });

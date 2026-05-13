@@ -1,8 +1,11 @@
 {
-  "asin": "B006FJTG8C",
-  "price": "320,62 €",
-  "title": "Melitta Cafetière filtrante avec carafe en verre 1,8 L plaque chauffante 17 m en acier inoxydable noir",
-  "matchScore": 0.5,
-  "pickedIdx": 5,
-  "fetchedAt": "2026-05-13T06:13:59.894Z"
+  "asin": null,
+  "price": "239.96 EUR",
+  "title": "Melitta Epos",
+  "matchScore": 1.1,
+  "nonAffiliate": {
+    "merchantUrl": "https://google.fr/search?ibp=oshop&q=Melitta+EPOS&prds=gpcid:10045730755438911770,rds:PC_10045730755438911770%7CPROD_PC_10045730755438911770,headlineOfferDocid:1722353187753870397,catalogid:5034070428409722476,pvo:3,pvt:hg&hl=fr&gl=FR",
+    "merchant": "MaxiCoffee.com"
+  },
+  "fetchedAt": "2026-05-13T06:36:06.266Z"
 }

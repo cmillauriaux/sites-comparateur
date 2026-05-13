@@ -23,6 +23,10 @@ import { resolve, join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { DATA_DIR, requireEnv } from './env.js';
 import { MARKET_DATAFORSEO } from '@comparateur/config/niches';
+// Reuse the Amazon-matcher gates (brand-required, model-id, non-brand,
+// accessory penalties) so Google Shopping fallback doesn't accept what the
+// Amazon path correctly rejects. See lib/match.js.
+import { evaluateMatch, PRICE_FLOOR, PRICE_LOW_PENALTY, MIN_TITLE_MATCH } from './match.js';
 
 const BASE_URL = 'https://api.dataforseo.com/v3';
 const CACHE_DIR = resolve(DATA_DIR, 'google-shopping-cache');
@@ -53,23 +57,19 @@ function isCacheFresh(path) {
   return ageMs < CACHE_TTL_DAYS * 24 * 60 * 60 * 1000;
 }
 
-function tokenize(s) {
-  return s.toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .split(/[^a-z0-9]+/)
-    .filter(t => t && t.length >= 2);
+// Apply the SAME hard gates + accessory + price-floor penalties as the
+// Amazon matcher. Returns `{ score, adjusted, accessory, reason }`. A failed
+// hard gate (brand-missing / model-id-mismatch / brand-only) returns score=0.
+function evaluateShoppingTitle(query, title, priceValue, market) {
+  const r = evaluateMatch(query, title);
+  if (r.reason) return { ...r, adjusted: 0 };
+  let adjusted = r.score;
+  if (Number.isFinite(priceValue) && priceValue < (PRICE_FLOOR[market] ?? 40)) {
+    adjusted -= PRICE_LOW_PENALTY;
+  }
+  return { ...r, adjusted };
 }
 
-function scoreMatch(query, title) {
-  const q = new Set(tokenize(query));
-  const t = new Set(tokenize(title));
-  if (q.size === 0) return 0;
-  let matched = 0;
-  for (const tok of q) if (t.has(tok)) matched++;
-  return matched / q.size;
-}
-
-const MIN_TITLE_MATCH = 0.5;       // looser than Amazon (more noise in shopping listings)
 
 // Match against the `seller` string returned by DataForSEO (e.g. "Amazon.fr",
 // "Cdiscount", "ManoMano.fr") — not URL hostnames. The Google Shopping
@@ -106,38 +106,40 @@ function extractItemFields(item) {
   const imageUrl = Array.isArray(item.product_images) && item.product_images.length > 0
     ? item.product_images[0]
     : null;
-  const priceCurrent = typeof item.price === 'number' ? item.price : null;
+  const priceValue = typeof item.price === 'number' ? item.price : null;
   const currency = item.currency || '';
-  const price = priceCurrent != null
-    ? (currency ? `${priceCurrent} ${currency}` : String(priceCurrent))
+  const price = priceValue != null
+    ? (currency ? `${priceValue} ${currency}` : String(priceValue))
     : null;
   const merchant = item.seller || item.domain || '';
-  return { title, url, imageUrl, price, merchant };
+  return { title, url, imageUrl, price, priceValue, merchant };
 }
 
-function pickBest(items, query) {
+function pickBest(items, query, market) {
   if (!items?.length) return null;
   const candidates = items
     .filter(it => {
-      // Item types we want: paid + organic shopping listings. Skip carousels
-      // of related products / "sponsored carousel" headers without prices.
       const t = it.type || '';
       return t === 'google_shopping_serp' || t === 'google_shopping_paid';
     })
     .map(it => {
       const f = extractItemFields(it);
-      const titleScore = scoreMatch(query, f.title);
+      const m = evaluateShoppingTitle(query, f.title, f.priceValue, market);
       let merchantBonus = 0;
-      if (sellerMatches(f.merchant, BLOCKED_SELLERS)) merchantBonus = -2;       // hard reject
+      if (sellerMatches(f.merchant, BLOCKED_SELLERS)) merchantBonus = -2;
       else if (sellerMatches(f.merchant, PREFERRED_SELLERS)) merchantBonus = 0.2;
       const completenessBonus = (f.imageUrl ? 0.05 : 0) + (f.price ? 0.05 : 0);
-      return { ...f, _score: titleScore + merchantBonus + completenessBonus };
+      // Ranking score = adjusted title (with brand+model+accessory+price gates)
+      // + merchant + completeness. Acceptance gate uses adjusted alone (bonuses
+      // can rank candidates but can't push a gated-out title above threshold).
+      return { ...f, _titleAdjusted: m.adjusted, _score: m.adjusted + merchantBonus + completenessBonus };
     })
     .filter(c => !sellerMatches(c.merchant, BLOCKED_SELLERS));
 
   candidates.sort((a, b) => b._score - a._score);
   const best = candidates[0];
-  if (!best || best._score < MIN_TITLE_MATCH) return null;
+  if (!best) return null;
+  if (best._titleAdjusted < MIN_TITLE_MATCH) return null;
   if (!best.url) return null;
   return best;
 }
@@ -225,7 +227,7 @@ export async function findGoogleShoppingProduct({ productName, market, noCache =
     return null;
   }
 
-  const best = pickBest(items, productName);
+  const best = pickBest(items, productName, market);
   const match = best ? {
     merchant: best.merchant,
     merchantUrl: best.url,
