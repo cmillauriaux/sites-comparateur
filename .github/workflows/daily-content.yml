@@ -155,6 +155,16 @@ jobs:
         run: node packages/scripts/article-generator.js --niche "$NICHE" --market "$MARKET" --bundle
 
       - if: env.SKIP != '1'
+        name: Editorial review of generated articles
+        run: |
+          node packages/scripts/review-articles.js \
+            --niche "$NICHE" --market "$MARKET" \
+            --new --fix
+        # --new   : only articles new in the working tree (git status)
+        # --fix   : delete KO articles + revert their state before commit
+        # exits 1 on any KO → skips Build + Deploy for this run
+
+      - if: env.SKIP != '1'
         name: Build site
         run: pnpm --filter "./sites/$NICHE/$MARKET" build
 

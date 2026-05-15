@@ -297,6 +297,21 @@ que tes sources te permettent de défendre solidement.
 KEYWORD CIBLE
 ==========================================
 "${keyword}"
+
+==========================================
+ACCORD DE GENRE — CORRIGER DANS LE FRONTMATTER
+==========================================
+Les mots-clés Semrush sont parfois mal genrés. Si le keyword contient
+"un [nom féminin]", CORRIGER le genre dans title, description et keyword :
+  - "un scie sauteuse" → "une scie sauteuse"
+  - "un tondeuse" → "une tondeuse"
+  - "un tronçonneuse" → "une tronçonneuse"
+  - "un perceuse" → "une perceuse"
+  - "un débroussailleuse" → "une débroussailleuse"
+  - "un souffleuse" → "une souffleuse"
+  - "un ponceuse" → "une ponceuse"
+Le champ \`keyword:\` du frontmatter doit contenir le genre corrigé.
+
 ${secondaryBlock}
 ==========================================
 STRUCTURE

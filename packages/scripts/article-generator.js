@@ -30,6 +30,7 @@ import { scrapeSourcesForKeyword } from './lib/scrape.js';
 import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices, injectMerchantUrls } from './lib/product-images.js';
 import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
+import { reviewArticle } from './lib/editorial-reviewer.js';
 import { pickNextBundleSlot, initBundle, markBundleSlotShipped, markBundleSlotFailed, BUNDLE_SLOTS, SLOT_INTENT, slugFromKeyword, bundleSlotUrl } from './lib/bundle.js';
 import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
@@ -399,6 +400,16 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     if (validationErrors.length > 0) {
       throw new Error(`article validation failed: ${validationErrors.join('; ')}`);
     }
+    // Programmatic editorial checks (prix tronqués, score math, gender, etc.)
+    // — runs post-product-injection so images/prices are already resolved.
+    const reviewEarly = reviewArticle(outputPath);
+    if (reviewEarly.status === 'ko') {
+      const koIssues = reviewEarly.issues.filter(i => i.level === 'ko').map(i => i.message).join('; ');
+      throw new Error(`editorial review KO: ${koIssues}`);
+    }
+    for (const i of reviewEarly.issues.filter(x => x.level === 'warn')) {
+      console.warn(`  ⚠️  editorial [${i.code}]: ${i.message}`);
+    }
     const imgs = Object.values(imageMap).filter(Boolean).length;
     const asins = Object.values(asinMap).filter(Boolean).length;
     const prices = Object.values(priceMap).filter(Boolean).length;
@@ -435,6 +446,15 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     const validationErrors = validateGeneratedArticle(finalContent);
     if (validationErrors.length > 0) {
       throw new Error(`article validation failed: ${validationErrors.join('; ')}`);
+    }
+    // Same programmatic editorial checks as the product branch above.
+    const reviewNoProduct = reviewArticle(outputPath);
+    if (reviewNoProduct.status === 'ko') {
+      const koIssues = reviewNoProduct.issues.filter(i => i.level === 'ko').map(i => i.message).join('; ');
+      throw new Error(`editorial review KO: ${koIssues}`);
+    }
+    for (const i of reviewNoProduct.issues.filter(x => x.level === 'warn')) {
+      console.warn(`  ⚠️  editorial [${i.code}]: ${i.message}`);
     }
   }
 

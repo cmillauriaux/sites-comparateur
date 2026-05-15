@@ -25,16 +25,18 @@
 // Match a price token. Two shapes:
 //   "50 €", "1 200 €", "1.200 €", "1,200.50 €"
 //   "$ 50", "£50"
-const PRICE_TOKEN = String.raw`(?:[€$£]\s*\d[\d ,.]*|\d[\d ,.]*\s*[€$£])`;
+//   "350-500 €", "50–100 €"  (range with currency at end only)
+const PRICE_TOKEN = String.raw`(?:[€$£]\s*\d[\d ,.]*(?:\s*[-–]\s*\d[\d ,.]*)?|\d[\d ,.]*(?:\s*[-–]\s*\d[\d ,.]*)?\s*[€$£])`;
 
 // Optional preceding clause that should be eaten with the price.
 // `de` is a very common French word, but inside this regex it's only consumed
 // when followed by a price (the trailing PRICE_TOKEN gates the whole match),
 // so "ergonomie de la machine" is safe.
-const PRICE_PREFIX = String.raw`(?:à\s+|de\s+|environ\s+|autour\s+de\s+|à\s+partir\s+de\s+|jusqu'à\s+|approximativement\s+|coûte\s+|coûtent\s+|coute\s+|coutent\s+|coûter\s+|~\s*|≈\s*)`;
+const PRICE_PREFIX = String.raw`(?:à\s+|de\s+|environ\s+|autour\s+de\s+|à\s+partir\s+de\s+|jusqu'à\s+|approximativement\s+|coûte\s+|coûtent\s+|coute\s+|coutent\s+|coûter\s+|dès\s+|sous\s+les?\s+|~\s*|≈\s*)`;
 
 // Range form: "50 € à 100 €" / "50€ - 100€" / "50€ et 100€"
-const PRICE_RANGE_TAIL = String.raw`(?:\s*(?:à|et|-)\s*${PRICE_TOKEN})?`;
+// (complementary to the range suffix inside PRICE_TOKEN for currency-first forms)
+const PRICE_RANGE_TAIL = String.raw`(?:\s*(?:à|et|-|–)\s*${PRICE_TOKEN})?`;
 
 const PRICE_CLAUSE_RE = new RegExp(
   String.raw`\s*${PRICE_PREFIX}?${PRICE_TOKEN}${PRICE_RANGE_TAIL}\.?`,
