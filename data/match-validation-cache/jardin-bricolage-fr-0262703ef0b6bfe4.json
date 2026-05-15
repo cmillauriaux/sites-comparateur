@@ -1,0 +1,16 @@
+{
+  "productName": "Lavor Galaxy 150 GL",
+  "candidates": [
+    {
+      "asin": "B0CYTGW9NZ",
+      "title": "Lavor Nettoyeur Haute Pression Galaxy 150 GL avec Brosse Rotative et Accessoire Lave sols, 150 Bar Max, 450 l/h Max, 2100W"
+    },
+    {
+      "asin": "B0CYTCX7ZG",
+      "title": "Lavor Nettoyeur Haute Pression Galaxy 150 Essential GL avec Brosse Rotative, Puissance 150 Bar Max, Débit 450 l/h Max, Moteur 2100W"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B0CYTGW9NZ",
+  "decidedAt": "2026-05-15T10:14:34.401Z"
+}

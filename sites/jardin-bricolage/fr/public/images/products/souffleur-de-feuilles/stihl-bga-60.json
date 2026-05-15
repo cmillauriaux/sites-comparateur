@@ -1,8 +1,11 @@
 {
-  "asin": "B08KQ88D14",
-  "price": "335,67 €",
-  "title": "Stihl BGA Souffleur 86 sans Batterie et sans Chargeur",
-  "matchScore": 1,
-  "pickedIdx": 0,
-  "fetchedAt": "2026-05-13T14:06:13.398Z"
+  "asin": null,
+  "price": "199 EUR",
+  "title": "Souffleur à batterie BGA 60 Stihl",
+  "matchScore": 1.1,
+  "nonAffiliate": {
+    "merchantUrl": "https://google.fr/search?ibp=oshop&q=Stihl+BGA+60&prds=gpcid:6945215389116937762,rds:PC_6945215389116937762%7CPROD_PC_6945215389116937762,headlineOfferDocid:9239746456563086669,catalogid:104500555476857403,pvo:3,pvt:hg&hl=fr&gl=FR",
+    "merchant": "stihl.fr"
+  },
+  "fetchedAt": "2026-05-15T09:57:08.001Z"
 }

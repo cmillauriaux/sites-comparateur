@@ -1,8 +1,11 @@
 {
-  "asin": "B0GMGZT5Q4",
-  "price": "1099,00 €",
-  "title": "HUSQVARNA Automower® Aspire R6V – Robot Tondeuse sans Fil périphérique, détection IA Vision, Navigation GPS, Application WiFi, Tonte systématique, Zones virtuelles, jusqu'à 600 m²",
-  "matchScore": 1,
-  "pickedIdx": 1,
-  "fetchedAt": "2026-05-13T14:16:30.549Z"
+  "asin": null,
+  "price": "3499 EUR",
+  "title": "Automower 450X NERA Husqvarna Robot tondeuse",
+  "matchScore": 1.1,
+  "nonAffiliate": {
+    "merchantUrl": "https://google.fr/search?ibp=oshop&q=Husqvarna+Automower+450X+Nera&prds=gpcid:16024693384118076996,rds:PC_16024693384118076996%7CPROD_PC_16024693384118076996,headlineOfferDocid:15408767191204611087,catalogid:11395697424358980534,pvo:3,pvt:hg&hl=fr&gl=FR",
+    "merchant": "Vaudaux"
+  },
+  "fetchedAt": "2026-05-15T10:06:07.146Z"
 }

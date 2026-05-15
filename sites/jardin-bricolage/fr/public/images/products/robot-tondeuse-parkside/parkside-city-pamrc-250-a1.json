@@ -1,8 +1,11 @@
 {
-  "asin": "B07Q4DJH4R",
-  "price": "19,99 €",
-  "title": "Parkside Chargeur de la série X20V pour Batterie Pap 20 A1",
-  "matchScore": 1,
-  "pickedIdx": 5,
-  "fetchedAt": "2026-05-13T13:20:55.136Z"
+  "asin": null,
+  "price": "239 EUR",
+  "title": "Parkside Tondeuse robot City Pamrc 250 A1",
+  "matchScore": 1.1,
+  "nonAffiliate": {
+    "merchantUrl": "https://google.fr/search?ibp=oshop&q=Parkside+City+PAMRC+250+A1&prds=gpcid:17128227844534767156,rds:PC_17128227844534767156%7CPROD_PC_17128227844534767156,headlineOfferDocid:1987690812831188492,catalogid:6658340553313840655,pvo:3,pvt:hg&hl=fr&gl=FR",
+    "merchant": "Lidl.fr"
+  },
+  "fetchedAt": "2026-05-15T08:21:05.889Z"
 }

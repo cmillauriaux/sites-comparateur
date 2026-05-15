@@ -318,7 +318,13 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
           ...buildModelIdFallbacks(productName),
           ...buildShortenedNameFallbacks(productName),
         ].filter(dedup);
-        for (const fallback of fallbacks) {
+        // Cap: products that genuinely don't exist on Amazon (Chinese SKUs
+        // like ONEVAN / ZUUKO / Nature Pro) burn 40+ fallback queries
+        // ($0.0033 each via DataForSEO) for zero candidates. After 3
+        // shortened-name attempts, accept that Amazon has nothing and fall
+        // through to Google Shopping.
+        const MAX_FALLBACK_QUERIES = 3;
+        for (const fallback of fallbacks.slice(0, MAX_FALLBACK_QUERIES)) {
           if (verbose) console.log(`    🔁 fallback query: "${fallback}"`);
           candidates = await findAmazonCandidates(fallback, { market });
           if (candidates.length > 0) break;

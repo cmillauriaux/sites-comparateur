@@ -1,8 +1,11 @@
 {
-  "asin": "B0CTYSDBLW",
-  "price": "54,05 €",
-  "title": "PSIDE PARKSIDE® Scie sauteuse pendulaire à batterie 20V PSTDA 20-Li C3, scie sauteuse, sans batterie ni chargeur",
-  "matchScore": 1,
-  "pickedIdx": 0,
-  "fetchedAt": "2026-05-13T07:58:57.707Z"
+  "asin": null,
+  "price": "79.91 EUR",
+  "title": "Scie sauteuse pendulaire sans fil PARKSIDE 20 V / Scie sauteuse pendulaire PSTDA 20-Li / sans batterie ni chargeur",
+  "matchScore": 1.1,
+  "nonAffiliate": {
+    "merchantUrl": "https://google.fr/search?ibp=oshop&q=Parkside+PSTDA+20-Li+A2&prds=headlineOfferDocid:16853547412532124220,pvo:3,pvt:hg&hl=fr&gl=FR",
+    "merchant": "Kaufland.fr - MB Elektrohandel"
+  },
+  "fetchedAt": "2026-05-15T08:04:00.043Z"
 }

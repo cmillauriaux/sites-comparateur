@@ -1,0 +1,20 @@
+{
+  "productName": "Einhell GE-CL 18 Li E Kit",
+  "candidates": [
+    {
+      "asin": "B01N6ENEP4",
+      "title": "Einhell Souffleur sans Fil sur Batterie GC-CL 18 Li E Kit - Power X-Change (18 V, Autonomie 240 Min, Régime 12.000 TRS/Min, Souffle d'air 210 km/h) Livré avec Batterie 2,0 Ah et Un Chargeur"
+    },
+    {
+      "asin": "B0GVSWLNNR",
+      "title": "Einhell Pack 3 Machines sans Fil - Power X-Change (Tondeuse à Gazon GE-CM 18/33 Li, Coupe-Bordures GC-CT 18/24 Li, Souffleur GE-CL 18 Li E) + Batterie 4,0Ah et Chargeur"
+    },
+    {
+      "asin": "B01BBZ1O1G",
+      "title": "Einhell Souffleur sans Fil GE-CL 18 Li E - Solo Power X-Change (18 V, Vitesse du Souffle d'air 210 km/h, Poignée Ergonomique Softgrip) Livré sans Batterie ni Chargeur"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B01N6ENEP4",
+  "decidedAt": "2026-05-15T09:56:50.883Z"
+}

@@ -69,7 +69,8 @@
         "semrushIntent": "commercial",
         "status": "pending",
         "source": "semrush",
-        "createdAt": "2026-05-10T19:18:21.330Z"
+        "createdAt": "2026-05-10T19:18:21.330Z",
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-scie-sauteuse",
@@ -137,34 +138,35 @@
         "score": 1025,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "generated",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.329Z",
-        "generatedAt": null,
-        "publishedUrl": null,
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "scie sauteuse",
-            "slug": "scie-sauteuse",
+            "slug": "scie-sauteuse-1",
             "status": "generated",
             "url": "https://jardinguide.fr/comparatifs/scie-sauteuse/",
-            "publishedAt": "2026-05-11T20:51:14.056Z",
+            "publishedAt": "2026-03-20T20:11:19.000Z",
             "topProductName": "Bosch Professional GST 18 V-Li S",
-            "topProductAsin": "B00NLBHJ54"
+            "topProductAsin": "B00MWHIJKW"
           },
           "pillar": {
             "keyword": "comment choisir un scie sauteuse",
-            "slug": "comment-choisir-un-scie-sauteuse",
+            "slug": "comment-choisir-un-scie-sauteuse-1",
             "status": "generated",
             "url": "https://jardinguide.fr/guides/comment-choisir-un-scie-sauteuse/",
-            "publishedAt": "2026-05-11T21:07:44.045Z"
+            "publishedAt": "2026-03-22T14:15:22.000Z"
           },
           "avis": {
             "keyword": "Bosch Professional GST 18 V-Li S avis",
             "slug": "bosch-professional-gst-18-v-li-s-avis",
-            "status": "generated",
-            "url": "https://jardinguide.fr/avis/bosch-professional-gst-18-v-li-s-avis/",
-            "publishedAt": "2026-05-11T21:16:29.509Z"
+            "status": "failed",
+            "url": null,
+            "publishedAt": null,
+            "errorCount": 1,
+            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/bosch-professional-gst-18-v-li-s-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           }
         }
       },
@@ -237,31 +239,31 @@
         "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.330Z",
-        "generatedAt": null,
-        "publishedUrl": null,
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "tondeuse à gazon",
-            "slug": "tondeuse-à-gazon",
+            "slug": "tondeuse-à-gazon-1",
             "status": "generated",
             "url": "https://jardinguide.fr/comparatifs/tondeuse-à-gazon/",
-            "publishedAt": "2026-03-19T21:37:27.000Z",
-            "topProductName": "Scheppach MS173-51 E",
-            "topProductAsin": "B09RB55VV5"
+            "publishedAt": "2026-03-29T17:42:23.000Z",
+            "topProductName": "STIGA Combi 53 S",
+            "topProductAsin": "B0GNMLZNJL"
           },
           "pillar": {
             "keyword": "comment choisir un tondeuse à gazon",
-            "slug": "comment-choisir-un-tondeuse-à-gazon",
+            "slug": "comment-choisir-un-tondeuse-à-gazon-1",
             "status": "generated",
             "url": "https://jardinguide.fr/guides/comment-choisir-un-tondeuse-à-gazon/",
-            "publishedAt": "2026-03-21T11:29:54.000Z"
+            "publishedAt": "2026-04-01T18:40:37.000Z"
           },
           "avis": {
-            "keyword": "Scheppach MS173-51 E avis",
-            "slug": "scheppach-ms173-51-e-avis",
+            "keyword": "STIGA Combi 53 S avis",
+            "slug": "stiga-combi-53-s-avis",
             "status": "generated",
-            "url": "https://jardinguide.fr/avis/scheppach-ms173-51-e-avis/",
-            "publishedAt": "2026-03-23T14:06:29.000Z"
+            "url": "https://jardinguide.fr/avis/stiga-combi-53-s-avis/",
+            "publishedAt": "2026-04-29T15:58:19.000Z",
+            "errorCount": 0
           }
         }
       },
@@ -334,8 +336,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.330Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-parkside",
@@ -403,36 +404,34 @@
         "score": 888,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "partial",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "robot tondeuse parkside",
-            "slug": "robot-tondeuse-parkside",
+            "slug": "robot-tondeuse-parkside-1",
             "status": "generated",
             "url": "https://jardinguide.fr/comparatifs/robot-tondeuse-parkside/",
-            "publishedAt": "2026-03-30T13:20:24.000Z",
-            "topProductName": "Parkside PAMRS 1000 A1",
-            "topProductAsin": "B07Q4DJH4R"
+            "publishedAt": "2026-04-09T08:31:28.000Z",
+            "topProductName": "Segway Navimow i105E",
+            "topProductAsin": "B0GCDL23T6"
           },
           "pillar": {
             "keyword": "comment choisir un robot tondeuse parkside",
-            "slug": "comment-choisir-un-robot-tondeuse-parkside",
+            "slug": "comment-choisir-un-robot-tondeuse-parkside-1",
             "status": "generated",
             "url": "https://jardinguide.fr/guides/comment-choisir-un-robot-tondeuse-parkside/",
-            "publishedAt": "2026-04-01T09:46:16.000Z"
+            "publishedAt": "2026-04-12T11:46:40.000Z"
           },
           "avis": {
-            "keyword": "Parkside PAMRS 1000 A1 avis",
-            "slug": "parkside-pamrs-1000-a1-avis",
-            "status": "failed",
-            "url": null,
-            "publishedAt": null,
-            "errorCount": 1,
-            "lastError": "sealed-by-seed-resume"
+            "keyword": "Segway Navimow i105E avis",
+            "slug": "segway-navimow-i105e-avis",
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/segway-navimow-i105e-avis/",
+            "publishedAt": "2026-04-30T21:08:56.000Z",
+            "errorCount": 0
           }
         }
       },
@@ -505,33 +504,32 @@
         "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "chaine tronconneuse",
-            "slug": "chaine-tronconneuse",
+            "slug": "chaine-tronconneuse-1",
             "status": "generated",
             "url": "https://jardinguide.fr/comparatifs/chaine-tronconneuse/",
-            "publishedAt": "2026-05-05T14:22:56.000Z",
-            "topProductName": "Oregon Lot de 3 Chaîne 3/8 LP 35 cm 50 maillons",
-            "topProductAsin": null
+            "publishedAt": "2026-04-18T18:23:53.000Z",
+            "topProductName": "Oregon 91PX AdvanceCut",
+            "topProductAsin": "B00L46RT26"
           },
           "pillar": {
             "keyword": "comment choisir un chaine tronconneuse",
-            "slug": "comment-choisir-un-chaine-tronconneuse",
+            "slug": "comment-choisir-un-chaine-tronconneuse-1",
             "status": "generated",
             "url": "https://jardinguide.fr/guides/comment-choisir-un-chaine-tronconneuse/",
-            "publishedAt": "2026-05-05T14:42:55.000Z"
+            "publishedAt": "2026-04-21T19:00:48.000Z"
           },
           "avis": {
-            "keyword": "Oregon Lot de 3 Chaîne 3/8 LP 35 cm 50 maillons avis",
-            "slug": "oregon-lot-de-3-chaîne-38-lp-35-cm-50-maillons-avis",
+            "keyword": "Oregon 91PX AdvanceCut avis",
+            "slug": "oregon-91px-advancecut-avis",
             "status": "failed",
             "url": null,
             "publishedAt": null,
             "errorCount": 1,
-            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/oregon-lot-de-3-chaîne-38-lp-35-cm-50-maillons-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
+            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/oregon-91px-advancecut-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           }
         }
       },
@@ -601,36 +599,35 @@
         "score": 843,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "partial",
+        "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "nettoyeur haute pression sans fil",
-            "slug": "nettoyeur-haute-pression-sans-fil",
-            "status": "generated",
-            "url": "https://jardinguide.fr/comparatifs/nettoyeur-haute-pression-sans-fil/",
-            "publishedAt": "2026-05-06T09:41:13.000Z",
-            "topProductName": "Kärcher HD 4/11 C Bp",
-            "topProductAsin": "B0854YT269"
-          },
-          "pillar": {
-            "keyword": "comment choisir un nettoyeur haute pression sans fil",
-            "slug": "comment-choisir-un-nettoyeur-haute-pression-sans-fil",
-            "status": "generated",
-            "url": "https://jardinguide.fr/guides/comment-choisir-un-nettoyeur-haute-pression-sans-fil/",
-            "publishedAt": "2026-05-08T10:20:08.000Z"
-          },
-          "avis": {
-            "keyword": "Kärcher HD 4/11 C Bp avis",
-            "slug": "kärcher-hd-411-c-bp-avis",
+            "slug": "nettoyeur-haute-pression-sans-fil-1",
             "status": "failed",
             "url": null,
             "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
             "errorCount": 1,
-            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/kärcher-hd-411-c-bp-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
+            "lastError": "article validation failed: image coverage 20% (2/10), need 80%+"
+          },
+          "pillar": {
+            "keyword": "comment choisir un nettoyeur haute pression sans fil",
+            "slug": "comment-choisir-un-nettoyeur-haute-pression-sans-fil-1",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
           }
         }
       },
@@ -700,36 +697,33 @@
         "score": 558,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "partial",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "souffleur de feuilles",
-            "slug": "souffleur-de-feuilles",
+            "slug": "souffleur-de-feuilles-1",
             "status": "generated",
             "url": "https://jardinguide.fr/comparatifs/souffleur-de-feuilles/",
-            "publishedAt": "2026-05-09T13:00:07.000Z",
-            "topProductName": "Stihl BGA 60",
-            "topProductAsin": "B08KQ88D14"
+            "publishedAt": "2026-05-03T08:52:47.000Z",
+            "topProductName": "Ryobi OBL1820S 18V One+",
+            "topProductAsin": "B01LPCPBQ4"
           },
           "pillar": {
             "keyword": "comment choisir un souffleur de feuilles",
-            "slug": "comment-choisir-un-souffleur-de-feuilles",
+            "slug": "comment-choisir-un-souffleur-de-feuilles-1",
             "status": "generated",
             "url": "https://jardinguide.fr/guides/comment-choisir-un-souffleur-de-feuilles/",
-            "publishedAt": "2026-05-09T21:59:32.000Z"
+            "publishedAt": "2026-05-03T18:34:23.000Z"
           },
           "avis": {
-            "keyword": "Stihl BGA 60 avis",
-            "slug": "stihl-bga-60-avis",
-            "status": "failed",
-            "url": null,
-            "publishedAt": null,
-            "errorCount": 1,
-            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/stihl-bga-60-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
+            "keyword": "Ryobi OBL1820S 18V One+ avis",
+            "slug": "ryobi-obl1820s-18v-one-avis",
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/ryobi-obl1820s-18v-one-avis/",
+            "publishedAt": "2026-05-04T08:53:38.000Z"
           }
         }
       },
@@ -799,34 +793,34 @@
         "score": 553,
         "intent": "comparatif",
         "semrushIntent": "navigational",
-        "status": "generated",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "tondeuse husqvarna robot",
-            "slug": "tondeuse-husqvarna-robot",
+            "slug": "tondeuse-husqvarna-robot-1",
             "status": "generated",
             "url": "https://jardinguide.fr/comparatifs/tondeuse-husqvarna-robot/",
-            "publishedAt": "2026-05-10T14:25:16.000Z",
-            "topProductName": "Husqvarna Automower 310 Mark II",
-            "topProductAsin": "B0DNZL4RYW"
+            "publishedAt": "2026-05-04T11:49:09.000Z",
+            "topProductName": null,
+            "topProductAsin": null
           },
           "pillar": {
             "keyword": "comment choisir un tondeuse husqvarna robot",
-            "slug": "comment-choisir-un-tondeuse-husqvarna-robot",
+            "slug": "comment-choisir-un-tondeuse-husqvarna-robot-1",
             "status": "generated",
             "url": "https://jardinguide.fr/guides/comment-choisir-un-tondeuse-husqvarna-robot/",
-            "publishedAt": "2026-05-10T14:56:24.000Z"
+            "publishedAt": "2026-05-05T14:59:33.000Z"
           },
           "avis": {
-            "keyword": "Husqvarna Automower 310 Mark II avis",
-            "slug": "husqvarna-automower-310-mark-ii-avis",
-            "status": "generated",
-            "url": "https://jardinguide.fr/avis/husqvarna-automower-310-mark-ii-avis/",
-            "publishedAt": "2026-05-10T21:15:37.000Z"
+            "keyword": null,
+            "slug": null,
+            "status": "failed",
+            "url": null,
+            "publishedAt": null,
+            "lastError": "no-validated-product"
           }
         }
       },
@@ -899,8 +893,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-visseuse-perceuse",
@@ -971,8 +964,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-electrique",
@@ -1036,8 +1028,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-thermique-stihl",
@@ -1108,8 +1099,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-lavor-nettoyeur-haute-pression",
@@ -1177,32 +1167,33 @@
         "score": 386,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "lavor nettoyeur haute pression",
-            "slug": "lavor-nettoyeur-haute-pression",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
+            "slug": "lavor-nettoyeur-haute-pression-1",
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/lavor-nettoyeur-haute-pression/",
+            "publishedAt": "2026-05-06T19:58:04.000Z",
+            "topProductName": "Lavor Galaxy 160 Essential GL",
+            "topProductAsin": "B0CYTGGBQJ"
           },
           "pillar": {
             "keyword": "comment choisir un lavor nettoyeur haute pression",
-            "slug": "comment-choisir-un-lavor-nettoyeur-haute-pression",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "slug": "comment-choisir-un-lavor-nettoyeur-haute-pression-1",
+            "status": "generated",
+            "url": "https://jardinguide.fr/guides/comment-choisir-un-lavor-nettoyeur-haute-pression/",
+            "publishedAt": "2026-05-07T21:24:48.000Z"
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "keyword": "Lavor Galaxy 160 Essential GL avis",
+            "slug": "lavor-galaxy-160-essential-gl-avis",
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/lavor-galaxy-160-essential-gl-avis/",
+            "publishedAt": "2026-05-08T14:48:50.000Z"
           }
         }
       },
@@ -1254,21 +1245,22 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "tondeuse debroussailleuse",
-            "slug": "tondeuse-debroussailleuse",
-            "status": "pending",
+            "slug": "tondeuse-debroussailleuse-1",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
             "topProductName": null,
-            "topProductAsin": null
+            "topProductAsin": null,
+            "errorCount": 1,
+            "lastError": "article validation failed: image coverage 60% (6/10), need 80%+"
           },
           "pillar": {
             "keyword": "comment choisir un tondeuse debroussailleuse",
-            "slug": "comment-choisir-un-tondeuse-debroussailleuse",
+            "slug": "comment-choisir-un-tondeuse-debroussailleuse-1",
             "status": "pending",
             "url": null,
             "publishedAt": null
@@ -1348,34 +1340,33 @@
         "score": 354,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "pending",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
+        "errorCount": 0,
         "bundle": {
           "comparatif": {
             "keyword": "taille haie sur perche thermique",
-            "slug": "taille-haie-sur-perche-thermique",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
+            "slug": "taille-haie-sur-perche-thermique-1",
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/taille-haie-sur-perche-thermique/",
+            "publishedAt": "2026-05-10T09:45:34.000Z",
+            "topProductName": "GT Garden taille-haie thermique sur perche 52cc",
+            "topProductAsin": "B00HYWGOHK"
           },
           "pillar": {
             "keyword": "comment choisir un taille haie sur perche thermique",
-            "slug": "comment-choisir-un-taille-haie-sur-perche-thermique",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "slug": "comment-choisir-un-taille-haie-sur-perche-thermique-1",
+            "status": "generated",
+            "url": "https://jardinguide.fr/guides/comment-choisir-un-taille-haie-sur-perche-thermique/",
+            "publishedAt": "2026-05-10T19:18:12.000Z"
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "keyword": "GT Garden taille-haie thermique sur perche 52cc avis",
+            "slug": "gt-garden-taille-haie-thermique-sur-perche-52cc-avis",
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/gt-garden-taille-haie-thermique-sur-perche-52cc-avis/",
+            "publishedAt": "2026-05-12T20:05:37.000Z"
           }
         }
       },
@@ -1448,8 +1439,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-abri-pour-tondeuse-robot",
@@ -1520,33 +1510,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "abri pour tondeuse robot",
-            "slug": "abri-pour-tondeuse-robot",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un abri pour tondeuse robot",
-            "slug": "comment-choisir-un-abri-pour-tondeuse-robot",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-brico-depot-nettoyeur-haute-pression",
@@ -1616,7 +1580,8 @@
         "semrushIntent": "informational",
         "status": "pending",
         "source": "semrush",
-        "createdAt": "2026-05-10T19:18:21.331Z"
+        "createdAt": "2026-05-10T19:18:21.331Z",
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-sans-fil-périphérique-gps",
@@ -1687,33 +1652,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "robot tondeuse sans fil périphérique gps",
-            "slug": "robot-tondeuse-sans-fil-périphérique-gps",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un robot tondeuse sans fil périphérique gps",
-            "slug": "comment-choisir-un-robot-tondeuse-sans-fil-périphérique-gps",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tondeuse-robot-comparatif",
@@ -1784,33 +1723,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tondeuse robot comparatif",
-            "slug": "tondeuse-robot-comparatif",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tondeuse robot",
-            "slug": "comment-choisir-un-tondeuse-robot",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-sans-fil",
@@ -1881,33 +1794,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "taille haie sans fil",
-            "slug": "taille-haie-sans-fil",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un taille haie sans fil",
-            "slug": "comment-choisir-un-taille-haie-sans-fil",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-thermique-perche",
@@ -1978,31 +1865,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "bundle": {
-          "comparatif": {
-            "keyword": "taille haie thermique perche",
-            "slug": "taille-haie-thermique-perche",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un taille haie thermique perche",
-            "slug": "comment-choisir-un-taille-haie-thermique-perche",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-guide-tronconneuse",
@@ -2066,32 +1929,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "lastError": "article validation failed: LLM stylometric tics: 9 occurrences (em/en-dashes×9)",
-        "bundle": {
-          "comparatif": {
-            "keyword": "meilleur tronconneuse",
-            "slug": "meilleur-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "guide tronconneuse",
-            "slug": "guide-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-electrique",
@@ -2134,8 +1972,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-nettoyeur-haute-pression-à-eau-chaude",
@@ -2206,35 +2043,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "errorCount": 1,
-        "lastError": "article validation failed: image coverage 60% (6/10), need 80%+",
-        "bundle": {
-          "comparatif": {
-            "keyword": "nettoyeur haute pression à eau chaude",
-            "slug": "nettoyeur-haute-pression-à-eau-chaude",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un nettoyeur haute pression à eau chaude",
-            "slug": "comment-choisir-un-nettoyeur-haute-pression-à-eau-chaude",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-lames-scie-sauteuse",
@@ -2305,33 +2114,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "lames scie sauteuse",
-            "slug": "lames-scie-sauteuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un lames scie sauteuse",
-            "slug": "comment-choisir-un-lames-scie-sauteuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-autoportée",
@@ -2367,8 +2150,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-stihl-hs-45",
@@ -2439,33 +2221,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "taille haie stihl hs 45",
-            "slug": "taille-haie-stihl-hs-45",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un taille haie stihl hs 45",
-            "slug": "comment-choisir-un-taille-haie-stihl-hs-45",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-electrique-telescopique",
@@ -2536,35 +2292,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "errorCount": 1,
-        "lastError": "insufficient sources: 0 total / 0 editorial (need 3 total + 1 editorial)",
-        "bundle": {
-          "comparatif": {
-            "keyword": "taille haie electrique telescopique",
-            "slug": "taille-haie-electrique-telescopique",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un taille haie electrique telescopique",
-            "slug": "comment-choisir-un-taille-haie-electrique-telescopique",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-lame-pour-debroussailleuse",
@@ -2614,8 +2342,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tondeuse-à-gazon-batterie",
@@ -2686,33 +2413,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tondeuse à gazon batterie",
-            "slug": "tondeuse-à-gazon-batterie",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tondeuse à gazon batterie",
-            "slug": "comment-choisir-un-tondeuse-à-gazon-batterie",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-husqvarna-600m2",
@@ -2783,33 +2484,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "robot tondeuse husqvarna 600m2",
-            "slug": "robot-tondeuse-husqvarna-600m2",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un robot tondeuse husqvarna 600m2",
-            "slug": "comment-choisir-un-robot-tondeuse-husqvarna-600m2",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-stihl-batterie",
@@ -2866,8 +2541,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-nettoyeur-haute-pression-160-bars",
@@ -2938,33 +2612,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "nettoyeur haute pression 160 bars",
-            "slug": "nettoyeur-haute-pression-160-bars",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un nettoyeur haute pression 160 bars",
-            "slug": "comment-choisir-un-nettoyeur-haute-pression-160-bars",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-nettoyeur-haut-pression-nilfisk",
@@ -3014,33 +2662,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "nettoyeur haut pression nilfisk",
-            "slug": "nettoyeur-haut-pression-nilfisk",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un nettoyeur haut pression nilfisk",
-            "slug": "comment-choisir-un-nettoyeur-haut-pression-nilfisk",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-fil-debroussailleuse",
@@ -3097,33 +2719,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "fil debroussailleuse",
-            "slug": "fil-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un fil debroussailleuse",
-            "slug": "comment-choisir-un-fil-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tondeuse-robot-pas-cher",
@@ -3194,33 +2790,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tondeuse robot pas cher",
-            "slug": "tondeuse-robot-pas-cher",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tondeuse robot pas cher",
-            "slug": "comment-choisir-un-tondeuse-robot-pas-cher",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-a-batterie",
@@ -3263,33 +2833,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse a batterie",
-            "slug": "tronconneuse-a-batterie",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse a batterie",
-            "slug": "comment-choisir-un-tronconneuse-a-batterie",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-echo",
@@ -3318,8 +2862,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-parkside-1000m2",
@@ -3390,33 +2933,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "robot tondeuse parkside 1000m2",
-            "slug": "robot-tondeuse-parkside-1000m2",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un robot tondeuse parkside 1000m2",
-            "slug": "comment-choisir-un-robot-tondeuse-parkside-1000m2",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-manuel",
@@ -3487,8 +3004,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-stihl-tronconneuse-ms-170",
@@ -3545,33 +3061,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "stihl tronconneuse ms 170",
-            "slug": "stihl-tronconneuse-ms-170",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un stihl tronconneuse ms 170",
-            "slug": "comment-choisir-un-stihl-tronconneuse-ms-170",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-harnais-debroussailleuse",
@@ -3614,8 +3104,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-sur-perche",
@@ -3658,33 +3147,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse sur perche",
-            "slug": "tronconneuse-sur-perche",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse sur perche",
-            "slug": "comment-choisir-un-tronconneuse-sur-perche",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-perceuse-visseuse-dewalt",
@@ -3755,33 +3218,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "perceuse visseuse dewalt",
-            "slug": "perceuse-visseuse-dewalt",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un perceuse visseuse dewalt",
-            "slug": "comment-choisir-un-perceuse-visseuse-dewalt",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-a-roue",
@@ -3817,33 +3254,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse a roue",
-            "slug": "debroussailleuse-a-roue",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse a roue",
-            "slug": "comment-choisir-un-debroussailleuse-a-roue",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tondeuse-electrique-gazon",
@@ -3914,33 +3325,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tondeuse electrique gazon",
-            "slug": "tondeuse-electrique-gazon",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tondeuse electrique gazon",
-            "slug": "comment-choisir-un-tondeuse-electrique-gazon",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tondeuse-robot-pour-grande-surface",
@@ -4011,33 +3396,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tondeuse robot pour grande surface",
-            "slug": "tondeuse-robot-pour-grande-surface",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tondeuse robot pour grande surface",
-            "slug": "comment-choisir-un-tondeuse-robot-pour-grande-surface",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-souffleur-aspirateur-feuilles",
@@ -4108,33 +3467,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "souffleur aspirateur feuilles",
-            "slug": "souffleur-aspirateur-feuilles",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un souffleur aspirateur feuilles",
-            "slug": "comment-choisir-un-souffleur-aspirateur-feuilles",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tondeuse-thermique-à-gazon",
@@ -4205,33 +3538,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tondeuse thermique à gazon",
-            "slug": "tondeuse-thermique-à-gazon",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tondeuse thermique à gazon",
-            "slug": "comment-choisir-un-tondeuse-thermique-à-gazon",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-ryobi-scie-sauteuse",
@@ -4302,33 +3609,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "ryobi scie sauteuse",
-            "slug": "ryobi-scie-sauteuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un ryobi scie sauteuse",
-            "slug": "comment-choisir-un-ryobi-scie-sauteuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-chaines-oregon-pour-tronconneuse",
@@ -4371,33 +3652,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "chaines oregon pour tronconneuse",
-            "slug": "chaines-oregon-pour-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un chaines oregon pour tronconneuse",
-            "slug": "comment-choisir-un-chaines-oregon-pour-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-husqvarna",
@@ -4447,8 +3702,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-carburateur-debroussailleuse",
@@ -4477,33 +3731,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "carburateur debroussailleuse",
-            "slug": "carburateur-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un carburateur debroussailleuse",
-            "slug": "comment-choisir-un-carburateur-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haies-electrique-perche",
@@ -4553,8 +3781,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-location-debroussailleuse",
@@ -4583,33 +3810,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "location debroussailleuse",
-            "slug": "location-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un location debroussailleuse",
-            "slug": "comment-choisir-un-location-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-thermique",
@@ -4638,8 +3839,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haies-electriques-telescopiques",
@@ -4682,33 +3882,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "taille haies electriques telescopiques",
-            "slug": "taille-haies-electriques-telescopiques",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un taille haies electriques telescopiques",
-            "slug": "comment-choisir-un-taille-haies-electriques-telescopiques",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-thermique-stihl-promotion",
@@ -4751,33 +3925,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "taille-haie thermique stihl promotion",
-            "slug": "taille-haie-thermique-stihl-promotion",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un taille-haie thermique stihl promotion",
-            "slug": "comment-choisir-un-taille-haie-thermique-stihl-promotion",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-top-10-nettoyeur-haute-pression",
@@ -4834,33 +3982,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "top 10 nettoyeur haute pression",
-            "slug": "top-10-nettoyeur-haute-pression",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un 10 nettoyeur haute pression",
-            "slug": "comment-choisir-un-10-nettoyeur-haute-pression",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-elagueuse",
@@ -4889,8 +4011,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-mini-tronconneuse",
@@ -4926,33 +4047,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "mini tronconneuse",
-            "slug": "mini-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un mini tronconneuse",
-            "slug": "comment-choisir-un-mini-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-2-temps-melange",
@@ -4988,33 +4083,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse 2 temps melange",
-            "slug": "debroussailleuse-2-temps-melange",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse 2 temps melange",
-            "slug": "comment-choisir-un-debroussailleuse-2-temps-melange",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-sur-roues",
@@ -5043,33 +4112,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse sur roues",
-            "slug": "debroussailleuse-sur-roues",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse sur roues",
-            "slug": "comment-choisir-un-debroussailleuse-sur-roues",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-lanceur-debroussailleuse",
@@ -5098,33 +4141,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "lanceur debroussailleuse",
-            "slug": "lanceur-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un lanceur debroussailleuse",
-            "slug": "comment-choisir-un-lanceur-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-reglage-carburateur-tronconneuse",
@@ -5160,8 +4177,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-dolmar",
@@ -5181,33 +4197,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse dolmar",
-            "slug": "tronconneuse-dolmar",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse dolmar",
-            "slug": "comment-choisir-un-tronconneuse-dolmar",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-echo",
@@ -5227,8 +4217,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-disques-debroussailleuse",
@@ -5248,8 +4237,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-yard-force---tondeuse-à-gazon-rotative-sans-fil-37cm",
@@ -5292,8 +4280,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tondeuses-à-gazon",
@@ -5329,33 +4316,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tondeuses à gazon",
-            "slug": "tondeuses-à-gazon",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tondeuses à gazon",
-            "slug": "comment-choisir-un-tondeuses-à-gazon",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-parkside-perceuse-visseuse",
@@ -5405,8 +4366,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-disque-debroussailleuse",
@@ -5435,8 +4395,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-nettoyeur-haute-pression-sans-fil-puissant",
@@ -5472,8 +4431,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-beton",
@@ -5502,33 +4460,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse beton",
-            "slug": "tronconneuse-beton",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse beton",
-            "slug": "comment-choisir-un-tronconneuse-beton",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-ryobi",
@@ -5557,8 +4489,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-jonsered",
@@ -5587,33 +4518,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse jonsered",
-            "slug": "tronconneuse-jonsered",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse jonsered",
-            "slug": "comment-choisir-un-tronconneuse-jonsered",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-location-tronconneuse",
@@ -5633,8 +4538,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-lame-taille-haie",
@@ -5670,33 +4574,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "lame taille haie",
-            "slug": "lame-taille-haie",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un lame taille haie",
-            "slug": "comment-choisir-un-lame-taille-haie",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-parkside",
@@ -5725,8 +4603,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-dewalt",
@@ -5755,33 +4632,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse dewalt",
-            "slug": "tronconneuse-dewalt",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse dewalt",
-            "slug": "comment-choisir-un-tronconneuse-dewalt",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-kress-prix",
@@ -5810,33 +4661,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "robot tondeuse kress prix",
-            "slug": "robot-tondeuse-kress-prix",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un robot tondeuse kress prix",
-            "slug": "comment-choisir-un-robot-tondeuse-kress-prix",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-accessoir-pour-debroussailleuse",
@@ -5865,8 +4690,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-pieces-detachee-pour-debroussailleuse",
@@ -5902,8 +4726,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-souffleur-feuilles-batterie",
@@ -5946,33 +4769,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "souffleur feuilles batterie",
-            "slug": "souffleur-feuilles-batterie",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un souffleur feuilles batterie",
-            "slug": "comment-choisir-un-souffleur-feuilles-batterie",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-huile-tronconneuse",
@@ -5992,33 +4789,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "huile tronconneuse",
-            "slug": "huile-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un huile tronconneuse",
-            "slug": "comment-choisir-un-huile-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-affutage-tronconneuse",
@@ -6047,8 +4818,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-makita",
@@ -6068,33 +4838,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse makita",
-            "slug": "tronconneuse-makita",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse makita",
-            "slug": "comment-choisir-un-tronconneuse-makita",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-melange-tronconneuse",
@@ -6114,8 +4858,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-taille-haies-batterie-ryobi",
@@ -6151,33 +4894,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "taille haies batterie ryobi",
-            "slug": "taille-haies-batterie-ryobi",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un taille haies batterie ryobi",
-            "slug": "comment-choisir-un-taille-haies-batterie-ryobi",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-prix-tronconneuse",
@@ -6213,8 +4930,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-souffleurs-feuilles",
@@ -6243,33 +4959,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "souffleurs feuilles",
-            "slug": "souffleurs-feuilles",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un souffleurs feuilles",
-            "slug": "comment-choisir-un-souffleurs-feuilles",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tracteur-debroussailleuse",
@@ -6289,33 +4979,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tracteur debroussailleuse",
-            "slug": "tracteur-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tracteur debroussailleuse",
-            "slug": "comment-choisir-un-tracteur-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-debroussailleuse",
@@ -6335,33 +4999,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "robot debroussailleuse",
-            "slug": "robot-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un robot debroussailleuse",
-            "slug": "comment-choisir-un-robot-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-a-dos",
@@ -6381,33 +5019,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse a dos",
-            "slug": "debroussailleuse-a-dos",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse a dos",
-            "slug": "comment-choisir-un-debroussailleuse-a-dos",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-accessoire-debroussailleuse",
@@ -6427,8 +5039,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-lime-tronconneuse",
@@ -6448,8 +5059,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-oleo-mac",
@@ -6478,33 +5088,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse oleo mac",
-            "slug": "tronconneuse-oleo-mac",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse oleo mac",
-            "slug": "comment-choisir-un-tronconneuse-oleo-mac",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-brico-depot",
@@ -6540,8 +5124,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-nettoyeurs-haute-pression-professionnels",
@@ -6561,33 +5144,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "nettoyeurs haute pression professionnels",
-            "slug": "nettoyeurs-haute-pression-professionnels",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un nettoyeurs haute pression professionnels",
-            "slug": "comment-choisir-un-nettoyeurs-haute-pression-professionnels",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-pour-elaguer",
@@ -6607,8 +5164,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-makita",
@@ -6628,33 +5184,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse makita",
-            "slug": "debroussailleuse-makita",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse makita",
-            "slug": "comment-choisir-un-debroussailleuse-makita",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-a-fleau",
@@ -6674,33 +5204,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse a fleau",
-            "slug": "debroussailleuse-a-fleau",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse a fleau",
-            "slug": "comment-choisir-un-debroussailleuse-a-fleau",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-husqvarna-2000m2",
@@ -6729,33 +5233,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "robot tondeuse husqvarna 2000m2",
-            "slug": "robot-tondeuse-husqvarna-2000m2",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un robot tondeuse husqvarna 2000m2",
-            "slug": "comment-choisir-un-robot-tondeuse-husqvarna-2000m2",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-ryobi",
@@ -6775,33 +5253,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse ryobi",
-            "slug": "tronconneuse-ryobi",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse ryobi",
-            "slug": "comment-choisir-un-tronconneuse-ryobi",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-sans-fil",
@@ -6830,33 +5282,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse sans fil",
-            "slug": "tronconneuse-sans-fil",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse sans fil",
-            "slug": "comment-choisir-un-tronconneuse-sans-fil",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-mc-culloch",
@@ -6876,33 +5302,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse mc culloch",
-            "slug": "tronconneuse-mc-culloch",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse mc culloch",
-            "slug": "comment-choisir-un-tronconneuse-mc-culloch",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-kawasaki",
@@ -6922,33 +5322,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse kawasaki",
-            "slug": "debroussailleuse-kawasaki",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse kawasaki",
-            "slug": "comment-choisir-un-debroussailleuse-kawasaki",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-dewalt",
@@ -6968,33 +5342,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse dewalt",
-            "slug": "debroussailleuse-dewalt",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse dewalt",
-            "slug": "comment-choisir-un-debroussailleuse-dewalt",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-husqvarna-tronconneuse",
@@ -7023,8 +5371,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-brosse-pour-debroussailleuse",
@@ -7044,33 +5391,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "brosse pour debroussailleuse",
-            "slug": "brosse-pour-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un brosse pour debroussailleuse",
-            "slug": "comment-choisir-un-brosse-pour-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-forestiere",
@@ -7090,33 +5411,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse forestiere",
-            "slug": "debroussailleuse-forestiere",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse forestiere",
-            "slug": "comment-choisir-un-debroussailleuse-forestiere",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-tete-universelle",
@@ -7136,8 +5431,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-pomme-agriocole",
@@ -7157,8 +5451,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-moteur-debroussailleuse",
@@ -7178,8 +5471,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-telescopique",
@@ -7199,8 +5491,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-perceuse-visseuse-sans-fil-parkside-20v-sans-batterie-ni-chargeur",
@@ -7220,8 +5511,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-multifonction",
@@ -7241,33 +5531,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse multifonction",
-            "slug": "debroussailleuse-multifonction",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse multifonction",
-            "slug": "comment-choisir-un-debroussailleuse-multifonction",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-milwaukee",
@@ -7287,33 +5551,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse milwaukee",
-            "slug": "debroussailleuse-milwaukee",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse milwaukee",
-            "slug": "comment-choisir-un-debroussailleuse-milwaukee",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-gt-garden",
@@ -7333,33 +5571,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse gt garden",
-            "slug": "tronconneuse-gt-garden",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse gt garden",
-            "slug": "comment-choisir-un-tronconneuse-gt-garden",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-bosch",
@@ -7379,33 +5591,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse bosch",
-            "slug": "debroussailleuse-bosch",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse bosch",
-            "slug": "comment-choisir-un-debroussailleuse-bosch",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-aiguiseur-chaine-tronconneuse",
@@ -7425,8 +5611,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-sthil",
@@ -7446,8 +5631,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-enfant",
@@ -7467,8 +5651,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-comparatif-robots-tondeuse",
@@ -7488,33 +5671,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "comparatif robots tondeuse",
-            "slug": "comparatif-robots-tondeuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un robots tondeuse",
-            "slug": "comment-choisir-un-robots-tondeuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-tout-terrain",
@@ -7534,33 +5691,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "robot tondeuse tout terrain",
-            "slug": "robot-tondeuse-tout-terrain",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un robot tondeuse tout terrain",
-            "slug": "comment-choisir-un-robot-tondeuse-tout-terrain",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-lidl-avis",
@@ -7580,8 +5711,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-quel-robot-tondeuse-choisir",
@@ -7601,33 +5731,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "meilleur quel robot tondeuse choisir",
-            "slug": "meilleur-quel-robot-tondeuse-choisir",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "quel robot tondeuse choisir",
-            "slug": "quel-robot-tondeuse-choisir",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-casque-pour-debroussailleuse",
@@ -7647,33 +5751,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "casque pour debroussailleuse",
-            "slug": "casque-pour-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un casque pour debroussailleuse",
-            "slug": "comment-choisir-un-casque-pour-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-scies-sauteuses-makita",
@@ -7693,33 +5771,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "scies sauteuses makita",
-            "slug": "scies-sauteuses-makita",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un scies sauteuses makita",
-            "slug": "comment-choisir-un-scies-sauteuses-makita",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-fils-debroussailleuse",
@@ -7739,33 +5791,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "fils debroussailleuse",
-            "slug": "fils-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un fils debroussailleuse",
-            "slug": "comment-choisir-un-fils-debroussailleuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-scheppach",
@@ -7785,8 +5811,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-mac-allister",
@@ -7806,8 +5831,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-fabriquer-abri-robot-tondeuse",
@@ -7827,8 +5851,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-sterwins",
@@ -7848,8 +5871,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-thermique-lidl",
@@ -7869,8 +5891,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-parkside-souffleur-de-feuilles-sans-fil-plba-20-li-b3",
@@ -7890,8 +5911,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-hyundai",
@@ -7911,33 +5931,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "tronconneuse hyundai",
-            "slug": "tronconneuse-hyundai",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un tronconneuse hyundai",
-            "slug": "comment-choisir-un-tronconneuse-hyundai",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-einhell",
@@ -7957,33 +5951,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "debroussailleuse einhell",
-            "slug": "debroussailleuse-einhell",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un debroussailleuse einhell",
-            "slug": "comment-choisir-un-debroussailleuse-einhell",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-souffleur-feuille-thermique",
@@ -8003,33 +5971,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "souffleur feuille thermique",
-            "slug": "souffleur-feuille-thermique",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un souffleur feuille thermique",
-            "slug": "comment-choisir-un-souffleur-feuille-thermique",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-pas-chere",
@@ -8049,33 +5991,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "robot tondeuse pas chere",
-            "slug": "robot-tondeuse-pas-chere",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un robot tondeuse pas chere",
-            "slug": "comment-choisir-un-robot-tondeuse-pas-chere",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-prix",
@@ -8095,8 +6011,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-piece-tronconneuse",
@@ -8116,33 +6031,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "bundle": {
-          "comparatif": {
-            "keyword": "piece tronconneuse",
-            "slug": "piece-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null
-          },
-          "pillar": {
-            "keyword": "comment choisir un piece tronconneuse",
-            "slug": "comment-choisir-un-piece-tronconneuse",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          },
-          "avis": {
-            "keyword": null,
-            "slug": null,
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
-          }
-        }
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-black-et-decker-scie-sauteuse",
@@ -8162,8 +6051,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-bobine-debroussailleuse",
@@ -8183,8 +6071,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-occasion",
@@ -8204,8 +6091,7 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
-        "generatedAt": null,
-        "publishedUrl": null
+        "errorCount": 0
       }
     ]
   },

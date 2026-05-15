@@ -1,0 +1,28 @@
+{
+  "productName": "Stihl BGA 30",
+  "candidates": [
+    {
+      "asin": "B08KQ88D14",
+      "title": "Stihl BGA Souffleur 86 sans Batterie et sans Chargeur"
+    },
+    {
+      "asin": "B08DP2GVDT",
+      "title": "Stihl BGA 57 souffleur de feuilles avec batterie AK 20 et chargeur AL 101 Orange/blanc"
+    },
+    {
+      "asin": "B0DYVFPMFC",
+      "title": "Souffleur BGA 30 Stihl avec 2 piles AS2 et un chargeur AL1"
+    },
+    {
+      "asin": "B084BNTNMR",
+      "title": "STIHL BGA 86 Blower sans fil (+ 1 batterie AP300S + chargeur AL300) (BA020115903VC)"
+    },
+    {
+      "asin": "B072NBFYMK",
+      "title": "Souffleur Stihl Bga 45"
+    }
+  ],
+  "pick": "C",
+  "pickedAsin": "B0DYVFPMFC",
+  "decidedAt": "2026-05-15T09:56:50.883Z"
+}

@@ -52,14 +52,19 @@ function readCache(args) {
   }
 }
 
-function writeCache(args, pick) {
+/** `entry` = { pick: 'A' | 'none', pickedAsin: <ASIN> | null }. Stored flat
+ *  so the read path can do `cached.pick.charCodeAt(0)` / `cached.pickedAsin`
+ *  without unwrapping (previous bug: writeCache was called with the entry as
+ *  the 2nd arg AND nested it under `pick`, breaking re-reads). */
+function writeCache(args, entry) {
   ensureCacheDir();
   const path = cachePath(args);
   try {
     writeFileSync(path, JSON.stringify({
       productName: args.productName,
       candidates: args.candidates.map(c => ({ asin: c.asin, title: c.title })),
-      pick,
+      pick: entry.pick,
+      pickedAsin: entry.pickedAsin ?? null,
       decidedAt: new Date().toISOString(),
     }, null, 2));
   } catch { /* cache write failure is non-fatal */ }

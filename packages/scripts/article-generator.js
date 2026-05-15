@@ -1146,7 +1146,20 @@ async function runSeed(targets, count) {
       console.warn(`⚠️  No more bundle work pending after ${shipped} ship(s). Run semrush-prioritize and retry.`);
       break;
     }
-    if (pick.kind === 'bundle-fresh') initBundle(pick.opp, market);
+    if (pick.kind === 'bundle-fresh') {
+      initBundle(pick.opp, market);
+      // Persist the freshly-initialised bundle BEFORE generateArticle so a
+      // mid-flight failure can be sealed against a real bundle on disk.
+      // Without this, the catch block below sees `target.bundle === undefined`
+      // (because we never wrote the init), can't markBundleSlotFailed, and
+      // the next picker iteration re-selects the same opp → infinite retry.
+      const freshReg = readPriorities();
+      const t = freshReg?.[niche]?.[market]?.find(o => o.id === pick.opp.id);
+      if (t && !t.bundle) {
+        initBundle(t, market);
+        writePriorities(freshReg);
+      }
+    }
     const slotMeta = pick.opp.bundle[pick.slot];
     console.log(`\n📦 [${shipped + 1}/${schedule.length}] BUNDLE ${pick.opp.id} → slot=${pick.slot}  publishedAt=${publishedAt}`);
     console.log(`   keyword="${slotMeta.keyword}" slug="${slotMeta.slug}"`);

@@ -2,7 +2,7 @@
   "asin": "B08SBG9D8Z",
   "price": "119,90 €",
   "title": "Bosch Aspirateur/Souffleur/Broyeur de Feuilles - UniversalGardenTidy 3000 (3 000 W, Sac de Collecte de 50 L, Vitesse Variable, pour souffler, Aspirer et broyer Les Feuilles, dans boîte Carton)",
-  "matchScore": 0.85,
-  "pickedIdx": 0,
-  "fetchedAt": "2026-05-13T14:06:27.730Z"
+  "matchScore": null,
+  "pickedBy": "claude-validator",
+  "fetchedAt": "2026-05-15T09:57:08.196Z"
 }

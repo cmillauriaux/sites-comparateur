@@ -1,8 +1,11 @@
 {
-  "asin": "B0DNW22XGV",
-  "price": "160,00 €",
-  "title": "Husqvarna Moteur d'entraînement de roue Husqvarna Automower 405X 310 310 Mark II 415X 315X 305 598587301",
-  "matchScore": 1,
-  "pickedIdx": 6,
-  "fetchedAt": "2026-05-13T14:13:13.270Z"
+  "asin": null,
+  "price": "1399.3 EUR",
+  "title": "Robot tondeuse Husqvarna Automower 405X",
+  "matchScore": 1.1,
+  "nonAffiliate": {
+    "merchantUrl": "https://google.fr/search?ibp=oshop&q=Husqvarna+Automower+405X&prds=gpcid:16448163779086730694,rds:PC_16448163779086730694%7CPROD_PC_16448163779086730694,headlineOfferDocid:9822868491005957768,catalogid:8836685142497072910,pvo:3,pvt:hg&hl=fr&gl=FR",
+    "merchant": "Motoculture st jean"
+  },
+  "fetchedAt": "2026-05-15T10:05:45.647Z"
 }

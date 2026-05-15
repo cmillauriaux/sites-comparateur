@@ -2,7 +2,7 @@
   "asin": "B08VJKGK6D",
   "price": "581,35 €",
   "title": "Bosch Tondeuse Robot - Indego M 700 (avec Batterie 18 V, Station de Charge Incluse, Largeur de Coupe de 19 cm, capacité de Tonte maximale de 700 m², dans Un Emballage en Carton)",
-  "matchScore": 1,
-  "pickedIdx": 0,
-  "fetchedAt": "2026-05-13T13:21:02.462Z"
+  "matchScore": null,
+  "pickedBy": "claude-validator",
+  "fetchedAt": "2026-05-15T08:21:12.922Z"
 }

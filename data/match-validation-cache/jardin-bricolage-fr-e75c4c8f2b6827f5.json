@@ -1,0 +1,20 @@
+{
+  "productName": "STIGA Combi 53 S",
+  "candidates": [
+    {
+      "asin": "B0DNYHV2L3",
+      "title": "STIGA Combi 53 S Tondeuse Thermique, 166 cm³, 51 cm – Système 3 en 1, Bac 60 L, Réglage Centralisé – pour Pelouses jusqu'à 1 800 m²"
+    },
+    {
+      "asin": "B0GNMLZNJL",
+      "title": "STIGA Combi 53 S a Tondeuse Thermique Autotractée, 166 CC, 51 cm – Bac 60 l, Système 3-en-1 – Pelouses Moyennes et Grandes"
+    },
+    {
+      "asin": "B0GM1LTGLD",
+      "title": "STIGA Combi 53 SQ Tondeuse Thermique, 166 CC, 51 cm, Bac Hybride 60 L – Mulching Intégré, Réglage Centralisé 6 Positions – Pelouses Résidentielles"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B0DNYHV2L3",
+  "decidedAt": "2026-05-15T09:35:46.149Z"
+}

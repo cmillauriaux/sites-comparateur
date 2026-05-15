@@ -1,0 +1,20 @@
+{
+  "productName": "Lavor Galaxy 160 Essential GL",
+  "candidates": [
+    {
+      "asin": "B0CYTGGBQJ",
+      "title": "Lavor Nettoyeur Haute Pression Galaxy 160 Essential GL avec Enrouleur, Puissance 160 Bar Max, Débit 510 l/h Max, Moteur 2500W"
+    },
+    {
+      "asin": "B0D9R3PM9G",
+      "title": "Lavor Nettoyeur Haute Pression GALAXY 160 GL avec Enrouleur, deux Brosses et Accessoire Lave Sols, Puissance 160 bar max, Débit 510 l/h max, Moteur 2500W"
+    },
+    {
+      "asin": "B00ZC44HR6",
+      "title": "Lavor Nettoyeur Haute Pression Eau Froide Galaxy 160 avec Enrouleur, Deus Brosses et Accessoire Lave-sols, Pression 160 Bar Max, Débit 510 l/h Max"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B0CYTGGBQJ",
+  "decidedAt": "2026-05-15T10:14:34.400Z"
+}

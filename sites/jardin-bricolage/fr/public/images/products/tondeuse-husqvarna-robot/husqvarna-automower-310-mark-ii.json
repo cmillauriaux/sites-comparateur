@@ -1,8 +1,11 @@
 {
-  "asin": "B0DNZL4RYW",
-  "price": "100,00 €",
-  "title": "Husqvarna Batterie Automower 310 310 Mark II 315 315X 593247201",
-  "matchScore": 1,
-  "pickedIdx": 5,
-  "fetchedAt": "2026-05-13T14:12:57.967Z"
+  "asin": null,
+  "price": "890 EUR",
+  "title": "Robot tondeuse Automower 310 Mark II Husqvarna",
+  "matchScore": 1.1,
+  "nonAffiliate": {
+    "merchantUrl": "https://google.fr/search?ibp=oshop&q=Husqvarna+Automower+310+Mark+II&prds=gpcid:407132666159537834,rds:PC_407132666159537834%7CPROD_PC_407132666159537834,headlineOfferDocid:5304945523075029908,catalogid:16366990230252723126,pvo:3,pvt:hg&hl=fr&gl=FR",
+    "merchant": "Jolivet"
+  },
+  "fetchedAt": "2026-05-15T10:05:37.133Z"
 }
