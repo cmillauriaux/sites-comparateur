@@ -112,7 +112,7 @@ export default {
   author: {
     name: 'Marc Lefèvre',
     role: "Rédacteur en chef — ancien paysagiste",
-    bio: "Quinze ans sur le terrain comme paysagiste indépendant en Île-de-France avant de passer côté rédaction. Spécialisé dans les outils de coupe thermiques, l'arrosage et l'aménagement extérieur. Ses sélections privilégient la durabilité et le SAV à long terme plutôt que les gadgets.",
+    bio: "15 ans comme paysagiste indépendant en Île-de-France — j'ai usé plus de tronçonneuses et de tondeuses que je ne peux en compter. Aujourd'hui je teste et je compare plutôt que de pelleter, mais j'apporte le même regard terrain : durabilité, SAV réel, zéro gadget inutile.",
     photo: '/images/team/marc-lefevre.jpg',
     // linkedinUrl: 'https://www.linkedin.com/in/marc-lefevre-paysagiste/',  // ← uncomment once the profile is live
   },
