@@ -5,14 +5,14 @@ description: "Mentions légales de JardinGuide.fr"
 
 ## Éditeur du site
 
-Site édité par **Cédric Millauriaux**.
+Site édité par **Marc Lefèvre**.
 
-- Email de contact : à compléter
+- Email de contact : contact@jardinguide.fr
 - Hébergeur : Cloudflare Pages — Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, USA
 
 ## Directeur de publication
 
-Cédric Millauriaux
+Marc Lefèvre
 
 ## Propriété intellectuelle
 
