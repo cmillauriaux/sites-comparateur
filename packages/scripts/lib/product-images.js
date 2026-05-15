@@ -12,14 +12,12 @@
  */
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
-import slugger from 'github-slugger';
+import { asciiSlug } from './slugify.js';
 import { SITES_DIR } from './env.js';
 import { findGoogleShoppingProduct } from './google-shopping.js';
 import { searchAmazonProducts } from './amazon-dfs.js';
 import { evaluateMatch, PRICE_FLOOR, PRICE_LOW_PENALTY, MIN_TITLE_MATCH, tokenize } from './match.js';
 import { validateMatchesWithClaude } from './match-validator.js';
-
-const slug = new slugger();
 
 // Amazon search hostname per market.
 const AMAZON_HOST = {
@@ -282,7 +280,7 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
   const pendingValidation = [];
 
   for (const productName of products) {
-    const productSlug = slug.slug(productName);
+    const productSlug = asciiSlug(productName);
     const localPath = join(publicDir, `${productSlug}.jpg`);
     const jsonSidecar = join(publicDir, `${productSlug}.json`);
     const legacyAsinSidecar = join(publicDir, `${productSlug}.asin`);

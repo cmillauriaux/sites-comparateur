@@ -31,7 +31,7 @@
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import slugger from 'github-slugger';
+import { asciiSlug } from './lib/slugify.js';
 
 import { DATA_DIR } from './lib/env.js';
 import { readPublished } from './lib/queue.js';
@@ -53,8 +53,6 @@ const PRESETS = {
 const PER_SEED_LIMIT = 100;       // Semrush rows per seed call (cost = 100 × 20 = 2000 units)
 const KD_DEFAULT_WHEN_UNKNOWN = 30;
 const DEFAULT_MAX_UNITS = 100000;
-
-const slug = new slugger();
 
 function readPriorities() {
   if (!existsSync(PRIORITIES_PATH)) return {};
@@ -92,7 +90,7 @@ function toOpportunity(cluster, niche, market) {
   const summary = summarizeCluster(cluster);
   const score = scoreCluster(summary);
   const intent = detectIntent(summary.primaryKeyword, { cpc: summary.primaryCPC });
-  const id = `${niche}-${market}-${slug.slug(summary.primaryKeyword)}`;
+  const id = `${niche}-${market}-${asciiSlug(summary.primaryKeyword)}`;
   return {
     id,
     niche,

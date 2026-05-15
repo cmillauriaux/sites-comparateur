@@ -177,8 +177,8 @@ ${secondaryKeywords.map(k => `  - "${k}"`).join('\n')}
 function buildPromptFr({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, clusterBlock = '', secondaryBlock = '' }) {
   const intentBrief = intent === 'comparatif'
     ? `INTENT = COMPARATIF (multi-produit). Structure REQUISE:
-1. H1 contenant le keyword
-2. Introduction (2-3 phrases) — qui doit acheter ce type de produit, ce qu'on a retenu d'essentiel
+0. NE PAS écrire de H1 (\`# ...\`) dans le corps : le layout rend déjà le titre comme H1 depuis la frontmatter. Démarrer DIRECTEMENT par l'introduction.
+1. Introduction (2-3 phrases) — qui doit acheter ce type de produit, ce qu'on a retenu d'essentiel
 3. ## Comment choisir un [produit] — 4-6 critères de choix CONCRETS et mesurables. C'est la section qui rank et qui apporte le plus de valeur. Pas de citation de source ici, on EXPLIQUE.
 4. ## Notre sélection [année] — un H3 par produit (4-6 produits). Pour chacun :
    - Une <ProductCard name="Marque Modèle" image="auto:Marque Modèle" score={8.5} description="..." pros={["...", "..."]} cons={["..."]} /> — le placeholder image="auto:..." sera remplacé automatiquement par l'image Amazon (ne mets PAS d'URL d'image manuelle)
@@ -189,8 +189,8 @@ function buildPromptFr({ keyword, intent, scrapedSources, siteConfig, articleSlu
 6. ## FAQ — 3-5 questions/réponses
 7. ## Notre verdict — recommandation finale claire ("Notre choix" / "Meilleur rapport qualité-prix" / "Le moins cher") avec un dernier <AffiliateButton product="..." />`
     : `INTENT = SÉLECTION ÉDITORIALE (un seul produit). Structure REQUISE:
-1. H1 (souvent "[Produit] : notre avis éditorial")
-2. Introduction (3-4 phrases) — public cible, gamme de prix, verdict en une phrase
+0. NE PAS écrire de H1 (\`# ...\`) dans le corps : le layout rend déjà le titre comme H1 depuis la frontmatter. Démarrer DIRECTEMENT par l'introduction.
+1. Introduction (3-4 phrases) — public cible, gamme de prix, verdict en une phrase
 3. <ProductCard name="Marque Modèle" image="auto:Marque Modèle" score={X.X} pros={[...]} cons={[...]} /> juste après l'intro
 4. ## Caractéristiques techniques — bullet list factuelle
 5. ## Notre analyse — un H3 PAR CRITÈRE DE SÉLECTION (4-6 critères observables : Polyvalence, Ergonomie d'usage, Qualité de fabrication, Rapport qualité-prix, Disponibilité accessoires/SAV). Chaque H3 conclut par "**Note éditoriale : X/10**".
@@ -378,8 +378,8 @@ function buildPromptEn({ keyword, intent, scrapedSources, siteConfig, articleSlu
 
   const intentBrief = intent === 'comparatif'
     ? `INTENT = ROUNDUP (multi-product). REQUIRED structure:
-1. H1 containing the keyword
-2. Introduction (2-3 sentences) — who should buy this product, the headline takeaway
+0. Do NOT write an H1 (\`# ...\`) in the body: the layout already renders the title as the page H1 from the frontmatter. Start DIRECTLY with the introduction.
+1. Introduction (2-3 sentences) — who should buy this product, the headline takeaway
 3. ## How to choose a [product] — 4-6 CONCRETE, measurable buying criteria. This is the section that ranks and delivers the most value. No source citation here — EXPLAIN.
 4. ## Our picks for [year] — one H3 per product (4-6 products). For each:
    - One <ProductCard name="Brand Model" image="auto:Brand Model" score={8.5} description="..." pros={["...", "..."]} cons={["..."]} /> — the image="auto:..." placeholder is auto-replaced with the Amazon image (do NOT use manual image URLs)
@@ -390,8 +390,8 @@ function buildPromptEn({ keyword, intent, scrapedSources, siteConfig, articleSlu
 6. ## FAQ — 3-5 Q&A pairs
 7. ## Our verdict — clear final recommendation ("Best overall" / "Best value" / "Budget pick") with a final <AffiliateButton product="..." />`
     : `INTENT = EDITOR'S PICK (single product). REQUIRED structure:
-1. H1 (often "[Product]: our editorial pick")
-2. Introduction (3-4 sentences) — target audience, indicative price tier, one-sentence verdict
+0. Do NOT write an H1 (\`# ...\`) in the body: the layout already renders the title as the page H1 from the frontmatter. Start DIRECTLY with the introduction.
+1. Introduction (3-4 sentences) — target audience, indicative price tier, one-sentence verdict
 3. <ProductCard name="Brand Model" image="auto:Brand Model" score={X.X} pros={[...]} cons={[...]} /> right after the intro
 4. ## Specifications — factual bullet list
 5. ## Our analysis — one H3 PER SELECTION CRITERION (4-6 observable criteria: Versatility, Ergonomics, Build quality, Value-for-money, Accessory & service availability). Each H3 ends with "**Editorial score: X/10**".
@@ -571,8 +571,8 @@ pas de <ComparisonTable>. Si la question implique un produit, parle des
 critères / catégories / techniques en général, pas de marques précises.
 
 STRUCTURE INDICATIVE (varie d'un article à l'autre) :
-  1. H1 contenant le keyword
-  2. Introduction (2-3 phrases) qui pose la question
+  0. NE PAS écrire de H1 (\`# ...\`) — le layout rend le titre depuis la frontmatter.
+  1. Introduction (2-3 phrases) qui pose la question
   3. 3-6 sections H2 qui développent par angle (pédagogique, pratique,
      historique, technique, sécurité, etc. — choisis selon le sujet)
   4. ## FAQ — 3-5 questions/réponses
@@ -586,8 +586,8 @@ DOES NOT recommend a product. No <ProductCard>, no <AffiliateButton>, no
 of criteria / categories / techniques, never specific brands.
 
 INDICATIVE STRUCTURE (vary across articles):
-  1. H1 containing the keyword
-  2. Introduction (2-3 sentences) framing the question
+  0. Do NOT write an H1 (\`# ...\`) — the layout renders the title from the frontmatter.
+  1. Introduction (2-3 sentences) framing the question
   3. 3-6 H2 sections by angle (educational, practical, historical,
      technical, safety, etc. — pick what fits the topic)
   4. ## FAQ — 3-5 Q&A pairs
@@ -761,7 +761,7 @@ Ce guide est le point d'entrée d'un cluster. Tu DOIS insérer le lien markdown
 vers [${parentComparatifTitle}](${parentComparatifUrl}) TROIS FOIS, à des
 emplacements différents pour densifier le maillage interne :
 
-  1. Encart à la fin de l'introduction (après le H1 et les 2-3 phrases d'intro) :
+  1. Encart à la fin de l'introduction (après les 2-3 phrases d'intro) :
      > Pressé·e ? Voir directement [${parentComparatifTitle}](${parentComparatifUrl}).
 
   2. Au milieu du corps — dans la section "## Profils d'usage", quand tu cites
@@ -785,7 +785,7 @@ This guide is the entry point of a cluster. You MUST insert the markdown
 link to [${parentComparatifTitle}](${parentComparatifUrl}) THREE TIMES at
 different anchors to densify the internal-linking graph:
 
-  1. Callout at the end of the intro (after the H1 and 2-3 intro sentences):
+  1. Callout at the end of the intro (after the 2-3 intro sentences):
      > Short on time? Go straight to [${parentComparatifTitle}](${parentComparatifUrl}).
 
   2. Mid-body — inside "## Use-case profiles", when describing a profile
@@ -815,7 +815,8 @@ Pas de <ProductCard>, pas de <AffiliateButton>, pas de <ComparisonTable>.
 Si tu cites une marque, c'est en exemple générique (jamais "achetez X").
 
 STRUCTURE OBLIGATOIRE (dans cet ordre) :
-  1. H1 "Comment choisir [topic]" (le keyword exact)
+  0. NE PAS écrire de H1 (\`# ...\`) — le layout rend "Comment choisir [topic]" depuis la frontmatter \`title\`.
+  1. Démarrer directement par l'introduction (le \`title\` frontmatter DOIT être "Comment choisir [topic]" avec le keyword exact).
   2. Introduction 2-3 phrases qui posent l'enjeu de l'achat
 ${step3Fr}  4. ## Les critères qui comptent — 5 à 8 sous-sections H3 (une par critère),
      chacune indiquant son poids relatif (« décisif », « important », « secondaire »)
@@ -837,7 +838,8 @@ This article lays out the buying criteria for a CATEGORY, not a model. No
 brand, do it as a neutral example (never "buy X").
 
 MANDATORY STRUCTURE (in this order):
-  1. H1 "How to choose [topic]" (the exact keyword)
+  0. Do NOT write an H1 (\`# ...\`) — the layout renders "How to choose [topic]" from the frontmatter \`title\`.
+  1. Start directly with the introduction (the frontmatter \`title\` MUST be "How to choose [topic]" with the exact keyword).
   2. Introduction 2-3 sentences framing the buying stakes
 ${step3En}  4. ## The criteria that matter — 5 to 8 H3 sub-sections (one per criterion),
      each with its relative weight ("decisive", "important", "secondary") and

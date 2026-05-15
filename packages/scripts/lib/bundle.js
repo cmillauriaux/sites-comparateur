@@ -20,10 +20,8 @@
  * opportunity shape under the new `bundle` key. Legacy opps without that
  * key are migrated lazily by initBundle() so existing data isn't lost.
  */
-import slugger from 'github-slugger';
+import { asciiSlug } from './slugify.js';
 import { readPublished } from './queue.js';
-
-const slug = new slugger();
 
 /** Cluster intents that participate in bundles. Informational pieces still
  *  exist outside this model (for now, via the weekly workflow). */
@@ -49,9 +47,11 @@ function segmentFor(market, slot) {
   return table[slot];
 }
 
-/** Slug from a free-text keyword. Stable across runs. */
+/** Slug from a free-text keyword. Stable across runs.
+ *  ASCII-folded (no accents / ligatures) so URLs don't get percent-encoded
+ *  once shared — see lib/slugify.js for the rationale. */
 export function slugFromKeyword(s) {
-  return slug.slug(s);
+  return asciiSlug(s);
 }
 
 /** Pillar keyword convention: "comment choisir un <topic>" (FR) / "how to

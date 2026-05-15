@@ -11,8 +11,9 @@ interface Props {
   publishedAt: Date | string;
   finalScore?: number;
   heroImage?: string;
+  heroImageAlt?: string;
 }
-const { href, title, description, intent, publishedAt, finalScore, heroImage } = Astro.props;
+const { href, title, description, intent, publishedAt, finalScore, heroImage, heroImageAlt } = Astro.props;
 const pub = typeof publishedAt === 'string' ? new Date(publishedAt) : publishedAt;
 // Reuse the i18n dictionary so re-labeling (e.g. "Comparatif" → "Sélection
 // comparée") only happens in one place.
@@ -20,7 +21,7 @@ const intentLabel = (s.intentLabels as Record<string, string>)[intent] ?? 'Artic
 const dateLocale = siteConfig.locale ?? 'fr-FR';
 ---
 <a href={href} class="block rounded-lg border border-[var(--color-border)] bg-white p-5 shadow-sm hover:shadow-md transition-shadow no-underline">
-  {heroImage && <img src={heroImage} alt="" class="w-full aspect-[16/9] object-cover rounded-md mb-3" loading="lazy" />}
+  {heroImage && <img src={heroImage} alt={heroImageAlt ?? title} class="w-full aspect-[16/9] object-cover rounded-md mb-3" loading="lazy" />}
   <div class="flex items-center justify-between text-xs uppercase tracking-wide text-[var(--color-primary)] font-semibold mb-2">
     <span>{intentLabel}</span>
     <time datetime={pub.toISOString()}>{pub.toLocaleDateString(dateLocale)}</time>

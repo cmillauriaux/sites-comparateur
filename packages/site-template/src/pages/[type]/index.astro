@@ -59,7 +59,7 @@ all.sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
 
 const description = bucket.intro ?? siteConfig.shortDescription;
 ---
-<SiteLayout title={`${bucket.titleLabel} — ${siteConfig.name}`} description={description}>
+<SiteLayout title={bucket.titleLabel} description={description}>
   <div class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
     <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-6">{bucket.heading}</h1>
     {bucket.intro && <p class="text-[var(--color-text-muted)] mb-8 max-w-3xl">{bucket.intro}</p>}
@@ -75,6 +75,7 @@ const description = bucket.intro ?? siteConfig.shortDescription;
             intent={a.data.intent}
             publishedAt={a.data.publishedAt}
             heroImage={a.data.heroImage}
+            heroImageAlt={a.data.heroImageAlt}
             finalScore={bucket.showScore ? a.data.finalScore : undefined}
           />
         ))}

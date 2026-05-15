@@ -20,7 +20,7 @@
 import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { resolve, join } from 'node:path';
-import slugger from 'github-slugger';
+import { asciiSlug } from './lib/slugify.js';
 import YAML from 'yaml';
 
 import { REPO_ROOT, SITES_DIR, DATA_DIR, requireEnv } from './lib/env.js';
@@ -34,7 +34,7 @@ import { reviewArticle } from './lib/editorial-reviewer.js';
 import { pickNextBundleSlot, initBundle, markBundleSlotShipped, markBundleSlotFailed, BUNDLE_SLOTS, SLOT_INTENT, slugFromKeyword, bundleSlotUrl } from './lib/bundle.js';
 import { extractFaqFromBody } from './lib/faq-extract.js';
 import { scrubRawPrices } from './lib/price-scrubber.js';
-import { scrubInlineSourceList, scrubMdxImports, stripBrokenInternalLinks } from './lib/article-postprocess.js';
+import { scrubInlineSourceList, scrubMdxImports, stripBrokenInternalLinks, scrubLeadingH1 } from './lib/article-postprocess.js';
 import { fetchArticleHero } from './lib/hero-image.js';
 import { injectInlineImages } from './lib/inline-images.js';
 import { fetchProductGallery } from './lib/amazon-gallery.js';
@@ -96,7 +96,6 @@ function inferIntentFromUrl(url) {
 // 3 = anti scaled-content-abuse floor (matches Zod schema + validator).
 // Bumped from 2 in the anti-AI-spam pass — see CLAUDE.md "Anti-spam AI".
 const MIN_SOURCES = 3;
-const slug = new slugger();
 
 /**
  * Parse the article's `## FAQ` section and persist it as `faq: [{ q, a }]` in
@@ -213,7 +212,7 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
 
   // 2. Compute slug + output path. Articles are .mdx so they can embed
   // Astro components (<ProductCard />, <ComparisonTable />, ...).
-  const articleSlug = slug.slug(keyword);
+  const articleSlug = asciiSlug(keyword);
   const outputDir = resolve(SITES_DIR, niche, market, 'src/content/articles');
   mkdirSync(outputDir, { recursive: true });
   const outputPath = join(outputDir, `${articleSlug}.mdx`);
@@ -365,6 +364,15 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
       updated = scrubbed.content;
     }
 
+    // Layout already renders the H1 from the frontmatter title — strip any
+    // duplicate H1 the model wrote at the top of the body to avoid the
+    // double-H1 SEO finding.
+    const h1 = scrubLeadingH1(updated);
+    if (h1.count > 0) {
+      console.log(`  🧹 Stripped duplicate leading H1 (layout renders it from frontmatter)`);
+      updated = h1.content;
+    }
+
     // Layout already renders SourceList — strip any inline copy the model
     // wrote in violation of the prompt instruction.
     const sl = scrubInlineSourceList(updated);
@@ -425,6 +433,11 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
       console.log(`  🧹 Scrubbed ${scrubbed.count} raw price${scrubbed.count > 1 ? 's' : ''} from prose`);
       finalContent = scrubbed.content;
     }
+    const h1 = scrubLeadingH1(finalContent);
+    if (h1.count > 0) {
+      console.log(`  🧹 Stripped duplicate leading H1 (layout renders it from frontmatter)`);
+      finalContent = h1.content;
+    }
     const sl = scrubInlineSourceList(finalContent);
     if (sl.count > 0) {
       console.log(`  🧹 Stripped ${sl.count} inline <SourceList /> (layout adds it once)`);
@@ -473,7 +486,7 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
   if (intent === 'avis' && topProductName) {
     // The product image was already downloaded and the path is in the
     // ProductCard via injectImagePaths. Re-derive the same path.
-    const productSlug = new slugger().slug(topProductName);
+    const productSlug = asciiSlug(topProductName);
     const productPath = `/images/products/${articleSlug}/${productSlug}.jpg`;
     const onDisk = resolve(SITES_DIR, niche, market, 'public', productPath.replace(/^\//, ''));
     if (existsSync(onDisk)) {
@@ -603,13 +616,13 @@ function setAvisHeroFromProduct(path, { publicPath, alt }) {
  * Best-effort cleanup of an aborted run: remove the .mdx Claude wrote so the
  * next retry doesn't trip the `output already exists` guard.
  *
- * Uses a fresh `Slugger` instance — github-slugger's `.slug()` is stateful and
- * appends "-1", "-2" on repeat calls within the same instance, so reusing the
- * module-level `slug` would compute the wrong path here.
+ * Uses `asciiSlug()` (one-shot) — it instantiates a fresh slugger each call,
+ * so there's no risk of inheriting a `-1` suffix from an earlier successful
+ * slug() on the module-level slugger.
  */
 function cleanupOutput(siteConfig, keyword) {
   try {
-    const articleSlug = new slugger().slug(keyword);
+    const articleSlug = asciiSlug(keyword);
     const outputPath = resolve(SITES_DIR, siteConfig.niche, siteConfig.market, 'src/content/articles', `${articleSlug}.mdx`);
     if (existsSync(outputPath)) unlinkSync(outputPath);
   } catch { /* best-effort */ }

@@ -40,7 +40,7 @@ const websiteSchema = {
 };
 ---
 <SiteLayout
-  title={`${siteConfig.name} — ${s.homeTitleSuffix}`}
+  title={s.homeTitleSuffix}
   description={siteConfig.longDescription}
 >
   <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
@@ -64,7 +64,7 @@ const websiteSchema = {
     <section class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
       <h2 class="text-2xl font-bold text-[var(--color-primary-dark)] mb-6">{s.latestPrefix} {s.navComparisons.toLowerCase()}</h2>
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {comparatifs.map((a) => <ArticleCard href={hrefFor(a)} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} />)}
+        {comparatifs.map((a) => <ArticleCard href={hrefFor(a)} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} heroImageAlt={a.data.heroImageAlt} />)}
       </div>
     </section>
   )}
@@ -73,7 +73,7 @@ const websiteSchema = {
     <section class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
       <h2 class="text-2xl font-bold text-[var(--color-primary-dark)] mb-6">{s.latestPrefix} {s.navReviews.toLowerCase()}</h2>
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {tests.map((a) => <ArticleCard href={hrefFor(a)} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} finalScore={a.data.finalScore} />)}
+        {tests.map((a) => <ArticleCard href={hrefFor(a)} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} heroImageAlt={a.data.heroImageAlt} finalScore={a.data.finalScore} />)}
       </div>
     </section>
   )}
@@ -82,7 +82,7 @@ const websiteSchema = {
     <section class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
       <h2 class="text-2xl font-bold text-[var(--color-primary-dark)] mb-6">{s.sectionGuides}</h2>
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {guides.map((a) => <ArticleCard href={hrefFor(a)} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} />)}
+        {guides.map((a) => <ArticleCard href={hrefFor(a)} title={a.data.title} description={a.data.description} intent={a.data.intent} publishedAt={a.data.publishedAt} heroImage={a.data.heroImage} heroImageAlt={a.data.heroImageAlt} />)}
       </div>
     </section>
   )}

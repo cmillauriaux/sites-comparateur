@@ -14,6 +14,35 @@
  *     fabrication and gets stripped (link removed, anchor text preserved).
  */
 
+/**
+ * Strip the article's leading H1 (`# ...`) from the markdown body.
+ *
+ * The ArticleLayout already renders `<h1>{data.title}</h1>` once per page,
+ * so any H1 the model wrote in the body produces a duplicate H1 — a
+ * frequent SEO audit finding. We keep the prompt instructing the model
+ * structurally ("start with a title…") but always strip the first H1 here
+ * as a hard backstop. Subsequent H1s (rare, usually a model mistake) are
+ * left alone — those signal a deeper structural issue worth surfacing.
+ *
+ * Operates on the body only (frontmatter is preserved verbatim). Blank
+ * lines immediately following the stripped H1 are collapsed so the body
+ * starts cleanly on the first paragraph.
+ */
+export function scrubLeadingH1(content) {
+  const fmMatch = content.match(/^(---\n[\s\S]*?\n---\n)([\s\S]*)$/);
+  const head = fmMatch ? fmMatch[1] : '';
+  const body = fmMatch ? fmMatch[2] : content;
+
+  // Match the first markdown H1 that appears before any other ATX heading.
+  // Leading blank lines are allowed; anything else (text, components) before
+  // the H1 means the body doesn't start with an H1 and we leave it alone.
+  const re = /^(\s*)#[ \t]+[^\n]+\n+/;
+  if (!re.test(body)) return { content, count: 0 };
+
+  const stripped = body.replace(re, (_, leading) => leading);
+  return { content: head + stripped, count: 1 };
+}
+
 /** Remove every standalone or paired <SourceList /> tag from the body.
  *  Preserves frontmatter (YAML block) untouched.
  *  Returns { content, count } so the caller can log how many were stripped. */

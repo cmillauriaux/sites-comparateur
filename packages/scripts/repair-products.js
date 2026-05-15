@@ -30,15 +30,13 @@ import { closeBrowser } from './lib/browser.js';
 import { applyAvisRetroLinks } from './lib/cross-links.js';
 import { refreshBundleSiblings } from './lib/bundle-siblings.js';
 import { DATA_DIR } from './lib/env.js';
-import Slugger from 'github-slugger';
+import { asciiSlug } from './lib/slugify.js';
 
 function readPriorities() {
   const path = resolve(DATA_DIR, 'semrush-priorities.json');
   if (!existsSync(path)) return {};
   try { return JSON.parse(readFileSync(path, 'utf-8')); } catch { return {}; }
 }
-const slugger = new Slugger();
-
 const args = parseArgs(process.argv.slice(2));
 
 const PRODUCT_CARD_RE = /<ProductCard\b([\s\S]*?)\/>/g;
@@ -165,8 +163,7 @@ async function repairOne({ niche, market, articleSlug }) {
   if (intent === 'avis' && productNames.length > 0) {
     const primaryName = productNames[0];
     // Re-read the sidecar to pick up the asin we just wrote.
-    slugger.reset();
-    const productSlug = slugger.slug(primaryName);
+    const productSlug = asciiSlug(primaryName);
     const sidecar = resolve(SITES_DIR, niche, market, 'public/images/products', articleSlug, `${productSlug}.json`);
     if (existsSync(sidecar)) {
       try {
