@@ -323,11 +323,17 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     const productList = [...productNames];
     console.log(`  🛒 Fetching ${productList.length} products from amazon (${market})…`);
     const { imageMap, asinMap, priceMap, nonAffiliateMap } = await fetchProductImages({ niche, market, articleSlug, products: productList });
-    // The "top product" is the first one in the Claude-extracted order — the
-    // model writes ProductCards in descending verdict-score, so [0] is the
-    // recommended winner. Used by the bundle picker to seed the avis slot.
-    topProductName = productList[0] ?? null;
-    topProductAsin = topProductName ? (asinMap[topProductName] ?? null) : null;
+    // The "top product" seeds the bundle's avis slot. Claude writes
+    // ProductCards in descending verdict-score so productList[0] is the
+    // editorial winner — but if it has no resolved ASIN or no image, the
+    // downstream avis WILL fail (ERROR_INSUFFICIENT_SOURCES on obscure SKUs
+    // like Parkside PAMRS 1000 A1, Oregon spare chains, Stihl BGA 60). Pick
+    // the first product that has BOTH a validated ASIN AND a downloaded
+    // image — these are the products with editorial coverage that a deep-
+    // dive review can actually be grounded in. When no product qualifies,
+    // topProductName stays null and the avis slot is skipped.
+    topProductName = productList.find(name => asinMap[name] && imageMap[name]) ?? null;
+    topProductAsin = topProductName ? asinMap[topProductName] : null;
     let updated = injectImagePaths(written, imageMap);
     updated = injectImageAttributes(updated, imageMap);
     updated = injectAffiliateAsins(updated, asinMap);
@@ -934,6 +940,13 @@ async function runBundle(targets) {
           topProductName,
           topProductAsin,
         });
+        // Seal the avis slot upfront when the comparatif shipped without a
+        // viable product (no ASIN+image). The picker would skip-and-cycle
+        // forever otherwise — explicit failed makes the rollup status read
+        // as `partial` permanently and stops the iteration cleanly.
+        if (pick.slot === 'comparatif' && !topProductName) {
+          markBundleSlotFailed(target, 'avis', 'no-validated-product');
+        }
         writePriorities(fresh);
 
         // Retro-link previously-shipped siblings of this bundle. After the
@@ -1164,6 +1177,13 @@ async function runSeed(targets, count) {
           topProductName,
           topProductAsin,
         });
+        // Seal the avis slot when the comparatif's #1 validated product is
+        // null — no editorial subject to write about. Same rationale as
+        // runBundle(); without this the seed schedule would waste a
+        // timestamp on a slot the picker refuses to return.
+        if (pick.slot === 'comparatif' && !topProductName) {
+          markBundleSlotFailed(target, 'avis', 'no-validated-product');
+        }
         writePriorities(after);
         refreshBundleSiblings(siteConfig, target);
         if (pick.slot === 'avis') {

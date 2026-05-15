@@ -17,6 +17,7 @@ import { SITES_DIR } from './env.js';
 import { findGoogleShoppingProduct } from './google-shopping.js';
 import { searchAmazonProducts } from './amazon-dfs.js';
 import { evaluateMatch, PRICE_FLOOR, PRICE_LOW_PENALTY, MIN_TITLE_MATCH, tokenize } from './match.js';
+import { validateMatchesWithClaude } from './match-validator.js';
 
 const slug = new slugger();
 
@@ -28,68 +29,85 @@ const AMAZON_HOST = {
 };
 
 /**
- * Returns `{ imageUrl, asin, price, title, matchScore, pickedIdx }` for the
- * best matching Amazon search result on the given market's marketplace.
+ * Score every Amazon SERP item against `productName` and return the top-N
+ * candidates that pass HARD gates (brand-required + model-id + non-brand).
  *
- * Backend: DataForSEO Amazon Products (live endpoint). Replaces the previous
- * Playwright scrape that was 100% bot-blocked on GitHub-hosted runners (every
- * `s?k=` request returned a 195-char "Robot check" stub from Amazon's WAF).
- * DataForSEO routes through its own proxy pool and returns structured items.
+ * Why multiple candidates instead of "the best one": the matcher's adjusted
+ * score is reliable enough to filter obvious junk (different brand, wrong
+ * SKU) but not reliable enough to distinguish "the headline product" from
+ * "a high-end accessory matching all tokens" — the Husqvarna Automower 310
+ * vs the "Batterie Husqvarna Automower 310" case. We delegate that final
+ * pick to a Claude-validator step (match-validator.js) that reads the
+ * candidate titles and prices and refuses obvious accessories.
  *
- * Strategy:
- *   1. Hit the live endpoint (~10-15s) — get up to 20 ranked items.
- *   2. Score the first MAX_BLOCKS_TO_INSPECT by token overlap against the
- *      product name, with the same accessory + price-floor penalties as the
- *      previous HTML-scraping version.
- *   3. Pick the highest-adjusted-score candidate, gated by MIN_TITLE_MATCH.
- *      Below the gate, return nulls — better an empty card than a wrong link.
+ * Candidates carry their adjusted score + accessory flag so the validator
+ * prompt can present them in a meaningful order without re-deriving signals.
+ * Items failing a HARD gate are dropped (would only add noise to the prompt).
  */
-export async function findAmazonProduct(productName, { market = 'fr' } = {}) {
-  if (!AMAZON_HOST[market]) throw new Error(`findAmazonProduct: unknown market "${market}"`);
+export async function findAmazonCandidates(productName, { market = 'fr', maxCandidates = 5 } = {}) {
+  if (!AMAZON_HOST[market]) throw new Error(`findAmazonCandidates: unknown market "${market}"`);
   try {
     const items = await searchAmazonProducts(productName, { market });
-    if (items.length === 0) return { imageUrl: null, asin: null, price: null, title: null, matchScore: 0 };
+    if (items.length === 0) return [];
 
-    let best = null;
+    const candidates = [];
     for (let i = 0; i < Math.min(MAX_BLOCKS_TO_INSPECT, items.length); i++) {
       const it = items[i];
       if (!it.title || !it.asin) continue;
-      const { score, accessory } = scoreTitleMatch(productName, it.title);
+      const { score, accessory, reason } = scoreTitleMatch(productName, it.title);
 
-      // Cheap-price soft-gate: same logic as the legacy HTML version. A
-      // high title-match with a price below the "headline product" floor
-      // (e.g. 19,99 € for an SV450 hit) is almost certainly an accessory
-      // whose listing happens to contain the product name.
+      // HARD gate: drop items failing brand/model-id/non-brand-match. These
+      // are noise the validator shouldn't even see (different products
+      // entirely). Soft signals (accessory penalty, low price) stay on the
+      // candidate so the validator can use them to reject accessories.
+      if (reason) continue;
+
       let adjusted = score;
       if (Number.isFinite(it.priceValue) && it.priceValue < PRICE_FLOOR[market]) {
         adjusted -= PRICE_LOW_PENALTY;
       }
 
-      const cand = { idx: i, score, adjusted, accessory, ...it };
-      if (!best || cand.adjusted > best.adjusted) best = cand;
+      candidates.push({
+        idx: i,
+        asin: it.asin,
+        title: it.title,
+        imageUrl: it.imageUrl,
+        price: it.price,
+        priceValue: it.priceValue,
+        rawScore: score,
+        adjustedScore: adjusted,
+        accessory,
+      });
     }
 
-    // Acceptance gate uses ADJUSTED score (raw - accessory - price-low penalty).
-    // Raw score alone lets through screen protectors / spare parts that happen
-    // to contain the full product name in their title — exactly the kind of
-    // match we want to reject. The accessory + price penalties are calibrated
-    // precisely so this gate filters them.
-    if (!best || best.adjusted < MIN_TITLE_MATCH) {
-      return { imageUrl: null, asin: null, price: null, title: null, matchScore: best?.adjusted ?? 0 };
-    }
-
-    return {
-      imageUrl: best.imageUrl,
-      asin: best.asin,
-      price: best.price,
-      title: best.title,
-      matchScore: best.score,
-      pickedIdx: best.idx,
-    };
+    candidates.sort((a, b) => b.adjustedScore - a.adjustedScore);
+    return candidates.slice(0, maxCandidates);
   } catch (err) {
     console.warn(`    ⚠️  amazon-dfs: ${err.message}`);
-    return { imageUrl: null, asin: null, price: null, title: null, matchScore: 0 };
+    return [];
   }
+}
+
+/**
+ * Legacy single-best wrapper around `findAmazonCandidates`. Kept for callers
+ * outside the article-gen pipeline (repair-products, probe scripts) that
+ * don't have a Claude-validation step. Applies the original MIN_TITLE_MATCH
+ * gate on `adjustedScore` so behaviour is unchanged for them.
+ */
+export async function findAmazonProduct(productName, { market = 'fr' } = {}) {
+  const candidates = await findAmazonCandidates(productName, { market, maxCandidates: 1 });
+  const best = candidates[0];
+  if (!best || best.adjustedScore < MIN_TITLE_MATCH) {
+    return { imageUrl: null, asin: null, price: null, title: null, matchScore: best?.adjustedScore ?? 0 };
+  }
+  return {
+    imageUrl: best.imageUrl,
+    asin: best.asin,
+    price: best.price,
+    title: best.title,
+    matchScore: best.rawScore,
+    pickedIdx: best.idx,
+  };
 }
 
 // How many search-result blocks to scan before giving up. Past N, ranking falls
@@ -259,6 +277,9 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
   // analytics, which dilutes the "scaled-affiliate-spam" signal.
   const nonAffiliateMap = {};
   const publicDir = resolve(SITES_DIR, niche, market, 'public/images/products', articleSlug);
+  // Per-product candidate sets collected during pass 1; consumed by the
+  // batched Claude-validator + materialization pass below.
+  const pendingValidation = [];
 
   for (const productName of products) {
     const productSlug = slug.slug(productName);
@@ -280,17 +301,12 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
     }
 
     try {
-      let result = await findAmazonProduct(productName, { market });
-      // Cascading fallback when the full name yields no match. The retries go
-      // narrower → narrower:
-      //   1. brand + sku (e.g. "Stihl RE 100" from "Stihl RE 100 Plus Control")
-      //   2. sku alone   (e.g. "DCD999" from "DeWalt DCD999")
-      //   3. progressive shortening — drop trailing words one at a time
-      //      (e.g. "Lavor Galaxy 160" → "Lavor Galaxy"). Catches consumer
-      //      brand families where the model id isn't SKU-shaped.
-      // The narrower query forces Amazon's relevance ranker to put the SKU's
-      // own listing first instead of "drills compatible with DCD999" noise.
-      if (!result.asin) {
+      // Multi-candidate matching: collect up to 5 candidates passing hard
+      // gates from the primary query, falling back to narrower queries when
+      // the primary yields nothing. Final pick (or rejection) is delegated
+      // to the Claude-validator step further down.
+      let candidates = await findAmazonCandidates(productName, { market });
+      if (candidates.length === 0) {
         const seen = new Set([productName.toLowerCase()]);
         const dedup = (q) => {
           const k = q?.toLowerCase();
@@ -304,21 +320,40 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
         ].filter(dedup);
         for (const fallback of fallbacks) {
           if (verbose) console.log(`    🔁 fallback query: "${fallback}"`);
-          const retry = await findAmazonProduct(fallback, { market });
-          if (retry.asin || (retry.matchScore ?? 0) > (result.matchScore ?? 0)) {
-            result = retry;
-            if (retry.asin) break;
-          }
+          candidates = await findAmazonCandidates(fallback, { market });
+          if (candidates.length > 0) break;
         }
       }
-      const { imageUrl, asin, price, title, matchScore, pickedIdx } = result;
+      pendingValidation.push({ productName, candidates, productSlug, localPath, jsonSidecar, publicPath, publicDir });
+    } catch (err) {
+      if (verbose) console.warn(`    ⚠️  ${productName}: ${err.message}`);
+      imageMap[productName] = null;
+      asinMap[productName] = null;
+      priceMap[productName] = null;
+    }
+  }
 
-      if (!imageUrl && !asin) {
-        // Amazon exhausted. Try Google Shopping for a non-affiliate fallback —
-        // a niche brand that Amazon doesn't carry will often show up on a
-        // dedicated retailer (Manomano, Leroy Merlin, Castorama). Better a
-        // sourced non-affiliate link than an empty product card.
-        if (verbose) console.log(`    🌐 Amazon miss → Google Shopping fallback for "${productName}"`);
+  // BATCHED CLAUDE VALIDATION across all pending products. One call per
+  // article keeps cost flat regardless of how many products the comparatif
+  // covers. The validator caches per (productName, candidate ASINs) so
+  // re-runs that hit the same DFS results don't pay twice.
+  const candidatesByProduct = {};
+  for (const item of pendingValidation) {
+    candidatesByProduct[item.productName] = item.candidates;
+  }
+  const picksByProduct = pendingValidation.length > 0
+    ? await validateMatchesWithClaude({ niche, market, candidatesByProduct, verbose })
+    : {};
+
+  for (const item of pendingValidation) {
+    const { productName, productSlug, localPath, jsonSidecar, publicPath, publicDir } = item;
+    const pick = picksByProduct[productName] ?? null;
+
+    try {
+      if (!pick) {
+        // No Amazon pick: fall through to Google Shopping. Same logic as
+        // before, just triggered by validator-null instead of matcher-null.
+        if (verbose) console.log(`    🌐 Amazon validator → none, trying Google Shopping for "${productName}"`);
         let gsMatch = null;
         try {
           gsMatch = await findGoogleShoppingProduct({ productName, market });
@@ -327,8 +362,6 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
         }
 
         if (gsMatch) {
-          // Download the merchant's product image so it's served from our own
-          // public/images path (same caching/CDN behaviour as Amazon images).
           if (gsMatch.imageUrl && !existsSync(localPath)) {
             mkdirSync(publicDir, { recursive: true });
             try {
@@ -357,18 +390,19 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
           continue;
         }
 
-        if (verbose) console.warn(`    ⚠️  ${productName} — rejected (Amazon score=${matchScore?.toFixed(2) ?? '0.00'}, no Google Shopping match)`);
+        if (verbose) console.warn(`    ⚠️  ${productName} — rejected by validator + no Google Shopping match`);
         imageMap[productName] = null;
         asinMap[productName] = null;
         priceMap[productName] = null;
-        // Persist a "no-match" sidecar so we don't refetch on every run.
         mkdirSync(publicDir, { recursive: true });
         writeFileSync(jsonSidecar, JSON.stringify({
-          asin: null, price: null, title: null, matchScore: matchScore ?? 0,
+          asin: null, price: null, title: null, matchScore: 0,
           fetchedAt: new Date().toISOString(),
         }, null, 2));
         continue;
       }
+
+      const { asin, title, imageUrl, price } = pick;
       if (imageUrl && !existsSync(localPath)) {
         await downloadTo(imageUrl, localPath);
         imageMap[productName] = publicPath;
@@ -382,13 +416,12 @@ export async function fetchProductImages({ niche, market = 'fr', articleSlug, pr
 
       mkdirSync(publicDir, { recursive: true });
       writeFileSync(jsonSidecar, JSON.stringify({
-        asin, price, title, matchScore, pickedIdx,
+        asin, price, title, matchScore: null, pickedBy: 'claude-validator',
         fetchedAt: new Date().toISOString(),
       }, null, 2));
 
       if (verbose) {
-        const flag = matchScore >= 0.8 ? '✅' : '⚠️ ';
-        console.log(`    ${flag} ${productName} → score=${matchScore.toFixed(2)} idx=${pickedIdx} asin=${asin ?? '–'} price=${price ?? '–'}`);
+        console.log(`    ✅ ${productName} → asin=${asin} price=${price ?? '–'}`);
       }
     } catch (err) {
       if (verbose) console.warn(`    ⚠️  ${productName}: ${err.message}`);
