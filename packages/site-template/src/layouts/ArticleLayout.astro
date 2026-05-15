@@ -25,6 +25,14 @@ const authorSchema = author ? {
 const { article } = Astro.props;
 const data = article.data;
 
+// Helper to extract a brand from a product name if developer is missing.
+// Usually the brand is the first word (e.g., "Bosch Rotak" -> "Bosch").
+const getBrand = (name: string, developer?: string) => {
+  if (developer && developer !== name) return developer;
+  const firstWord = name.split(' ')[0];
+  return firstWord;
+};
+
 const intentLabel = (s.intentLabels as Record<string, string>)[data.intent] ?? 'Article';
 const bundleSlotLabels = (s.bundleSlotLabels as Record<string, string>) ?? {};
 const fmt = (d: Date) => d.toLocaleDateString(siteConfig.locale ?? 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -67,7 +75,11 @@ const articleSchema = {
   publisher: publisherSchema,
   ...(authorSchema ? { author: authorSchema } : {}),
   ...(isReview && data.product && data.finalScore !== undefined ? {
-    itemReviewed: { '@type': 'Product', name: data.product.name, brand: { '@type': 'Brand', name: data.product.developer ?? data.product.name } },
+    itemReviewed: {
+      '@type': 'Product',
+      name: data.product.name,
+      brand: { '@type': 'Brand', name: getBrand(data.product.name, data.product.developer) }
+    },
     reviewRating: { '@type': 'Rating', ratingValue: data.finalScore, bestRating: 10, worstRating: 0 },
     ...(authorSchema ? {} : { author: { '@type': 'Organization', name: siteConfig.name } }),
   } : {}),
@@ -89,6 +101,7 @@ const itemListSchema = isRoundup ? {
       itemReviewed: {
         '@type': 'Product',
         name: p.name,
+        brand: { '@type': 'Brand', name: getBrand(p.name) },
         ...(p.asin ? { sku: p.asin } : {}),
       },
       ...(typeof p.score === 'number' ? {
