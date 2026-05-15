@@ -3,3 +3,6 @@
 
 /guides/comment-choisir-un-tondeuse-à-gazon/  /guides/comment-choisir-un-tondeuse-a-gazon/  301
 /comparatifs/tondeuse-à-gazon/  /comparatifs/tondeuse-a-gazon/  301
+
+# Sitemap convenience alias (Bing/auditors default to /sitemap.xml)
+/sitemap.xml  /sitemap-index.xml  301

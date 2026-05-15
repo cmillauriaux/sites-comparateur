@@ -16,6 +16,15 @@ const { title, description, canonicalPath = Astro.url.pathname, ogImage, noindex
 const canonical = new URL(canonicalPath, Astro.site).toString();
 const fullTitle = title.endsWith(siteConfig.name) ? title : `${title} — ${siteConfig.name}`;
 
+// Site-wide default OG image for social/AI previews when a page doesn't
+// pass its own (home, hub pages). Per-article pages keep passing their
+// hero image via the ogImage prop. open-graph.webp lives in /public.
+const resolvedOgImage = ogImage
+  ? new URL(ogImage, Astro.site).toString()
+  : new URL('/open-graph.webp', Astro.site).toString();
+
+const umamiHost = ((siteConfig as { umami?: { host?: string } }).umami?.host ?? '').replace(/\/$/, '');
+
 // Locale propagated from site.config.js so US/GB sites don't ship `lang="fr"`.
 // `locale` is "fr-FR" / "en-US" / "en-GB"; HTML wants the language code only,
 // while OpenGraph wants the underscore form.
@@ -71,9 +80,11 @@ const themeCss = [
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    {noindex
+      ? <meta name="robots" content="noindex,nofollow" />
+      : <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />}
     {isHome && siblings.map(s => (
       <link rel="alternate" hreflang={s.locale} href={`https://${s.domain}/`} />
     ))}
@@ -86,9 +97,11 @@ const themeCss = [
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={ogLocale} />
     <meta property="og:site_name" content={siteConfig.name} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+    <meta property="og:image" content={resolvedOgImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={resolvedOgImage} />
     <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} — RSS`} href="/rss.xml" />
+    {umamiHost && <link rel="preconnect" href={umamiHost} crossorigin />}
     {fontsHref && <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />}
     {fontsHref && <link rel="stylesheet" href={fontsHref} />}
     {themeCss && <style set:html={`:root { ${themeCss} }`} is:inline />}
