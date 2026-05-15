@@ -4,6 +4,49 @@ import { i18n } from '@comparateur/config';
 const s = i18n(siteConfig.market, siteConfig);
 const year = new Date().getFullYear();
 const slugs = s.legalSlugs;
+
+// Affiliate partners line — derived from site.config.js#affiliatePrograms.
+// Two purposes:
+//   - publisher-network validation (Awin / Amazon Associates compliance
+//     teams crawl the homepage looking for explicit mention of their
+//     programme to confirm publisher intent before approving the account);
+//   - reader transparency (visible on every page, not just /affiliation/).
+// Programme ids follow the `<network>-<merchant>` convention so we can
+// derive the network label + merchant list from the ids alone — no
+// hand-maintained registry to keep in sync.
+const MERCHANT_LABELS: Record<string, string> = {
+  'leroy-merlin': 'Leroy Merlin',
+  'mr-bricolage': 'Mr Bricolage',
+  castorama:      'Castorama',
+  boulanger:      'Boulanger',
+  decathlon:      'Decathlon',
+  darty:          'Darty',
+  fnac:           'Fnac',
+};
+const NETWORK_LABELS: Record<string, string> = {
+  amazon: 'Amazon Partenaires',
+  awin:   'Awin',
+};
+const programs = (siteConfig as { affiliatePrograms?: string[] }).affiliatePrograms ?? [];
+// Group merchants by network ({ amazon: [], awin: ['leroy-merlin', ...] }).
+const byNetwork = new Map<string, string[]>();
+for (const id of programs) {
+  const [network, ...rest] = id.split('-');
+  const merchant = rest.join('-');
+  if (!byNetwork.has(network)) byNetwork.set(network, []);
+  if (merchant && merchant !== siteConfig.market) byNetwork.get(network)!.push(merchant);
+}
+const partnerChunks: string[] = [];
+for (const [network, merchants] of byNetwork) {
+  const label = NETWORK_LABELS[network] ?? network;
+  if (merchants.length > 0) {
+    const merchantNames = merchants.map(m => MERCHANT_LABELS[m] ?? m).join(', ');
+    partnerChunks.push(`${label} (${merchantNames})`);
+  } else {
+    partnerChunks.push(label);
+  }
+}
+const partnersLine = partnerChunks.join(' · ');
 ---
 <footer class="mt-20 border-t border-[var(--color-border)] bg-[var(--color-hero-bg)]">
   <div class="mx-auto max-w-[var(--max-w-page)] px-4 py-10 text-sm text-[var(--color-text-muted)] grid gap-6 md:grid-cols-3">
@@ -29,6 +72,12 @@ const slugs = s.legalSlugs;
       </ul>
     </div>
   </div>
+  {partnersLine && (
+    <div class="border-t border-[var(--color-border)] px-4 py-3 text-xs text-center text-[var(--color-text-muted)]">
+      <span class="font-semibold text-[var(--color-primary-dark)]">{s.partnersLabel} :</span>{' '}
+      <span>{partnersLine}</span>
+    </div>
+  )}
   <div class="border-t border-[var(--color-border)] py-4 text-xs text-center text-[var(--color-text-muted)]">
     © {year} {siteConfig.name} — {siteConfig.domain}. {s.footerTagline}
   </div>

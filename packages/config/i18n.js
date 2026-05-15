@@ -70,6 +70,7 @@ const strings = {
     affiliatePolicy: "Politique d'affiliation",
     methodologyLink: 'Méthodologie',
     footerTagline:   "Guide d'achat indépendant.",
+    partnersLabel:   "En partenariat avec",
     legalSlugs:      { legal: 'mentions-legales', privacy: 'politique-confidentialite', affiliate: 'affiliation', methodology: 'methodologie' },
 
     // Index + list pages
@@ -140,6 +141,7 @@ const strings = {
     affiliatePolicy: 'Affiliate disclosure',
     methodologyLink: 'Methodology',
     footerTagline:   'Independent buying guide.',
+    partnersLabel:   'In partnership with',
     legalSlugs:      { legal: 'legal-notice', privacy: 'privacy-policy', affiliate: 'affiliate-disclosure', methodology: 'methodology' },
 
     ctaComparisons:  'See the roundups',
@@ -209,6 +211,7 @@ const strings = {
     affiliatePolicy: 'Affiliate disclosure',
     methodologyLink: 'Methodology',
     footerTagline:   'Independent buying guide.',
+    partnersLabel:   'In partnership with',
     legalSlugs:      { legal: 'legal-notice', privacy: 'privacy-policy', affiliate: 'affiliate-disclosure', methodology: 'methodology' },
 
     ctaComparisons:  'See the comparisons',
