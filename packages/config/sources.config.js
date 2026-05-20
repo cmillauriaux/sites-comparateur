@@ -142,11 +142,14 @@ const sources = {
       // cover the long-tail blog topics that the energy/renovation institutions
       // above don't — garden lighting, DIY panels, deco — so a cluster like
       // "guirlande solaire jardin" reaches enough relevant grounding.
-      { name: 'Futura',               url: 'https://www.futura-sciences.com',                  scrape: true,  trust: 'high',   type: 'guide' },
-      { name: 'Système D',            url: 'https://www.systeme-d.fr',                         scrape: true,  trust: 'high',   type: 'guide' },
-      { name: 'Gerbeaud',             url: 'https://www.gerbeaud.com',                         scrape: true,  trust: 'high',   type: 'guide' },
+      // type:'reviews' is REQUIRED to enable the 2-hop SERP→article fetch in
+      // scrape.js — without it the scraper only reads the search-results
+      // listing (thin/irrelevant) instead of the actual article prose.
+      { name: 'Futura',               url: 'https://www.futura-sciences.com',                  scrape: true,  trust: 'high',   type: 'reviews' },
+      { name: 'Système D',            url: 'https://www.systeme-d.fr',                         scrape: true,  trust: 'high',   type: 'reviews' },
+      { name: 'Gerbeaud',             url: 'https://www.gerbeaud.com',                         scrape: true,  trust: 'high',   type: 'reviews' },
       { name: 'Révolution Énergétique', url: 'https://www.revolution-energetique.com',         scrape: true,  trust: 'medium', type: 'reviews' },
-      { name: '18h39 (Leroy Merlin)', url: 'https://www.18h39.fr',                             scrape: true,  trust: 'medium', type: 'guide' },
+      { name: '18h39 (Leroy Merlin)', url: 'https://www.18h39.fr',                             scrape: true,  trust: 'medium', type: 'reviews' },
       { name: 'ManoMano',             url: 'https://www.manomano.fr',                          scrape: true,  useBrowser: true, trust: 'high',   type: 'specs+avis' },
       { name: 'Leroy Merlin',         url: 'https://www.leroymerlin.fr',                       scrape: true,  useBrowser: true, trust: 'high',   type: 'specs+avis' },
       { name: 'Cdiscount',            url: 'https://www.cdiscount.com',                        scrape: true,  useBrowser: true, trust: 'medium', type: 'specs+avis' },
