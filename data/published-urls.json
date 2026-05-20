@@ -294,5 +294,101 @@
     "intent": "comparatif",
     "publishedAt": "2026-05-20T18:18:38.399Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://toutveto.fr/comparatifs/meilleures-croquettes-chien/",
+    "niche": "veto",
+    "market": "fr",
+    "keyword": "meilleures croquettes chien",
+    "bundleId": "veto-fr-meilleures-croquettes-chien",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-03-26T17:07:16.000Z",
+    "indexationStatus": "pending",
+    "seedRun": true
+  },
+  {
+    "url": "https://toutveto.fr/guides/comment-choisir-un-croquettes-chien/",
+    "niche": "veto",
+    "market": "fr",
+    "keyword": "comment choisir un croquettes chien",
+    "bundleId": "veto-fr-meilleures-croquettes-chien",
+    "bundleSlot": "pillar",
+    "intent": "guide",
+    "publishedAt": "2026-03-28T14:12:53.000Z",
+    "indexationStatus": "pending",
+    "seedRun": true
+  },
+  {
+    "url": "https://toutveto.fr/comparatifs/meilleures-croquettes-chat/",
+    "niche": "veto",
+    "market": "fr",
+    "keyword": "meilleures croquettes chat",
+    "bundleId": "veto-fr-meilleures-croquettes-chat",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-04-06T12:08:18.000Z",
+    "indexationStatus": "pending",
+    "seedRun": true
+  },
+  {
+    "url": "https://toutveto.fr/avis/edgard-cooper-croquettes-chat-sterilise-poulet-2kg-avis/",
+    "niche": "veto",
+    "market": "fr",
+    "keyword": "Edgard Cooper Croquettes Chat Stérilisé Poulet 2kg avis",
+    "bundleId": "veto-fr-meilleures-croquettes-chat",
+    "bundleSlot": "avis",
+    "intent": "avis",
+    "publishedAt": "2026-04-11T20:43:00.000Z",
+    "indexationStatus": "pending",
+    "seedRun": true
+  },
+  {
+    "url": "https://toutveto.fr/comparatifs/meilleur-harnais-chien-anti-traction/",
+    "niche": "veto",
+    "market": "fr",
+    "keyword": "meilleur harnais chien anti-traction",
+    "bundleId": "veto-fr-meilleur-harnais-chien-anti-traction",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-04-21T15:04:24.000Z",
+    "indexationStatus": "pending",
+    "seedRun": true
+  },
+  {
+    "url": "https://toutveto.fr/avis/rabbitgoo-harnais-chien-anti-traction-avec-poignee-controle-attache-devant-l-avis/",
+    "niche": "veto",
+    "market": "fr",
+    "keyword": "rabbitgoo Harnais Chien Anti Traction avec Poignée Contrôle Attache Devant L avis",
+    "bundleId": "veto-fr-meilleur-harnais-chien-anti-traction",
+    "bundleSlot": "avis",
+    "intent": "avis",
+    "publishedAt": "2026-05-01T17:54:38.000Z",
+    "indexationStatus": "pending",
+    "seedRun": true
+  },
+  {
+    "url": "https://toutveto.fr/comparatifs/meilleure-litiere-chat/",
+    "niche": "veto",
+    "market": "fr",
+    "keyword": "meilleure litiere chat",
+    "bundleId": "veto-fr-meilleure-litiere-chat",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-05-03T13:19:26.000Z",
+    "indexationStatus": "pending",
+    "seedRun": true
+  },
+  {
+    "url": "https://toutveto.fr/avis/by-amazon-litiere-premium-bentonite-parfum-talc-10l-avis/",
+    "niche": "veto",
+    "market": "fr",
+    "keyword": "by Amazon Litière Premium Bentonite Parfum Talc 10L avis",
+    "bundleId": "veto-fr-meilleure-litiere-chat",
+    "bundleSlot": "avis",
+    "intent": "avis",
+    "publishedAt": "2026-05-12T15:03:04.000Z",
+    "indexationStatus": "pending",
+    "seedRun": true
   }
 ]

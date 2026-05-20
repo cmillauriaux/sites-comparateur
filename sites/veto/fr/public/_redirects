@@ -1,0 +1,5 @@
+# Cloudflare Pages redirect rules
+# Format: <from>  <to>  <status>
+
+# Sitemap convenience alias (Bing/auditors default to /sitemap.xml)
+/sitemap.xml  /sitemap-index.xml  301

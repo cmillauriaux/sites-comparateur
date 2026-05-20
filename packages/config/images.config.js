@@ -67,4 +67,13 @@ export const IMAGE_QUERIES = {
       'prix-renovation': ['house energy renovation', 'home insulation work'],
     },
   },
+  veto: {
+    hero: ['veterinarian dog cat clinic', 'happy dog cat owner', 'pet health checkup'],
+    categories: {
+      assurance:       ['veterinarian examining dog', 'pet insurance dog cat'],
+      'tarifs-veto':   ['veterinary clinic consultation', 'vet examining cat'],
+      'sante-animale': ['healthy dog cat', 'puppy kitten vet care'],
+      accessoires:     ['dog cat accessories pet shop', 'pet bed toys'],
+    },
+  },
 };

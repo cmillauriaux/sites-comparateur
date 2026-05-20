@@ -51,6 +51,7 @@ jobs:
           - { niche: jardin-bricolage, market: gb }
           - { niche: cuisine,          market: fr }
           - { niche: solaire,          market: fr }
+          - { niche: veto,             market: fr }
     env:
       NICHE:  ${{ matrix.niche }}
       MARKET: ${{ matrix.market }}

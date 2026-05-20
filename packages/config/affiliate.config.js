@@ -65,6 +65,23 @@ const affiliate = {
     // partner landing URL (a real tracked deeplink replaces `url` once signed).
     'effy':              { kind: 'lead', url: 'https://www.effy.fr/', market: 'fr', commission: 'CPA 30-60 €', cookieDays: 30 },
     'quelle-energie':    { kind: 'lead', url: 'https://www.quelleenergie.fr/', market: 'fr', commission: 'CPA 30-60 €', cookieDays: 30 },
+    // toutveto.fr — assurance santé animale. The Hub 1 monetisation is lead-gen
+    // (CPA per qualified quote request), NOT product affiliation: `kind: 'lead'`
+    // routes to the partner landing/quote URL with NO `rel=sponsored` deeplink
+    // wrapping. A real tracked deeplink replaces `url` once each program is
+    // signed (SantéVet/Lassie direct, Awin, Kwanko, Affilae).
+    'santevet':            { kind: 'lead', url: 'https://www.santevet.com/', market: 'fr', commission: '6 €/lead + 45 €/vente web', cookieDays: 30 },
+    'lassie':              { kind: 'lead', url: 'https://fr.lassie.co/', market: 'fr', commission: 'variable', cookieDays: 30 },
+    'acheel':              { kind: 'lead', url: 'https://www.acheel.com/assurance-animaux', market: 'fr', commission: 'variable', cookieDays: 30 },
+    'dalma':               { kind: 'lead', url: 'https://www.dalma.co/', market: 'fr', commission: 'variable', cookieDays: 30 },
+    'goodflair':           { kind: 'lead', url: 'https://www.goodflair.com/', market: 'fr', commission: 'variable', cookieDays: 30 },
+    // Cross-sell accessoires/alimentation (Hub 4). Zooplus is on Awin; Wanimo
+    // is lead+CPA on Kwanko/NetAffiliation (no Awin deeplink — kept as lead).
+    'awin-zooplus':        { advertiserId: process.env.AWIN_ZOOPLUS_ID, baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '3%', cookieDays: 30 },
+    'wanimo':              { kind: 'lead', url: 'https://www.wanimo.com/', market: 'fr', commission: '10% + 0,30 €/formulaire', cookieDays: 30 },
+    'animigo':             { kind: 'lead', url: 'https://www.animigo.com/fr', market: 'fr', commission: 'jusqu’à 25%', cookieDays: 30 },
+    'la-ferme-des-animaux': { kind: 'lead', url: 'https://www.lafermedesanimaux.com/', market: 'fr', commission: '5-10%', cookieDays: 30 },
+    'homycat':             { kind: 'lead', url: 'https://www.homycat.com/', market: 'fr', commission: '7-11%', cookieDays: 30 },
   },
 
 };

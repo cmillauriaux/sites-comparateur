@@ -17146,5 +17146,369 @@
         "longtail": true
       }
     ]
+  },
+  "veto": {
+    "fr": [
+      {
+        "id": "veto-fr-meilleures-croquettes-chien",
+        "niche": "veto",
+        "market": "fr",
+        "primaryKeyword": "meilleures croquettes chien",
+        "secondaryKeywords": [
+          "croquettes chien sans cereales",
+          "comparatif croquettes chien",
+          "meilleures croquettes chiot"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "croquettes chien sans cereales",
+            "volume": 1300,
+            "kd": 24,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "comparatif croquettes chien",
+            "volume": 480,
+            "kd": 22,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "meilleures croquettes chiot",
+            "volume": 880,
+            "kd": 25,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 2400,
+        "totalVolume": 5060,
+        "avgKD": 26,
+        "avgCPC": 0.45,
+        "primaryKD": 26,
+        "score": 240,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "partial",
+        "source": "brief",
+        "createdAt": "2026-05-20T19:37:49.386Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "meilleures croquettes chien",
+            "slug": "meilleures-croquettes-chien",
+            "status": "generated",
+            "url": "https://toutveto.fr/comparatifs/meilleures-croquettes-chien/",
+            "publishedAt": "2026-03-26T17:07:16.000Z",
+            "topProductName": "Dog Chow Chien Adulte Saumon 14 kg",
+            "topProductAsin": "B08C83PKVR"
+          },
+          "pillar": {
+            "keyword": "comment choisir un croquettes chien",
+            "slug": "comment-choisir-un-croquettes-chien",
+            "status": "generated",
+            "url": "https://toutveto.fr/guides/comment-choisir-un-croquettes-chien/",
+            "publishedAt": "2026-03-28T14:12:53.000Z"
+          },
+          "avis": {
+            "keyword": "Dog Chow Chien Adulte Saumon 14 kg avis",
+            "slug": "dog-chow-chien-adulte-saumon-14-kg-avis",
+            "status": "failed",
+            "url": null,
+            "publishedAt": null,
+            "errorCount": 1,
+            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/veto/fr/src/content/articles/dog-chow-chien-adulte-saumon-14-kg-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
+          }
+        }
+      },
+      {
+        "id": "veto-fr-meilleures-croquettes-chat",
+        "niche": "veto",
+        "market": "fr",
+        "primaryKeyword": "meilleures croquettes chat",
+        "secondaryKeywords": [
+          "croquettes chat sans cereales",
+          "comparatif croquettes chat",
+          "meilleures croquettes chaton"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "croquettes chat sans cereales",
+            "volume": 1900,
+            "kd": 23,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "comparatif croquettes chat",
+            "volume": 390,
+            "kd": 21,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "meilleures croquettes chaton",
+            "volume": 720,
+            "kd": 24,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 2900,
+        "totalVolume": 5910,
+        "avgKD": 25,
+        "avgCPC": 0.42,
+        "primaryKD": 25,
+        "score": 235,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "partial",
+        "source": "brief",
+        "createdAt": "2026-05-20T19:37:49.386Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "meilleures croquettes chat",
+            "slug": "meilleures-croquettes-chat",
+            "status": "generated",
+            "url": "https://toutveto.fr/comparatifs/meilleures-croquettes-chat/",
+            "publishedAt": "2026-04-06T12:08:18.000Z",
+            "topProductName": "Edgard Cooper Croquettes Chat Stérilisé Poulet 2kg",
+            "topProductAsin": "B0B7KB9S8L"
+          },
+          "pillar": {
+            "keyword": "comment choisir un croquettes chat",
+            "slug": "comment-choisir-un-croquettes-chat",
+            "status": "failed",
+            "url": null,
+            "publishedAt": null,
+            "errorCount": 1,
+            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/veto/fr/src/content/articles/comment-choisir-un-croquettes-chat.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
+          },
+          "avis": {
+            "keyword": "Edgard Cooper Croquettes Chat Stérilisé Poulet 2kg avis",
+            "slug": "edgard-cooper-croquettes-chat-sterilise-poulet-2kg-avis",
+            "status": "generated",
+            "url": "https://toutveto.fr/avis/edgard-cooper-croquettes-chat-sterilise-poulet-2kg-avis/",
+            "publishedAt": "2026-04-11T20:43:00.000Z"
+          }
+        }
+      },
+      {
+        "id": "veto-fr-meilleur-arbre-a-chat",
+        "niche": "veto",
+        "market": "fr",
+        "primaryKeyword": "meilleur arbre a chat",
+        "secondaryKeywords": [
+          "arbre a chat solide",
+          "arbre a chat design",
+          "grand arbre a chat"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "arbre a chat solide",
+            "volume": 1000,
+            "kd": 18,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "arbre a chat design",
+            "volume": 880,
+            "kd": 19,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "grand arbre a chat",
+            "volume": 720,
+            "kd": 20,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 4400,
+        "totalVolume": 7000,
+        "avgKD": 22,
+        "avgCPC": 0.38,
+        "primaryKD": 22,
+        "score": 220,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T19:37:49.386Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "meilleur arbre a chat",
+            "slug": "meilleur-arbre-a-chat",
+            "status": "failed",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 1,
+            "lastError": "article validation failed: image coverage 67% (8/12), need 80%+"
+          },
+          "pillar": {
+            "keyword": "comment choisir un arbre a chat",
+            "slug": "comment-choisir-un-arbre-a-chat",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
+      },
+      {
+        "id": "veto-fr-meilleur-harnais-chien-anti-traction",
+        "niche": "veto",
+        "market": "fr",
+        "primaryKeyword": "meilleur harnais chien anti-traction",
+        "secondaryKeywords": [
+          "harnais anti traction chien",
+          "harnais chien grande taille",
+          "harnais chien confortable"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "harnais anti traction chien",
+            "volume": 1600,
+            "kd": 21,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "harnais chien grande taille",
+            "volume": 880,
+            "kd": 22,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "harnais chien confortable",
+            "volume": 480,
+            "kd": 20,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 4260,
+        "avgKD": 21,
+        "avgCPC": 0.5,
+        "primaryKD": 21,
+        "score": 200,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "partial",
+        "source": "brief",
+        "createdAt": "2026-05-20T19:37:49.386Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "meilleur harnais chien anti-traction",
+            "slug": "meilleur-harnais-chien-anti-traction",
+            "status": "generated",
+            "url": "https://toutveto.fr/comparatifs/meilleur-harnais-chien-anti-traction/",
+            "publishedAt": "2026-04-21T15:04:24.000Z",
+            "topProductName": "rabbitgoo Harnais Chien Anti Traction avec Poignée Contrôle Attache Devant L",
+            "topProductAsin": "B01M8JT6FT"
+          },
+          "pillar": {
+            "keyword": "comment choisir un harnais chien anti-traction",
+            "slug": "comment-choisir-un-harnais-chien-anti-traction",
+            "status": "failed",
+            "url": null,
+            "publishedAt": null,
+            "errorCount": 1,
+            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/veto/fr/src/content/articles/comment-choisir-un-harnais-chien-anti-traction.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
+          },
+          "avis": {
+            "keyword": "rabbitgoo Harnais Chien Anti Traction avec Poignée Contrôle Attache Devant L avis",
+            "slug": "rabbitgoo-harnais-chien-anti-traction-avec-poignee-controle-attache-devant-l-avis",
+            "status": "generated",
+            "url": "https://toutveto.fr/avis/rabbitgoo-harnais-chien-anti-traction-avec-poignee-controle-attache-devant-l-avis/",
+            "publishedAt": "2026-05-01T17:54:38.000Z"
+          }
+        }
+      },
+      {
+        "id": "veto-fr-meilleure-litiere-chat",
+        "niche": "veto",
+        "market": "fr",
+        "primaryKeyword": "meilleure litiere chat",
+        "secondaryKeywords": [
+          "litiere chat agglomerante",
+          "litiere vegetale chat",
+          "litiere chat sans odeur"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "litiere chat agglomerante",
+            "volume": 2900,
+            "kd": 20,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "litiere vegetale chat",
+            "volume": 1600,
+            "kd": 19,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "litiere chat sans odeur",
+            "volume": 1000,
+            "kd": 21,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1900,
+        "totalVolume": 7400,
+        "avgKD": 21,
+        "avgCPC": 0.4,
+        "primaryKD": 21,
+        "score": 195,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "partial",
+        "source": "brief",
+        "createdAt": "2026-05-20T19:37:49.386Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "meilleure litiere chat",
+            "slug": "meilleure-litiere-chat",
+            "status": "generated",
+            "url": "https://toutveto.fr/comparatifs/meilleure-litiere-chat/",
+            "publishedAt": "2026-05-03T13:19:26.000Z",
+            "topProductName": "by Amazon Litière Premium Bentonite Parfum Talc 10L",
+            "topProductAsin": "B083VBXG2S"
+          },
+          "pillar": {
+            "keyword": "comment choisir un litiere chat",
+            "slug": "comment-choisir-un-litiere-chat",
+            "status": "failed",
+            "url": null,
+            "publishedAt": null,
+            "errorCount": 1,
+            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/veto/fr/src/content/articles/comment-choisir-un-litiere-chat.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
+          },
+          "avis": {
+            "keyword": "by Amazon Litière Premium Bentonite Parfum Talc 10L avis",
+            "slug": "by-amazon-litiere-premium-bentonite-parfum-talc-10l-avis",
+            "status": "generated",
+            "url": "https://toutveto.fr/avis/by-amazon-litiere-premium-bentonite-parfum-talc-10l-avis/",
+            "publishedAt": "2026-05-12T15:03:04.000Z"
+          }
+        }
+      }
+    ]
   }
 }

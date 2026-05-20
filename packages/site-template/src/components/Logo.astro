@@ -8,7 +8,7 @@ import siteConfig from 'virtual:site-config';
 
 interface Props {
   /** Override the configured archetype/fills (useful in design tests). */
-  archetype?: 'leaf' | 'bolt' | 'bowl' | 'mountain';
+  archetype?: 'leaf' | 'bolt' | 'bowl' | 'mountain' | 'paw';
   primaryFill?: string;
   accentFill?: string;
   class?: string;
@@ -43,6 +43,15 @@ const className   = Astro.props.class ?? 'h-7 w-7';
     <g>
       <circle cx="22" cy="11" r="3" fill="#ffffff" fill-opacity="0.85" />
       <path d="M4 26 L12 14 L18 21 L22 17 L28 26 Z" fill={accentFill} stroke="#ffffff" stroke-width="0.6" stroke-linejoin="round" />
+    </g>
+  )}
+  {archetype === 'paw' && (
+    <g fill={accentFill}>
+      <ellipse cx="16" cy="21" rx="6" ry="5" />
+      <ellipse cx="9.5" cy="14.5" rx="2.3" ry="3" />
+      <ellipse cx="13.5" cy="10.5" rx="2.3" ry="3" />
+      <ellipse cx="18.5" cy="10.5" rx="2.3" ry="3" />
+      <ellipse cx="22.5" cy="14.5" rx="2.3" ry="3" />
     </g>
   )}
 </svg>
