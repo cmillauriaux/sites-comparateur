@@ -1,0 +1,208 @@
+---
+/**
+ * Layout for hand-authored satellite pages (e.g. /solaire/kit-solaire/).
+ * Mirrors ArticleLayout's rendering + JSON-LD but is driven by the
+ * `satellites` collection schema and emits a Home → Hub → Satellite
+ * breadcrumb plus an intra-hub "related satellites" mesh block.
+ */
+import { getCollection } from 'astro:content';
+import SiteLayout from './SiteLayout.astro';
+import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
+import SourceList from '../components/SourceList.astro';
+import ScoreBadge from '../components/ScoreBadge.astro';
+import AuthorBio from '../components/AuthorBio.astro';
+import siteConfig from 'virtual:site-config';
+import { i18n } from '@comparateur/config';
+const s = i18n(siteConfig.market);
+
+interface AuthorMeta { name: string; role: string; bio: string; photo?: string; linkedinUrl?: string; url?: string }
+const author = (siteConfig as { author?: AuthorMeta }).author;
+const authorSchema = author ? {
+  '@type': 'Person',
+  name: author.name,
+  jobTitle: author.role,
+  description: author.bio,
+  ...(author.photo ? { image: author.photo.startsWith('http') ? author.photo : `https://${siteConfig.domain}${author.photo}` } : {}),
+  ...(author.linkedinUrl || author.url ? { sameAs: [author.linkedinUrl, author.url].filter(Boolean) } : {}),
+} : null;
+
+const { entry } = Astro.props;
+const data = entry.data;
+
+const hubs = (siteConfig as { hubs?: { slug: string; label: string }[] }).hubs ?? [];
+const hub = hubs.find(h => h.slug === data.hub);
+const hubLabel = hub?.label ?? data.hub;
+
+const getBrand = (name: string, developer?: string) => {
+  if (developer && developer !== name) return developer;
+  return name.split(' ')[0];
+};
+const intentLabel = (s.intentLabels as Record<string, string>)[data.intent] ?? 'Article';
+const fmt = (d: Date) => d.toLocaleDateString(siteConfig.locale ?? 'fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+const baseUrl = `https://${siteConfig.domain}`;
+const pageUrl = `${baseUrl}${Astro.url.pathname}`;
+
+const isReview = data.intent === 'avis' && data.product;
+const isRoundup = data.intent === 'comparatif' && Array.isArray(data.products) && data.products.length > 0;
+
+const social = (siteConfig as { social?: Record<string, string | undefined> }).social ?? {};
+const sameAs = Object.values(social).filter((u): u is string => typeof u === 'string' && u.length > 0);
+const publisherSchema = {
+  '@type': 'Organization',
+  name: siteConfig.name,
+  url: baseUrl,
+  logo: { '@type': 'ImageObject', url: `${baseUrl}/favicon.svg` },
+  ...(sameAs.length > 0 ? { sameAs } : {}),
+};
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': isReview ? 'Review' : 'Article',
+  headline: data.title,
+  description: data.description,
+  datePublished: data.publishedAt.toISOString(),
+  dateModified: data.updatedAt.toISOString(),
+  inLanguage: siteConfig.locale ?? 'fr-FR',
+  url: pageUrl,
+  publisher: publisherSchema,
+  ...(authorSchema ? { author: authorSchema } : {}),
+  ...(isReview && data.product && data.finalScore !== undefined ? {
+    itemReviewed: {
+      '@type': 'Product',
+      name: data.product.name,
+      brand: { '@type': 'Brand', name: getBrand(data.product.name, data.product.developer) },
+      review: {
+        '@type': 'Review',
+        author: authorSchema ?? { '@type': 'Organization', name: siteConfig.name },
+        datePublished: data.publishedAt.toISOString(),
+        reviewRating: { '@type': 'Rating', ratingValue: data.finalScore, bestRating: 10, worstRating: 0 },
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: data.finalScore, bestRating: 10, worstRating: 0, ratingCount: 1, reviewCount: 1,
+      },
+    },
+    reviewRating: { '@type': 'Rating', ratingValue: data.finalScore, bestRating: 10, worstRating: 0 },
+    ...(authorSchema ? {} : { author: { '@type': 'Organization', name: siteConfig.name } }),
+  } : {}),
+};
+
+const scoredProducts = isRoundup ? data.products!.filter((p: { score?: number }) => typeof p.score === 'number') : [];
+const itemListSchema = isRoundup && scoredProducts.length > 0 ? {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListOrder: 'https://schema.org/ItemListOrderDescending',
+  numberOfItems: scoredProducts.length,
+  itemListElement: scoredProducts.map((p: { name: string; score: number; asin?: string | null }, i: number) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'Review',
+      author: authorSchema ?? { '@type': 'Organization', name: siteConfig.name },
+      reviewRating: { '@type': 'Rating', ratingValue: p.score, bestRating: 10, worstRating: 0 },
+      itemReviewed: {
+        '@type': 'Product',
+        name: p.name,
+        brand: { '@type': 'Brand', name: getBrand(p.name) },
+        ...(p.asin ? { sku: p.asin } : {}),
+        review: {
+          '@type': 'Review',
+          author: authorSchema ?? { '@type': 'Organization', name: siteConfig.name },
+          datePublished: data.publishedAt.toISOString(),
+          reviewRating: { '@type': 'Rating', ratingValue: p.score, bestRating: 10, worstRating: 0 },
+        },
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: p.score, bestRating: 10, worstRating: 0, ratingCount: 1, reviewCount: 1,
+        },
+      },
+    },
+  })),
+} : null;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: s.home, item: `${baseUrl}/` },
+    { '@type': 'ListItem', position: 2, name: hubLabel, item: `${baseUrl}/${data.hub}/` },
+    { '@type': 'ListItem', position: 3, name: data.title, item: pageUrl },
+  ],
+};
+
+const faqSchema = (Array.isArray(data.faq) && data.faq.length > 0) ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: data.faq.map(({ q, a }: { q: string; a: string }) => ({
+    '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+} : null;
+
+// Resolve intra-hub related satellites for the mesh block.
+const relatedSlugs: string[] = data.relatedSatellites ?? [];
+let related: { href: string; title: string }[] = [];
+if (relatedSlugs.length) {
+  const all = await getCollection('satellites', ({ data: d }) => !d.draft);
+  related = relatedSlugs
+    .map(slug => all.find(sat => (sat.data.slug ?? sat.id) === slug))
+    .filter((sat): sat is NonNullable<typeof sat> => Boolean(sat))
+    .map(sat => ({ href: `/${sat.data.hub}/${sat.data.slug ?? sat.id}/`, title: sat.data.title }));
+}
+---
+<SiteLayout title={data.title} description={data.description} ogImage={data.heroImage}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  {itemListSchema && <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />}
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+  <article class:list={["mx-auto px-4 py-8", data.intent === 'comparatif' ? "max-w-5xl" : "max-w-3xl"]}>
+    <nav class="text-xs text-[var(--color-text-muted)] mb-3" aria-label="Breadcrumb">
+      <a href="/" class="hover:underline">{s.home}</a>
+      <span> / </span>
+      <a href={`/${data.hub}/`} class="hover:underline">{hubLabel}</a>
+    </nav>
+    <p class="text-xs uppercase tracking-wide text-[var(--color-primary)] font-semibold mb-2">{intentLabel}</p>
+    <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-3">{data.title}</h1>
+    <p class="text-[var(--color-text-muted)] text-sm flex flex-wrap gap-3 mb-6">
+      <span>{s.publishedOn} {fmt(data.publishedAt)}</span>
+      {data.updatedAt > data.publishedAt && <span>· {s.updatedOn} {fmt(data.updatedAt)}</span>}
+      {data.sources?.length && <span>· {data.sources.length} {s.sourcesLabel}</span>}
+    </p>
+
+    {data.heroImage && (
+      <img src={data.heroImage} alt={data.heroImageAlt ?? data.title}
+        class="w-full aspect-[16/9] object-cover rounded-lg mb-6" loading="eager" fetchpriority="high" decoding="async" />
+    )}
+
+    {isReview && data.finalScore !== undefined && (
+      <div class="not-prose flex items-center gap-4 p-4 my-4 rounded-lg bg-[var(--color-hero-bg)] border border-[var(--color-accent-light)]">
+        <ScoreBadge score={data.finalScore} size="lg" />
+        <div>
+          <p class="font-semibold text-[var(--color-primary-dark)] m-0">{s.finalScoreLabel}</p>
+          <p class="text-sm text-[var(--color-text-muted)] m-0">{s.weightedAvg}</p>
+        </div>
+      </div>
+    )}
+
+    <AffiliateDisclosure />
+
+    <div class="prose prose-lg max-w-none">
+      <slot />
+    </div>
+
+    {related.length > 0 && (
+      <aside class="not-prose mt-10 p-5 rounded-lg border border-[var(--color-accent-light)] bg-[var(--color-hero-bg)]">
+        <h2 class="text-lg font-semibold text-[var(--color-primary-dark)] m-0 mb-3">{s.relatedArticlesLabel}</h2>
+        <ul class="m-0 p-0 list-none space-y-2">
+          {related.map(r => (
+            <li class="m-0"><a href={r.href} class="text-[var(--color-primary)] hover:underline">{r.title}</a></li>
+          ))}
+        </ul>
+      </aside>
+    )}
+
+    <SourceList sources={data.sources} />
+
+    <AuthorBio />
+  </article>
+</SiteLayout>

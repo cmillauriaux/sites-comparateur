@@ -46,6 +46,13 @@ const affiliate = {
     'awin-decathlon':    { advertiserId: process.env.AWIN_DECATHLON_ID,    baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '5%',   cookieDays: 30 },
     'awin-darty':        { advertiserId: process.env.AWIN_DARTY_ID,        baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '2-4%', cookieDays: 30 },
     'awin-fnac':         { advertiserId: process.env.AWIN_FNAC_ID,         baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '2-3%', cookieDays: 30 },
+    // Solaire niche merchants (toutsolaire.fr). ManoMano is the volume driver
+    // (kits, volets, matériaux); EcoFlow/Beem are direct-brand premium deals;
+    // Cdiscount covers B2B signalisation/matériaux.
+    'awin-manomano':     { advertiserId: process.env.AWIN_MANOMANO_ID,     baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '5-7%', cookieDays: 30 },
+    'awin-ecoflow':      { advertiserId: process.env.AWIN_ECOFLOW_ID,      baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '6-10%', cookieDays: 30 },
+    'awin-beem-energy':  { advertiserId: process.env.AWIN_BEEM_ENERGY_ID,  baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '6-8%', cookieDays: 30 },
+    'awin-cdiscount':    { advertiserId: process.env.AWIN_CDISCOUNT_ID,    baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '4%',   cookieDays: 30 },
   },
 
 };

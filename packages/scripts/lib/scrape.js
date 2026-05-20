@@ -26,6 +26,12 @@ const SEARCH_URLS = {
   'www.sport2000.fr':         q => `https://www.sport2000.fr/recherche?q=${encodeURIComponent(q)}`,
   'www.fitnessdigital.fr':    q => `https://www.fitnessdigital.fr/search?text=${encodeURIComponent(q)}`,
   'www.cdiscount.com':        q => `https://www.cdiscount.com/search/10/${encodeURIComponent(q).replace(/%20/g, '+')}.html`,
+  // Solaire niche
+  'www.manomano.fr':          q => `https://www.manomano.fr/recherche/${encodeURIComponent(q).replace(/%20/g, '+')}`,
+  'www.photovoltaique.info':  q => `https://www.photovoltaique.info/fr/recherche/?q=${encodeURIComponent(q)}`,
+  'www.ademe.fr':             q => `https://www.ademe.fr/recherche/?q=${encodeURIComponent(q)}`,
+  'www.france-renov.gouv.fr': q => `https://www.france-renov.gouv.fr/recherche?keys=${encodeURIComponent(q)}`,
+  'www.actu-environnement.com': q => `https://www.actu-environnement.com/recherche/?q=${encodeURIComponent(q)}`,
 
   // US
   'www.amazon.com':           q => `https://www.amazon.com/s?k=${encodeURIComponent(q)}`,

@@ -4,12 +4,22 @@ import { i18n } from '@comparateur/config';
 import Logo from './Logo.astro';
 const s = i18n(siteConfig.market);
 
-const navItems = [
-  { label: s.home,           href: '/',                       hideOnMobile: true },
-  { label: s.navReviews,     href: `/${s.slugReviews}/` },
-  { label: s.navComparisons, href: `/${s.slugComparisons}/` },
-  { label: s.navGuides,      href: `/${s.slugGuides}/` },
-];
+// Hub-driven sites (e.g. solaire) surface their hubs in the nav instead of the
+// generic intent links. Sites without `hubs` keep the original intent nav,
+// byte-for-byte unchanged.
+const hubs = (siteConfig as { hubs?: { slug: string; label: string }[] }).hubs ?? [];
+const navItems = hubs.length > 0
+  ? [
+      { label: s.home, href: '/', hideOnMobile: true },
+      ...hubs.map(h => ({ label: h.label, href: `/${h.slug}/` })),
+      { label: s.navGuides, href: `/${s.slugGuides}/` },
+    ]
+  : [
+      { label: s.home,           href: '/',                       hideOnMobile: true },
+      { label: s.navReviews,     href: `/${s.slugReviews}/` },
+      { label: s.navComparisons, href: `/${s.slugComparisons}/` },
+      { label: s.navGuides,      href: `/${s.slugGuides}/` },
+    ];
 ---
 <header class="border-b border-[var(--color-border)] bg-white sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/85">
   <div class="mx-auto max-w-[var(--max-w-page)] px-4 h-14 flex items-center justify-between">
@@ -17,7 +27,7 @@ const navItems = [
       <Logo class="h-7 w-7" />
       <span>{siteConfig.name}</span>
     </a>
-    <nav class="flex items-center gap-6 text-sm">
+    <nav class="flex items-center gap-6 text-sm overflow-x-auto whitespace-nowrap">
       {navItems.map((item) => (
         <a
           href={item.href}

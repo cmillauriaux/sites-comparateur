@@ -1,0 +1,28 @@
+{
+  "productName": "Steinel XSolar SOL-O S",
+  "candidates": [
+    {
+      "asin": "B07KZMPH1P",
+      "title": "Steinel Lampe solaire XSolar SOL-O S, détecteur de mouvement 360° max. 6 m, applique murale solaire 3000 K, anthracite"
+    },
+    {
+      "asin": "B07FFD1ZQD",
+      "title": "Steinel Lampe solaire XSolar SOL-O S, avec détecteur de mouvement 360°|6 m, capteur crépusculaire, argent"
+    },
+    {
+      "asin": "B0GL34KDFW",
+      "title": "STEINEL Lampe solaire XSolar SOL-O S 1800 K, lampe d'extérieur respectueuse des insectes, détecteur de mouvement à 360°, batterie 4000 mAh, démarrage en douceur"
+    },
+    {
+      "asin": "B07KZM6L16",
+      "title": "Steinel Lampe solaire XSolar SOL-O N, avec interrupteur crépusculaire, numéro de maison éclairé pendant la nuit, allumage doux de la lumière, anthracite"
+    },
+    {
+      "asin": "B0D5BRZW9Z",
+      "title": "Steinel Applique solaire d'extérieur XSolar L-S ONE anthracite, détecteur de mouvement, lampe de jardin solaire, batterie 2500 mAh"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B07KZMPH1P",
+  "decidedAt": "2026-05-20T14:18:47.245Z"
+}

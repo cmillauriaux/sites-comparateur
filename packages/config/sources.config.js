@@ -124,6 +124,33 @@ const sources = {
     us: [],
     gb: [],
   },
+
+  // toutsolaire.fr — solaire grand public, matériaux bricolage, signalisation.
+  // Editorial/institutional sources are the grounding floor (ADEME, France
+  // Rénov', photovoltaique.info/Hespul, Que Choisir, 60M); retailers add
+  // price/specs. Brand sites are reference-only (scrape:false).
+  solaire: {
+    fr: [
+      { name: 'Que Choisir',          url: 'https://www.quechoisir.org',                       scrape: true,  useBrowser: true, trust: 'high',   type: 'reviews' },
+      { name: 'Les Numériques',       url: 'https://www.lesnumeriques.com',                    scrape: true,  trust: 'high',   type: 'reviews' },
+      { name: '60 Millions de Consommateurs', url: 'https://www.60millions-mag.com',           scrape: true,  trust: 'high',   type: 'reviews' },
+      { name: 'Photovoltaïque.info',  url: 'https://www.photovoltaique.info',                  scrape: true,  trust: 'high',   type: 'specs+guide' },
+      { name: 'ADEME',                url: 'https://www.ademe.fr',                             scrape: true,  trust: 'high',   type: 'specs+guide' },
+      { name: 'France Rénov\'',       url: 'https://www.france-renov.gouv.fr',                 scrape: true,  trust: 'high',   type: 'specs+guide' },
+      { name: 'Actu-Environnement',   url: 'https://www.actu-environnement.com',               scrape: true,  trust: 'high',   type: 'reviews' },
+      { name: 'ManoMano',             url: 'https://www.manomano.fr',                          scrape: true,  useBrowser: true, trust: 'high',   type: 'specs+avis' },
+      { name: 'Leroy Merlin',         url: 'https://www.leroymerlin.fr',                       scrape: true,  useBrowser: true, trust: 'high',   type: 'specs+avis' },
+      { name: 'Cdiscount',            url: 'https://www.cdiscount.com',                        scrape: true,  useBrowser: true, trust: 'medium', type: 'specs+avis' },
+      { name: 'Amazon FR',            url: 'https://www.amazon.fr',                            scrape: true,  trust: 'high',   type: 'price+avis' },
+      { name: 'Beem Energy',          url: 'https://beemenergy.fr',                            scrape: false, trust: 'high',   type: 'brand-specs' },
+      { name: 'EcoFlow',              url: 'https://www.ecoflow.com/fr',                       scrape: false, trust: 'high',   type: 'brand-specs' },
+      { name: 'Bluetti',              url: 'https://www.bluetti.fr',                           scrape: false, trust: 'high',   type: 'brand-specs' },
+      { name: 'Somfy',                url: 'https://www.somfy.fr',                             scrape: false, trust: 'high',   type: 'brand-specs' },
+      { name: 'Sunology',             url: 'https://sunology.eu',                              scrape: false, trust: 'high',   type: 'brand-specs' },
+    ],
+    us: [],
+    gb: [],
+  },
 };
 
 export function getSourcesFor(niche, market) {

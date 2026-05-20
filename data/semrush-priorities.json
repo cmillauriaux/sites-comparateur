@@ -15792,5 +15792,1073 @@
         "longtail": true
       }
     ]
+  },
+  "solaire": {
+    "fr": [
+      {
+        "id": "solaire-fr-guirlande-solaire-jardin",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "guirlande solaire jardin",
+        "secondaryKeywords": [
+          "guirlande solaire exterieur",
+          "meilleure guirlande solaire"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "guirlande solaire exterieur",
+            "volume": 950,
+            "kd": 17,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "meilleure guirlande solaire",
+            "volume": 665,
+            "kd": 18,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1900,
+        "totalVolume": 3515,
+        "avgKD": 17,
+        "avgCPC": 0.4,
+        "primaryKD": 17,
+        "score": 200,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-panneau-acoustique-mural",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "panneau acoustique mural",
+        "secondaryKeywords": [
+          "panneau acoustique bois",
+          "meilleur panneau acoustique mural"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "panneau acoustique bois",
+            "volume": 950,
+            "kd": 18,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "meilleur panneau acoustique mural",
+            "volume": 665,
+            "kd": 19,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1900,
+        "totalVolume": 3515,
+        "avgKD": 18,
+        "avgCPC": 0.4,
+        "primaryKD": 18,
+        "score": 198,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-tasseau-bois-mural-decoratif",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "tasseau bois mural decoratif",
+        "secondaryKeywords": [
+          "tasseau bois mural",
+          "claustra tasseau bois"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tasseau bois mural",
+            "volume": 800,
+            "kd": 14,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "claustra tasseau bois",
+            "volume": 560,
+            "kd": 15,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1600,
+        "totalVolume": 2960,
+        "avgKD": 14,
+        "avgCPC": 0.4,
+        "primaryKD": 14,
+        "score": 178,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-motorisation-volet-battant-solaire",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "motorisation volet battant solaire",
+        "secondaryKeywords": [
+          "moteur volet battant solaire",
+          "kit motorisation volet battant solaire"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "moteur volet battant solaire",
+            "volume": 800,
+            "kd": 17,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "kit motorisation volet battant solaire",
+            "volume": 560,
+            "kd": 18,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1600,
+        "totalVolume": 2960,
+        "avgKD": 17,
+        "avgCPC": 0.4,
+        "primaryKD": 17,
+        "score": 172,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-douche-solaire-de-piscine",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "douche solaire de piscine",
+        "secondaryKeywords": [
+          "douche solaire piscine",
+          "douche solaire exterieure"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "douche solaire piscine",
+            "volume": 650,
+            "kd": 14,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "douche solaire exterieure",
+            "volume": 455,
+            "kd": 15,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 2405,
+        "avgKD": 14,
+        "avgCPC": 0.4,
+        "primaryKD": 14,
+        "score": 150,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-brise-vue-jardin-grillage-bois-ou-composite",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "brise vue jardin grillage bois ou composite",
+        "secondaryKeywords": [
+          "brise vue jardin",
+          "panneau occultant jardin"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "brise vue jardin",
+            "volume": 650,
+            "kd": 16,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "panneau occultant jardin",
+            "volume": 455,
+            "kd": 17,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 2405,
+        "avgKD": 16,
+        "avgCPC": 0.4,
+        "primaryKD": 16,
+        "score": 146,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-camera-de-surveillance-solaire",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "camera de surveillance solaire",
+        "secondaryKeywords": [
+          "camera solaire sans fil",
+          "meilleure camera surveillance solaire"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "camera solaire sans fil",
+            "volume": 650,
+            "kd": 19,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "meilleure camera surveillance solaire",
+            "volume": 455,
+            "kd": 20,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 2405,
+        "avgKD": 19,
+        "avgCPC": 0.4,
+        "primaryKD": 19,
+        "score": 140,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-pompe-a-chaleur-air-eau-prix-2026",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "pompe a chaleur air eau prix 2026",
+        "secondaryKeywords": [
+          "prix pompe a chaleur air eau",
+          "cout pac air eau"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "prix pompe a chaleur air eau",
+            "volume": 650,
+            "kd": 19,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "cout pac air eau",
+            "volume": 455,
+            "kd": 20,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 2405,
+        "avgKD": 19,
+        "avgCPC": 0.4,
+        "primaryKD": 19,
+        "score": 140,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-panneau-mural-salle-de-bain-alternative-carrelage",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "panneau mural salle de bain alternative carrelage",
+        "secondaryKeywords": [
+          "panneau mural salle de bain",
+          "panneau mural douche"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "panneau mural salle de bain",
+            "volume": 550,
+            "kd": 17,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "panneau mural douche",
+            "volume": 385,
+            "kd": 18,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1100,
+        "totalVolume": 2035,
+        "avgKD": 17,
+        "avgCPC": 0.4,
+        "primaryKD": 17,
+        "score": 126,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-applique-murale-solaire-avec-detecteur",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "applique murale solaire avec detecteur",
+        "secondaryKeywords": [
+          "applique solaire detecteur mouvement",
+          "lampe murale solaire detecteur"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "applique solaire detecteur mouvement",
+            "volume": 500,
+            "kd": 16,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "lampe murale solaire detecteur",
+            "volume": 350,
+            "kd": 17,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1000,
+        "totalVolume": 1850,
+        "avgKD": 16,
+        "avgCPC": 0.4,
+        "primaryKD": 16,
+        "score": 119,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-panneau-propriete-privee-legalement-valable",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "panneau propriete privee legalement valable",
+        "secondaryKeywords": [
+          "panneau propriete privee",
+          "panneau interdiction de passer"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "panneau propriete privee",
+            "volume": 440,
+            "kd": 10,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "panneau interdiction de passer",
+            "volume": 308,
+            "kd": 11,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 880,
+        "totalVolume": 1628,
+        "avgKD": 10,
+        "avgCPC": 0.4,
+        "primaryKD": 10,
+        "score": 119,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-osb-3-ou-osb-4-quelle-difference",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "osb 3 ou osb 4 quelle difference",
+        "secondaryKeywords": [
+          "difference osb 3 osb 4",
+          "quel osb choisir"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "difference osb 3 osb 4",
+            "volume": 440,
+            "kd": 12,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "quel osb choisir",
+            "volume": 308,
+            "kd": 13,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 880,
+        "totalVolume": 1628,
+        "avgKD": 12,
+        "avgCPC": 0.4,
+        "primaryKD": 12,
+        "score": 115,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-pompe-pour-bassin-solaire",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "pompe pour bassin solaire",
+        "secondaryKeywords": [
+          "pompe bassin solaire",
+          "pompe fontaine solaire"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "pompe bassin solaire",
+            "volume": 440,
+            "kd": 13,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "pompe fontaine solaire",
+            "volume": 308,
+            "kd": 14,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 880,
+        "totalVolume": 1628,
+        "avgKD": 13,
+        "avgCPC": 0.4,
+        "primaryKD": 13,
+        "score": 113,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-spot-solaire-encastrable-sol",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "spot solaire encastrable sol",
+        "secondaryKeywords": [
+          "spot solaire encastre sol",
+          "spot solaire exterieur"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "spot solaire encastre sol",
+            "volume": 440,
+            "kd": 15,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "spot solaire exterieur",
+            "volume": 308,
+            "kd": 16,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 880,
+        "totalVolume": 1628,
+        "avgKD": 15,
+        "avgCPC": 0.4,
+        "primaryKD": 15,
+        "score": 109,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-maprimerenov-panneau-solaire-2026",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "maprimerenov panneau solaire 2026",
+        "secondaryKeywords": [
+          "aide panneau solaire 2026",
+          "prime autoconsommation 2026"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "aide panneau solaire 2026",
+            "volume": 440,
+            "kd": 18,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "prime autoconsommation 2026",
+            "volume": 308,
+            "kd": 19,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 880,
+        "totalVolume": 1628,
+        "avgKD": 18,
+        "avgCPC": 0.4,
+        "primaryKD": 18,
+        "score": 103,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-volet-roulant-solaire-qui-ne-fonctionne-plus",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "volet roulant solaire qui ne fonctionne plus",
+        "secondaryKeywords": [
+          "panne volet roulant solaire",
+          "reparer volet roulant solaire"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "panne volet roulant solaire",
+            "volume": 360,
+            "kd": 11,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "reparer volet roulant solaire",
+            "volume": 252,
+            "kd": 12,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 720,
+        "totalVolume": 1332,
+        "avgKD": 11,
+        "avgCPC": 0.4,
+        "primaryKD": 11,
+        "score": 103,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-panneau-sandwich-toiture-epaisseur-et-prix",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "panneau sandwich toiture epaisseur et prix",
+        "secondaryKeywords": [
+          "panneau sandwich toiture prix",
+          "epaisseur panneau sandwich toiture"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "panneau sandwich toiture prix",
+            "volume": 360,
+            "kd": 15,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "epaisseur panneau sandwich toiture",
+            "volume": 252,
+            "kd": 16,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 720,
+        "totalVolume": 1332,
+        "avgKD": 15,
+        "avgCPC": 0.4,
+        "primaryKD": 15,
+        "score": 95,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-lampadaire-solaire-de-jardin",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "lampadaire solaire de jardin",
+        "secondaryKeywords": [
+          "lampadaire solaire exterieur",
+          "reverbere solaire jardin"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "lampadaire solaire exterieur",
+            "volume": 360,
+            "kd": 16,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "reverbere solaire jardin",
+            "volume": 252,
+            "kd": 17,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 720,
+        "totalVolume": 1332,
+        "avgKD": 16,
+        "avgCPC": 0.4,
+        "primaryKD": 16,
+        "score": 93,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-kit-solaire-3000w-autoconsommation",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "kit solaire 3000w autoconsommation",
+        "secondaryKeywords": [
+          "kit solaire 3000w",
+          "meilleur kit solaire 3kw"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "kit solaire 3000w",
+            "volume": 360,
+            "kd": 19,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "meilleur kit solaire 3kw",
+            "volume": 252,
+            "kd": 20,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 720,
+        "totalVolume": 1332,
+        "avgKD": 19,
+        "avgCPC": 0.4,
+        "primaryKD": 19,
+        "score": 87,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-panneau-solaire-monocristallin-ou-polycristallin",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "panneau solaire monocristallin ou polycristallin",
+        "secondaryKeywords": [
+          "difference monocristallin polycristallin",
+          "quel type de panneau solaire choisir"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "difference monocristallin polycristallin",
+            "volume": 295,
+            "kd": 16,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "quel type de panneau solaire choisir",
+            "volume": 207,
+            "kd": 17,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 590,
+        "totalVolume": 1092,
+        "avgKD": 16,
+        "avgCPC": 0.4,
+        "primaryKD": 16,
+        "score": 81,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-velux-solaire-modeles-et-prix",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "velux solaire modeles et prix",
+        "secondaryKeywords": [
+          "velux solaire",
+          "fenetre de toit solaire"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "velux solaire",
+            "volume": 295,
+            "kd": 18,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "fenetre de toit solaire",
+            "volume": 207,
+            "kd": 19,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 590,
+        "totalVolume": 1092,
+        "avgKD": 18,
+        "avgCPC": 0.4,
+        "primaryKD": 18,
+        "score": 77,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-obligations-signalisation-chantier-2026",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "obligations signalisation chantier 2026",
+        "secondaryKeywords": [
+          "signalisation chantier obligatoire",
+          "panneau chantier obligation"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "signalisation chantier obligatoire",
+            "volume": 240,
+            "kd": 13,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "panneau chantier obligation",
+            "volume": 168,
+            "kd": 14,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 480,
+        "totalVolume": 888,
+        "avgKD": 13,
+        "avgCPC": 0.4,
+        "primaryKD": 13,
+        "score": 76,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-prix-reel-installation-photovoltaique-3-kwc-2026",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "prix reel installation photovoltaique 3 kwc 2026",
+        "secondaryKeywords": [
+          "prix installation 3 kwc",
+          "cout panneau solaire 3 kwc"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "prix installation 3 kwc",
+            "volume": 295,
+            "kd": 19,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "cout panneau solaire 3 kwc",
+            "volume": 207,
+            "kd": 20,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 590,
+        "totalVolume": 1092,
+        "avgKD": 19,
+        "avgCPC": 0.4,
+        "primaryKD": 19,
+        "score": 75,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-comment-dimensionner-sa-batterie-solaire",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "comment dimensionner sa batterie solaire",
+        "secondaryKeywords": [
+          "calcul capacité batterie solaire",
+          "dimensionnement stockage solaire"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "calcul capacité batterie solaire",
+            "volume": 240,
+            "kd": 14,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "dimensionnement stockage solaire",
+            "volume": 168,
+            "kd": 15,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 480,
+        "totalVolume": 888,
+        "avgKD": 14,
+        "avgCPC": 0.4,
+        "primaryKD": 14,
+        "score": 74,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-store-banne-solaire-avec-moteur-integre",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "store banne solaire avec moteur integre",
+        "secondaryKeywords": [
+          "store banne solaire",
+          "store banne motorise solaire"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "store banne solaire",
+            "volume": 240,
+            "kd": 16,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "store banne motorise solaire",
+            "volume": 168,
+            "kd": 17,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 480,
+        "totalVolume": 888,
+        "avgKD": 16,
+        "avgCPC": 0.4,
+        "primaryKD": 16,
+        "score": 70,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-carport-solaire-prix-et-rentabilite",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "carport solaire prix et rentabilite",
+        "secondaryKeywords": [
+          "carport solaire prix",
+          "carport photovoltaique"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "carport solaire prix",
+            "volume": 240,
+            "kd": 17,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "carport photovoltaique",
+            "volume": 168,
+            "kd": 18,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 480,
+        "totalVolume": 888,
+        "avgKD": 17,
+        "avgCPC": 0.4,
+        "primaryKD": 17,
+        "score": 68,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-combien-produit-un-panneau-solaire-de-400w-par-jour",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "combien produit un panneau solaire de 400w par jour",
+        "secondaryKeywords": [
+          "production panneau solaire 400w",
+          "rendement panneau 400w"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "production panneau solaire 400w",
+            "volume": 160,
+            "kd": 12,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "rendement panneau 400w",
+            "volume": 112,
+            "kd": 13,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 320,
+        "totalVolume": 592,
+        "avgKD": 12,
+        "avgCPC": 0.4,
+        "primaryKD": 12,
+        "score": 64,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      },
+      {
+        "id": "solaire-fr-autoconsommation-avec-ou-sans-revente-du-surplus",
+        "niche": "solaire",
+        "market": "fr",
+        "primaryKeyword": "autoconsommation avec ou sans revente du surplus",
+        "secondaryKeywords": [
+          "vente surplus photovoltaique",
+          "autoconsommation totale ou partielle"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "vente surplus photovoltaique",
+            "volume": 130,
+            "kd": 15,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "autoconsommation totale ou partielle",
+            "volume": 91,
+            "kd": 16,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 260,
+        "totalVolume": 481,
+        "avgKD": 15,
+        "avgCPC": 0.4,
+        "primaryKD": 15,
+        "score": 52,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "brief",
+        "createdAt": "2026-05-20T13:10:10.076Z",
+        "generatedAt": null,
+        "publishedUrl": null,
+        "longtail": true
+      }
+    ]
   }
 }

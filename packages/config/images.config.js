@@ -56,4 +56,15 @@ export const IMAGE_QUERIES = {
       ventilateur:    ['fan home cooling'],
     },
   },
+  solaire: {
+    hero: ['solar panels house roof', 'solar energy home', 'photovoltaic panels'],
+    categories: {
+      solaire:           ['rooftop solar panels installation', 'solar panel home'],
+      exterieur:         ['solar garden lights', 'outdoor garden lighting'],
+      'volet-store':     ['house roller shutters facade', 'window shutters house'],
+      materiaux:         ['wood panels workshop diy', 'plywood boards stack'],
+      signalisation:     ['road traffic signs', 'construction safety signs'],
+      'prix-renovation': ['house energy renovation', 'home insulation work'],
+    },
+  },
 };

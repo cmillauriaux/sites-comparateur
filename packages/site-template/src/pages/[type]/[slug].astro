@@ -11,6 +11,7 @@
  */
 import { getCollection, render } from 'astro:content';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import SatelliteLayout from '../../layouts/SatelliteLayout.astro';
 import AffiliateButton from '../../components/AffiliateButton.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import ComparisonTable from '../../components/ComparisonTable.astro';
@@ -35,15 +36,42 @@ export async function getStaticPaths() {
     informational: s.slugGuides,
   };
   const all = await getCollection('articles', ({ data }) => !data.draft);
-  return all.map(article => ({
+  const articlePaths = all.map(article => ({
     params: { type: segmentByIntent[article.data.intent] ?? s.slugGuides, slug: article.id },
-    props: { article },
+    props: { kind: 'article' as const, article },
   }));
+
+  // Satellite pages live under their hub slug, e.g. /solaire/kit-solaire/.
+  // Only emitted when site.config.js declares hubs — keeps existing sites
+  // path-identical (empty union).
+  const hubSlugs = new Set<string>((cfg.hubs ?? []).map((h: { slug: string }) => h.slug));
+  // Build-time guard: a hub slug must never shadow an intent listing slug.
+  const intentSlugs = new Set([s.slugComparisons, s.slugReviews, s.slugGuides]);
+  for (const slug of hubSlugs) {
+    if (intentSlugs.has(slug)) throw new Error(`Hub slug "${slug}" collides with an intent slug — rename the hub in site.config.js`);
+  }
+  const sats = hubSlugs.size
+    ? await getCollection('satellites', ({ data }) => !data.draft && hubSlugs.has(data.hub))
+    : [];
+  const satellitePaths = sats.map(sat => ({
+    params: { type: sat.data.hub, slug: sat.data.slug ?? sat.id },
+    props: { kind: 'satellite' as const, satellite: sat },
+  }));
+
+  return [...articlePaths, ...satellitePaths];
 }
 
-const { article } = Astro.props;
-const { Content } = await render(article);
+const { kind } = Astro.props;
+const components = { AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList };
+const entry = kind === 'satellite' ? Astro.props.satellite : Astro.props.article;
+const { Content } = await render(entry);
 ---
-<ArticleLayout article={article}>
-  <Content components={{ AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList }} />
-</ArticleLayout>
+{kind === 'satellite' ? (
+  <SatelliteLayout entry={entry}>
+    <Content components={components} />
+  </SatelliteLayout>
+) : (
+  <ArticleLayout article={entry}>
+    <Content components={components} />
+  </ArticleLayout>
+)}

@@ -13,6 +13,10 @@ const tests = all.filter(a => a.data.intent === 'avis').slice(0, 4);
 const comparatifs = all.filter(a => a.data.intent === 'comparatif').slice(0, 4);
 const guides = all.filter(a => a.data.intent === 'guide' || a.data.intent === 'informational').slice(0, 4);
 
+// Hub-driven sites surface a mega-pillar grid of their hubs above the latest
+// articles. Absent `hubs` → falsy → homepage renders exactly as before.
+const hubs = (siteConfig as { hubs?: { slug: string; label: string; blurb?: string }[] }).hubs ?? [];
+
 const hrefFor = (a) => `/${a.data.intent === 'comparatif' ? s.slugComparisons : a.data.intent === 'avis' ? s.slugReviews : s.slugGuides}/${a.id}/`;
 
 // Organization + WebSite schema for E-E-A-T signals on the home page only.
@@ -59,6 +63,21 @@ const websiteSchema = {
       </div>
     </div>
   </section>
+
+  {hubs.length > 0 && (
+    <section class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
+      <h2 class="text-2xl font-bold text-[var(--color-primary-dark)] mb-6">{s.navigation}</h2>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {hubs.map((h) => (
+          <a href={`/${h.slug}/`} class="block rounded-lg border border-[var(--color-border)] bg-white p-6 shadow-sm hover:shadow-md transition-shadow no-underline">
+            <h3 class="text-lg font-semibold text-[var(--color-primary-dark)] m-0">{h.label}</h3>
+            {h.blurb && <p class="mt-2 text-sm text-[var(--color-text-muted)]">{h.blurb}</p>}
+            <span class="mt-3 inline-block text-sm text-[var(--color-primary)] font-semibold">→</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   {comparatifs.length > 0 && (
     <section class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">

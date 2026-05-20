@@ -1,0 +1,24 @@
+{
+  "productName": "Sunology Play 480 W",
+  "candidates": [
+    {
+      "asin": "B0CTTW7FTR",
+      "title": "Sunology PLAY – Station Solaire Plug & Play 480W – Technologie HIBC Ultra Black – Rendement ≥235W/m² – Inclinaison Réglable – IP65 Anti-Grêle – N°1 en Europe – Prise 220V – Compatible Mono & Triphasé"
+    },
+    {
+      "asin": "B0C4K19WNJ",
+      "title": "SUNOLOGY CABLE INTERCONNEXION SUNOLOGY PLAY PRO"
+    },
+    {
+      "asin": "B0D2PCNKZG",
+      "title": "Sunology VAULT - Batterie hybride et modulaire - 700Wh - Compatible PLAYMax pour alimenter votre foyer - Autonomie de 5h pour vos aventures en mobilité - Chargeur inclus"
+    },
+    {
+      "asin": "B0D5DN2ZBL",
+      "title": "Sunology - Kit de Fixation murale - Compatible PLAY2 - Noir"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B0CTTW7FTR",
+  "decidedAt": "2026-05-20T14:16:47.258Z"
+}

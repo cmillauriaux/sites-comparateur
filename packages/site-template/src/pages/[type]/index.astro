@@ -7,13 +7,20 @@
  *
  * Replaces six near-identical *index.astro per market.
  */
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import SiteLayout from '../../layouts/SiteLayout.astro';
+import HubLayout from '../../layouts/HubLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
+import AffiliateButton from '../../components/AffiliateButton.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import ComparisonTable from '../../components/ComparisonTable.astro';
+import ScoreBadge from '../../components/ScoreBadge.astro';
+import SourceList from '../../components/SourceList.astro';
 import siteConfig from 'virtual:site-config';
 import { i18n } from '@comparateur/config';
 
 const s = i18n(siteConfig.market);
+const mdxComponents = { AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList };
 
 type Bucket = 'comparatif' | 'avis' | 'guide';
 
@@ -47,39 +54,95 @@ export async function getStaticPaths() {
   // Unique segments — guides slug may equal one of the others on some
   // markets in the future; Set dedupes in that case.
   const segments = [...new Set([strings.slugComparisons, strings.slugReviews, strings.slugGuides])];
-  return segments.map(type => ({ params: { type } }));
+  const listingPaths = segments.map(type => ({ params: { type }, props: { kind: 'listing' as const } }));
+
+  // Hub landing pages at /<hub>/ — only when site.config.js declares hubs.
+  const hubDefs = (cfg.hubs ?? []) as { slug: string }[];
+  let hubPaths: { params: { type: string }; props: { kind: 'hub'; hubSlug: string } }[] = [];
+  if (hubDefs.length) {
+    const intentSlugs = new Set(segments);
+    const allHubs = await getCollection('hubs', ({ data }) => !data.draft);
+    hubPaths = allHubs
+      .filter(h => !intentSlugs.has(h.data.slug))   // guard: never shadow a listing
+      .map(h => ({ params: { type: h.data.slug }, props: { kind: 'hub' as const, hubSlug: h.data.slug } }));
+  }
+  return [...listingPaths, ...hubPaths];
 }
 
 const { type } = Astro.params;
-const bucket = buckets[type as string];
-if (!bucket) throw new Error(`No listing bucket for segment: ${type}`);
+const props = Astro.props as { kind: 'listing' } | { kind: 'hub'; hubSlug: string };
 
-const all = await getCollection('articles', ({ data }) => !data.draft && bucket.intentMatch(data.intent));
-all.sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+// Hub landing branch — render the pillar page + its authored MDX body.
+let hubEntry = null;
+let HubContent = null;
+if (props.kind === 'hub') {
+  const allHubs = await getCollection('hubs', ({ data }) => !data.draft);
+  hubEntry = allHubs.find(h => h.data.slug === props.hubSlug) ?? null;
+  if (!hubEntry) throw new Error(`No hub entry for slug: ${props.hubSlug}`);
+  HubContent = (await render(hubEntry)).Content;
+}
 
-const description = bucket.intro ?? siteConfig.shortDescription;
+const bucket = props.kind === 'listing' ? buckets[type as string] : null;
+if (props.kind === 'listing' && !bucket) throw new Error(`No listing bucket for segment: ${type}`);
+
+interface ListCard {
+  href: string; title: string; description: string; intent: string;
+  publishedAt: Date; heroImage?: string; heroImageAlt?: string; finalScore?: number;
+}
+let cards: ListCard[] = [];
+if (bucket) {
+  // CI-generated flat articles for this intent.
+  const articles = await getCollection('articles', ({ data }) => !data.draft && bucket.intentMatch(data.intent));
+  cards.push(...articles.map(a => ({
+    href: `/${type}/${a.id}/`,
+    title: a.data.title, description: a.data.description, intent: a.data.intent,
+    publishedAt: a.data.publishedAt, heroImage: a.data.heroImage, heroImageAlt: a.data.heroImageAlt,
+    finalScore: a.data.finalScore,
+  })));
+  // Hand-authored hub satellites of the same intent live at /<hub>/<slug>/ but
+  // belong in the intent listing too (a buying guide is a buying guide,
+  // wherever it sits in the hub tree).
+  if ((siteConfig.hubs ?? []).length) {
+    const sats = await getCollection('satellites', ({ data }) => !data.draft && bucket.intentMatch(data.intent));
+    cards.push(...sats.map(sat => ({
+      href: `/${sat.data.hub}/${sat.data.slug ?? sat.id}/`,
+      title: sat.data.title, description: sat.data.description, intent: sat.data.intent,
+      publishedAt: sat.data.publishedAt, heroImage: sat.data.heroImage, heroImageAlt: sat.data.heroImageAlt,
+      finalScore: sat.data.finalScore,
+    })));
+  }
+  cards.sort((a, b) => +b.publishedAt - +a.publishedAt);
+}
+
+const description = bucket?.intro ?? siteConfig.shortDescription;
 ---
-<SiteLayout title={bucket.titleLabel} description={description}>
+{hubEntry && HubContent ? (
+  <HubLayout hub={hubEntry}>
+    <HubContent components={mdxComponents} />
+  </HubLayout>
+) : (
+<SiteLayout title={bucket!.titleLabel} description={description}>
   <div class="mx-auto max-w-[var(--max-w-page)] px-4 py-12">
-    <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-6">{bucket.heading}</h1>
-    {bucket.intro && <p class="text-[var(--color-text-muted)] mb-8 max-w-3xl">{bucket.intro}</p>}
-    {all.length === 0 ? (
-      <p class="text-[var(--color-text-muted)]">{bucket.emptyText}</p>
+    <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-6">{bucket!.heading}</h1>
+    {bucket!.intro && <p class="text-[var(--color-text-muted)] mb-8 max-w-3xl">{bucket!.intro}</p>}
+    {cards.length === 0 ? (
+      <p class="text-[var(--color-text-muted)]">{bucket!.emptyText}</p>
     ) : (
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {all.map((a) => (
+        {cards.map((c) => (
           <ArticleCard
-            href={`/${type}/${a.id}/`}
-            title={a.data.title}
-            description={a.data.description}
-            intent={a.data.intent}
-            publishedAt={a.data.publishedAt}
-            heroImage={a.data.heroImage}
-            heroImageAlt={a.data.heroImageAlt}
-            finalScore={bucket.showScore ? a.data.finalScore : undefined}
+            href={c.href}
+            title={c.title}
+            description={c.description}
+            intent={c.intent}
+            publishedAt={c.publishedAt}
+            heroImage={c.heroImage}
+            heroImageAlt={c.heroImageAlt}
+            finalScore={bucket!.showScore ? c.finalScore : undefined}
           />
         ))}
       </div>
     )}
   </div>
 </SiteLayout>
+)}

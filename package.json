@@ -15,6 +15,8 @@
     "build:jardin:gb": "pnpm --filter ./sites/jardin-bricolage/gb build",
     "dev:jardin:fr":   "pnpm --filter ./sites/jardin-bricolage/fr dev",
     "dev:jardin:us":   "pnpm --filter ./sites/jardin-bricolage/us dev",
-    "dev:jardin:gb":   "pnpm --filter ./sites/jardin-bricolage/gb dev"
+    "dev:jardin:gb":   "pnpm --filter ./sites/jardin-bricolage/gb dev",
+    "build:solaire:fr": "pnpm --filter ./sites/solaire/fr build",
+    "dev:solaire:fr":   "pnpm --filter ./sites/solaire/fr dev"
   }
 }

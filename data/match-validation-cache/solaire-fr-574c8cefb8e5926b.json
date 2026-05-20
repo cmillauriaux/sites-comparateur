@@ -1,0 +1,28 @@
+{
+  "productName": "EcoFlow Stream",
+  "candidates": [
+    {
+      "asin": "B0F2FTSZKG",
+      "title": "EcoFlow Stream Micro-onduleur Solaire Intelligent 800 W, pour Centrale électrique de Balcon, onduleur PV pour 2 Panneaux solaires, Étanchéité IP67, MPPT intégré, Contrôle par WiFi/APP"
+    },
+    {
+      "asin": "B0F5B93DTV",
+      "title": "EF EcoFlow STREAM Ultra Batterie de 1,92 kWh pour kit solaire, entrée solaire 2800 W (4 MPPT), ports CA doubles 2300 W, micro-onduleur intégré, extensible à 11,52 kWh, contrôle intelligent par IA"
+    },
+    {
+      "asin": "B0F5BFY23Z",
+      "title": "ECOFLOW Kit solaire de STREAM Ultra, batterie 1,92 kWh avec panneaux solaires rigides 400W*2, 4 entrées solaires MPPT 2800 W, ports CA doubles 2300 W, plug & play, batterie tout-en-un avec onduleur"
+    },
+    {
+      "asin": "B0FDKBKX2C",
+      "title": "EF EcoFlow STREAM Ultra X Batterie 3,84 kWh pour kit solaire, entrée solaire 2 800 W (4 MPPT), ports CA doubles 2300 W, micro-onduleur 800 W, batterie LFP 6 000 cycles, contrôle intelligent par IA"
+    },
+    {
+      "asin": "B0FK51WVBJ",
+      "title": "EF EcoFlow STREAM Ultra X Batterie 3,84 kWh pour kit solaire avec 2 panneaux solaires de 400 W, ports CA doubles 2300 W, Onduleur intégré, batterie LFP 6000 cycles, contrôle intelligent IA，Plug&Play"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B0F2FTSZKG",
+  "decidedAt": "2026-05-20T14:16:47.258Z"
+}
