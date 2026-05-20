@@ -283,5 +283,16 @@
     "publishedAt": "2026-05-12T20:05:37.000Z",
     "indexationStatus": "pending",
     "seedRun": true
+  },
+  {
+    "url": "https://toutsolaire.fr/comparatifs/guirlande-solaire-jardin/",
+    "niche": "solaire",
+    "market": "fr",
+    "keyword": "guirlande solaire jardin",
+    "bundleId": "solaire-fr-guirlande-solaire-jardin",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-05-20T18:18:38.399Z",
+    "indexationStatus": "pending"
   }
 ]

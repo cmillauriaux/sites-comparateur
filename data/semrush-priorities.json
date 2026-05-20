@@ -15826,7 +15826,7 @@
         "score": 200,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "partial",
         "source": "brief",
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
@@ -15836,11 +15836,11 @@
           "comparatif": {
             "keyword": "guirlande solaire jardin",
             "slug": "guirlande-solaire-jardin",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
-            "topProductName": null,
-            "topProductAsin": null,
+            "status": "generated",
+            "url": "https://toutsolaire.fr/comparatifs/guirlande-solaire-jardin/",
+            "publishedAt": "2026-05-20T18:18:38.387Z",
+            "topProductName": "Joomer Guirlande Solaire 7.5M Edison",
+            "topProductAsin": "B0FXX1F59G",
             "errorCount": 2
           },
           "pillar": {
@@ -15851,8 +15851,8 @@
             "publishedAt": null
           },
           "avis": {
-            "keyword": null,
-            "slug": null,
+            "keyword": "Joomer Guirlande Solaire 7.5M Edison avis",
+            "slug": "joomer-guirlande-solaire-75m-edison-avis",
             "status": "pending",
             "url": null,
             "publishedAt": null
