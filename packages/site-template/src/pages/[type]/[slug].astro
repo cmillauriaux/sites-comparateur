@@ -22,6 +22,7 @@ import ScoreBadge from '../../components/ScoreBadge.astro';
 // up; the duplicate render at most reads as a redundant section, never a
 // 500 page.
 import SourceList from '../../components/SourceList.astro';
+import ROICalculator from '../../components/ROICalculator.astro';
 
 // NOTE: getStaticPaths runs in an isolated scope (Astro hoists it before the
 // frontmatter), so the i18n table must be redeclared inside it.
@@ -62,7 +63,7 @@ export async function getStaticPaths() {
 }
 
 const { kind } = Astro.props;
-const components = { AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList };
+const components = { AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList, ROICalculator };
 const entry = kind === 'satellite' ? Astro.props.satellite : Astro.props.article;
 const { Content } = await render(entry);
 ---

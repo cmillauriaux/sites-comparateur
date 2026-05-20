@@ -16,11 +16,12 @@ import ProductCard from '../../components/ProductCard.astro';
 import ComparisonTable from '../../components/ComparisonTable.astro';
 import ScoreBadge from '../../components/ScoreBadge.astro';
 import SourceList from '../../components/SourceList.astro';
+import ROICalculator from '../../components/ROICalculator.astro';
 import siteConfig from 'virtual:site-config';
 import { i18n } from '@comparateur/config';
 
 const s = i18n(siteConfig.market);
-const mdxComponents = { AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList };
+const mdxComponents = { AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList, ROICalculator };
 
 type Bucket = 'comparatif' | 'avis' | 'guide';
 

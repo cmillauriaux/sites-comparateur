@@ -54,6 +54,21 @@ jobs:
           AMAZON_AFFILIATE_ID_US:     ${{ secrets.AMAZON_AFFILIATE_ID_US }}
           AMAZON_AFFILIATE_ID_GB:     ${{ secrets.AMAZON_AFFILIATE_ID_GB }}
           AWIN_PUBLISHER_ID:          ${{ secrets.AWIN_PUBLISHER_ID }}
+          AWIN_LEROY_MERLIN_ID:       ${{ secrets.AWIN_LEROY_MERLIN_ID }}
+          AWIN_BOULANGER_ID:          ${{ secrets.AWIN_BOULANGER_ID }}
+          AWIN_DECATHLON_ID:          ${{ secrets.AWIN_DECATHLON_ID }}
+          AWIN_DARTY_ID:              ${{ secrets.AWIN_DARTY_ID }}
+          AWIN_FNAC_ID:               ${{ secrets.AWIN_FNAC_ID }}
+          AWIN_CASTORAMA_ID:          ${{ secrets.AWIN_CASTORAMA_ID }}
+          AWIN_MR_BRICOLAGE_ID:       ${{ secrets.AWIN_MR_BRICOLAGE_ID }}
+          AWIN_MANOMANO_ID:           ${{ secrets.AWIN_MANOMANO_ID }}
+          AWIN_ECOFLOW_ID:            ${{ secrets.AWIN_ECOFLOW_ID }}
+          AWIN_BEEM_ENERGY_ID:        ${{ secrets.AWIN_BEEM_ENERGY_ID }}
+          AWIN_CDISCOUNT_ID:          ${{ secrets.AWIN_CDISCOUNT_ID }}
+          AWIN_CDISCOUNT_PRO_ID:      ${{ secrets.AWIN_CDISCOUNT_PRO_ID }}
+          AWIN_SUNOLOGY_ID:           ${{ secrets.AWIN_SUNOLOGY_ID }}
+          AWIN_BLUETTI_ID:            ${{ secrets.AWIN_BLUETTI_ID }}
+          AWIN_ALLPOWERS_ID:          ${{ secrets.AWIN_ALLPOWERS_ID }}
           MAX_REFRESH_PER_RUN:        '3'
           MIN_AGE_DAYS:               '60'
         run: node packages/scripts/content-updater.js --niche "$NICHE" --market "$MARKET"

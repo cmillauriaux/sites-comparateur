@@ -53,6 +53,18 @@ const affiliate = {
     'awin-ecoflow':      { advertiserId: process.env.AWIN_ECOFLOW_ID,      baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '6-10%', cookieDays: 30 },
     'awin-beem-energy':  { advertiserId: process.env.AWIN_BEEM_ENERGY_ID,  baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '6-8%', cookieDays: 30 },
     'awin-cdiscount':    { advertiserId: process.env.AWIN_CDISCOUNT_ID,    baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '4%',   cookieDays: 30 },
+    // Cdiscount Pro — B2B (signalisation, OSB/MDF pro). Distinct advertiser
+    // from regular Cdiscount: ~4% + flat 2,60 €/compte créé.
+    'awin-cdiscount-pro': { advertiserId: process.env.AWIN_CDISCOUNT_PRO_ID, baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '4% + 2,60 €/compte', cookieDays: 30 },
+    // Direct premium solar brands (Hub 1). All reachable via Awin in FR.
+    'awin-sunology':     { advertiserId: process.env.AWIN_SUNOLOGY_ID,     baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '6-10%', cookieDays: 30 },
+    'awin-bluetti':      { advertiserId: process.env.AWIN_BLUETTI_ID,      baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '5-8%',  cookieDays: 30 },
+    'awin-allpowers':    { advertiserId: process.env.AWIN_ALLPOWERS_ID,    baseUrl: 'https://www.awin1.com/cread.php', market: 'fr', commission: '5-8%',  cookieDays: 30 },
+    // Lead-gen CPA partners (Hub 6 — prix rénovation). NOT product affiliation:
+    // a fixed bounty per qualified quote request. `kind: 'lead'` routes to the
+    // partner landing URL (a real tracked deeplink replaces `url` once signed).
+    'effy':              { kind: 'lead', url: 'https://www.effy.fr/', market: 'fr', commission: 'CPA 30-60 €', cookieDays: 30 },
+    'quelle-energie':    { kind: 'lead', url: 'https://www.quelleenergie.fr/', market: 'fr', commission: 'CPA 30-60 €', cookieDays: 30 },
   },
 
 };
@@ -118,6 +130,13 @@ export function buildAffiliateUrl(productData, programs = affiliate.programs) {
   const { program, asin, fallbackUrl } = productData;
   const programConfig = programs[program];
   if (!programConfig) return fallbackUrl;
+
+  // Lead-gen CPA partners (Effy, Quelle Énergie): no product deeplink — route
+  // to the partner's tracked landing URL. fallbackUrl wins if it's an explicit
+  // tracked deeplink for this campaign.
+  if (programConfig.kind === 'lead') {
+    return fallbackUrl || programConfig.url;
+  }
 
   if (program?.startsWith('amazon-')) {
     const market = programConfig.market;

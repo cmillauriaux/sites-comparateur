@@ -15831,7 +15831,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "guirlande solaire jardin",
+            "slug": "guirlande-solaire-jardin",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un guirlande solaire jardin",
+            "slug": "comment-choisir-un-guirlande-solaire-jardin",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-panneau-acoustique-mural",
@@ -15869,7 +15895,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "panneau acoustique mural",
+            "slug": "panneau-acoustique-mural",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un panneau acoustique mural",
+            "slug": "comment-choisir-un-panneau-acoustique-mural",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-tasseau-bois-mural-decoratif",
@@ -16021,7 +16073,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "brise vue jardin grillage bois ou composite",
+            "slug": "brise-vue-jardin-grillage-bois-ou-composite",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un brise vue jardin grillage bois ou composite",
+            "slug": "comment-choisir-un-brise-vue-jardin-grillage-bois-ou-composite",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-camera-de-surveillance-solaire",
@@ -16059,7 +16137,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "camera de surveillance solaire",
+            "slug": "camera-de-surveillance-solaire",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un camera de surveillance solaire",
+            "slug": "comment-choisir-un-camera-de-surveillance-solaire",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-pompe-a-chaleur-air-eau-prix-2026",
@@ -16135,7 +16239,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "panneau mural salle de bain alternative carrelage",
+            "slug": "panneau-mural-salle-de-bain-alternative-carrelage",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un panneau mural salle de bain alternative carrelage",
+            "slug": "comment-choisir-un-panneau-mural-salle-de-bain-alternative-carrelage",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-applique-murale-solaire-avec-detecteur",
@@ -16173,7 +16303,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "applique murale solaire avec detecteur",
+            "slug": "applique-murale-solaire-avec-detecteur",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un applique murale solaire avec detecteur",
+            "slug": "comment-choisir-un-applique-murale-solaire-avec-detecteur",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-panneau-propriete-privee-legalement-valable",
@@ -16287,7 +16443,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "pompe pour bassin solaire",
+            "slug": "pompe-pour-bassin-solaire",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un pompe pour bassin solaire",
+            "slug": "comment-choisir-un-pompe-pour-bassin-solaire",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-spot-solaire-encastrable-sol",
@@ -16477,7 +16659,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "lampadaire solaire de jardin",
+            "slug": "lampadaire-solaire-de-jardin",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un lampadaire solaire de jardin",
+            "slug": "comment-choisir-un-lampadaire-solaire-de-jardin",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-kit-solaire-3000w-autoconsommation",
@@ -16515,7 +16723,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "kit solaire 3000w autoconsommation",
+            "slug": "kit-solaire-3000w-autoconsommation",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un kit solaire 3000w autoconsommation",
+            "slug": "comment-choisir-un-kit-solaire-3000w-autoconsommation",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-panneau-solaire-monocristallin-ou-polycristallin",
@@ -16591,7 +16825,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "velux solaire modeles et prix",
+            "slug": "velux-solaire-modeles-et-prix",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un velux solaire modeles et prix",
+            "slug": "comment-choisir-un-velux-solaire-modeles-et-prix",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-obligations-signalisation-chantier-2026",
@@ -16743,7 +17003,33 @@
         "createdAt": "2026-05-20T13:10:10.076Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "store banne solaire avec moteur integre",
+            "slug": "store-banne-solaire-avec-moteur-integre",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 0
+          },
+          "pillar": {
+            "keyword": "comment choisir un store banne solaire avec moteur integre",
+            "slug": "comment-choisir-un-store-banne-solaire-avec-moteur-integre",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "solaire-fr-carport-solaire-prix-et-rentabilite",

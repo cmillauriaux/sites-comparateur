@@ -88,7 +88,13 @@ export default {
     },
   },
 
-  affiliatePrograms: ['amazon-fr', 'awin-manomano', 'awin-leroy-merlin', 'awin-cdiscount', 'awin-ecoflow', 'awin-beem-energy'],
+  affiliatePrograms: [
+    'amazon-fr',
+    'awin-manomano', 'awin-leroy-merlin', 'awin-castorama',
+    'awin-cdiscount', 'awin-cdiscount-pro',
+    'awin-ecoflow', 'awin-beem-energy', 'awin-sunology', 'awin-bluetti', 'awin-allpowers',
+    'effy', 'quelle-energie',
+  ],
 
   social: {
     // facebook:  'https://www.facebook.com/toutsolaire',

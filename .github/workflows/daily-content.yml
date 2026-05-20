@@ -151,6 +151,14 @@ jobs:
           AWIN_FNAC_ID:               ${{ secrets.AWIN_FNAC_ID }}
           AWIN_CASTORAMA_ID:          ${{ secrets.AWIN_CASTORAMA_ID }}
           AWIN_MR_BRICOLAGE_ID:       ${{ secrets.AWIN_MR_BRICOLAGE_ID }}
+          AWIN_MANOMANO_ID:           ${{ secrets.AWIN_MANOMANO_ID }}
+          AWIN_ECOFLOW_ID:            ${{ secrets.AWIN_ECOFLOW_ID }}
+          AWIN_BEEM_ENERGY_ID:        ${{ secrets.AWIN_BEEM_ENERGY_ID }}
+          AWIN_CDISCOUNT_ID:          ${{ secrets.AWIN_CDISCOUNT_ID }}
+          AWIN_CDISCOUNT_PRO_ID:      ${{ secrets.AWIN_CDISCOUNT_PRO_ID }}
+          AWIN_SUNOLOGY_ID:           ${{ secrets.AWIN_SUNOLOGY_ID }}
+          AWIN_BLUETTI_ID:            ${{ secrets.AWIN_BLUETTI_ID }}
+          AWIN_ALLPOWERS_ID:          ${{ secrets.AWIN_ALLPOWERS_ID }}
           MAX_ARTICLES_PER_RUN:       '1'
           BYPASS_CADENCE:             ${{ github.event.inputs.bypass_cadence }}
         run: node packages/scripts/article-generator.js --niche "$NICHE" --market "$MARKET" --bundle

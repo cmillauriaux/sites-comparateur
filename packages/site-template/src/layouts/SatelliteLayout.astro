@@ -201,6 +201,20 @@ if (relatedSlugs.length) {
       </aside>
     )}
 
+    {data.faq?.length > 0 && (
+      <section class="not-prose mt-10">
+        <h2 class="text-2xl font-bold text-[var(--color-primary-dark)] mb-4">{s.faqHeading}</h2>
+        <dl class="space-y-4">
+          {data.faq.map((item: { q: string; a: string }) => (
+            <div class="rounded-lg border border-[var(--color-border)] p-4">
+              <dt class="font-semibold text-[var(--color-text)] m-0">{item.q}</dt>
+              <dd class="text-[var(--color-text-muted)] mt-2 m-0">{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )}
+
     <SourceList sources={data.sources} />
 
     <AuthorBio />
