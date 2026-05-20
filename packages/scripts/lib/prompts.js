@@ -185,7 +185,7 @@ ${secondaryKeywords.map(k => `  - "${k}"`).join('\n')}
  * Prices are passed for ranking only; the no-price-in-body rule still holds
  * (the pipeline injects live prices into the components post-write).
  */
-function buildProductsBlock(productData, isFr) {
+export function buildProductsBlock(productData, isFr) {
   if (!productData?.length) return '';
   const lines = productData.map((p, i) => {
     const flags = [

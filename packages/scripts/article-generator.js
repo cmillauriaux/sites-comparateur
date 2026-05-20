@@ -27,7 +27,7 @@ import { REPO_ROOT, SITES_DIR, DATA_DIR, requireEnv } from './lib/env.js';
 import { appendPublished, readPublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveTargets, isLaunched } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
-import { searchAmazonProducts } from './lib/amazon-dfs.js';
+import { fetchVerifiedProducts } from './lib/product-search.js';
 import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices, injectMerchantUrls } from './lib/product-images.js';
 import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
@@ -218,16 +218,12 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
   // if it errors, generation falls back to source-only grounding.
   let productData = [];
   if (intent === 'comparatif' || intent === 'avis') {
-    try {
-      const items = await searchAmazonProducts(keyword, { market });
-      productData = items.filter(i => i.title && i.title.length > 3).slice(0, 8);
-      if (productData.length > 0) {
-        console.log(`  🛒 ${productData.length} produits DataForSEO injectés dans le prompt (bypass WAF marchand)`);
-      } else {
-        console.warn(`  ⚠️  DataForSEO: aucun produit pour "${keyword}" — grounding sur sources seules`);
-      }
-    } catch (err) {
-      console.warn(`  ⚠️  DataForSEO produits indisponibles (${err.message}) — grounding sur sources seules`);
+    const { products, source } = await fetchVerifiedProducts(keyword, { market, limit: 8 });
+    productData = products;
+    if (productData.length > 0) {
+      console.log(`  🛒 ${productData.length} produits ${source} injectés dans le prompt (bypass WAF marchand)`);
+    } else {
+      console.warn(`  ⚠️  aucun produit (Amazon + Google Shopping) pour "${keyword}" — grounding sur sources seules`);
     }
   }
 

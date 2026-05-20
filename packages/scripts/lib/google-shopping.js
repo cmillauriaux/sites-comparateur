@@ -240,3 +240,71 @@ export async function findGoogleShoppingProduct({ productName, market, noCache =
   writeFileSync(file, JSON.stringify({ match, fetchedAt: new Date().toISOString() }, null, 2));
   return match;
 }
+
+/** Normalise a Google Shopping item to the SAME shape amazon-dfs returns, so
+ *  the prompt product block + downstream consumers stay marketplace-agnostic.
+ *  No ASIN (cross-merchant), no bestseller/choice flags (Amazon-only signals). */
+function normalizeShoppingItem(item) {
+  const f = extractItemFields(item);
+  return {
+    asin: null,
+    title: f.title,
+    url: f.url,
+    imageUrl: f.imageUrl,
+    price: f.price,            // "12.99 EUR" — display/ranking only
+    priceValue: f.priceValue,
+    currency: item.currency || '',
+    rating: item.rating?.value ?? null,
+    votesCount: item.rating?.votes_count ?? null,
+    isBestSeller: false,
+    isAmazonChoice: false,
+    merchant: f.merchant,
+  };
+}
+
+/**
+ * Keyword search on Google Shopping → list of normalised products. This is the
+ * non-Amazon fallback for the PROMPT product layer (amazon-dfs.js is primary):
+ * when Amazon FR has no listings for a keyword (niche/pro items), Google
+ * Shopping still returns cross-merchant products. Routes through DataForSEO's
+ * proxy pool — no retailer WAF hit. Comparison engines/classifieds are filtered
+ * out (BLOCKED_SELLERS). Distinct cache namespace ("list::") from
+ * findGoogleShoppingProduct so the two value shapes never collide.
+ *
+ * @returns {Promise<Array>} up to `limit` products (may be empty); never throws.
+ */
+export async function searchGoogleShoppingProducts(keyword, { market = 'fr', noCache = false, limit = 12 } = {}) {
+  ensureCacheDir();
+  const file = cachePath(`list::${keyword}`, market);
+
+  if (!noCache && isCacheFresh(file)) {
+    try {
+      const cached = JSON.parse(readFileSync(file, 'utf-8'));
+      if (Array.isArray(cached?.items)) return cached.items;
+    } catch { /* fall through to live fetch */ }
+  }
+
+  const dfs = MARKET_DATAFORSEO[market];
+  if (!dfs) throw new Error(`No DataForSEO mapping for market ${market}`);
+
+  let items;
+  try {
+    items = await submitAndAwaitTask({ phrase: keyword, dfsLoc: dfs });
+  } catch (err) {
+    console.warn(`    ⚠️  Google Shopping API: ${err.message}`);
+    return [];
+  }
+
+  const seen = new Set();
+  const list = (items ?? [])
+    .filter(it => it.type === 'google_shopping_serp' || it.type === 'google_shopping_paid')
+    .map(normalizeShoppingItem)
+    .filter(p => p.title && !sellerMatches(p.merchant, BLOCKED_SELLERS))
+    .filter(p => { const k = p.title.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; })
+    .slice(0, limit);
+
+  try {
+    writeFileSync(file, JSON.stringify({ keyword, market, fetchedAt: new Date().toISOString(), items: list }, null, 2));
+  } catch { /* cache write failure is non-fatal */ }
+  return list;
+}

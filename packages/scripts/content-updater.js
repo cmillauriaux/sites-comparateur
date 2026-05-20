@@ -11,12 +11,15 @@
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import YAML from 'yaml';
 
-import { SITES_DIR, requireEnv } from './lib/env.js';
+import { SITES_DIR, REPO_ROOT, requireEnv } from './lib/env.js';
 import { readPublished, writePublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveTargets, siteId, isLaunched } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
+import { fetchVerifiedProducts } from './lib/product-search.js';
+import { buildProductsBlock } from './lib/prompts.js';
 import { getSourcesFor } from '@comparateur/config/sources';
 
 const MAX_REFRESH_PER_RUN = parseInt(process.env.MAX_REFRESH_PER_RUN || '3', 10);
@@ -121,6 +124,20 @@ async function refreshOne(siteConfig, urlEntry) {
     return false;
   }
 
+  // Verified current product layer (DataForSEO Amazon → Google Shopping
+  // fallback) for product-based articles. Retailer scraping is WAF-blocked,
+  // so without this the audit's productListChanges would only see editorial
+  // mentions — never the real current top-sellers/discontinued models.
+  let productsBlock = '';
+  const intent = split.frontmatter?.intent;
+  if (intent === 'comparatif' || intent === 'avis') {
+    const { products } = await fetchVerifiedProducts(urlEntry.keyword, { market: siteConfig.market, limit: 8 });
+    if (products.length > 0) {
+      productsBlock = buildProductsBlock(products, siteConfig.market === 'fr');
+      console.log(`  🛒 ${products.length} produits vérifiés injectés dans l'audit`);
+    }
+  }
+
   // Sources are wrapped in the same UNTRUSTED markers as in the article
   // generator (lib/prompts.js): same prompt-injection class of risk applies
   // to refresh runs.
@@ -140,7 +157,7 @@ ${original}
 
 FRESH SOURCES (re-scraped today):
 ${sourcesBlock}
-
+${productsBlock}
 TASK: produce a JSON object ONLY (no prose, no markdown fences) describing
 material changes vs the existing article. Schema:
 
