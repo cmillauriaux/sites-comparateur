@@ -27,6 +27,7 @@ import { REPO_ROOT, SITES_DIR, DATA_DIR, requireEnv } from './lib/env.js';
 import { appendPublished, readPublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveTargets, isLaunched } from './lib/site-config.js';
 import { scrapeSourcesForKeyword } from './lib/scrape.js';
+import { searchAmazonProducts } from './lib/amazon-dfs.js';
 import { fetchProductImages, injectImagePaths, injectImageAttributes, injectAffiliateAsins, injectPrices, injectMerchantUrls } from './lib/product-images.js';
 import { buildPrompt } from './lib/prompts.js';
 import { validateGeneratedArticle } from './lib/article-validator.js';
@@ -210,6 +211,26 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     throw new Error(`insufficient sources: ${scraped.length} total / ${editorialCount} editorial (need ${MIN_SOURCES} total + 1 editorial)`);
   }
 
+  // Verified product layer (DataForSEO Amazon) for product-based intents.
+  // Retailer HTML scraping is WAF-blocked on CI runners, so a comparatif/avis
+  // had no real products to ground on. DataForSEO routes through its own proxy
+  // pool and returns structured listings — this is the WAF bypass. Non-fatal:
+  // if it errors, generation falls back to source-only grounding.
+  let productData = [];
+  if (intent === 'comparatif' || intent === 'avis') {
+    try {
+      const items = await searchAmazonProducts(keyword, { market });
+      productData = items.filter(i => i.title && i.title.length > 3).slice(0, 8);
+      if (productData.length > 0) {
+        console.log(`  🛒 ${productData.length} produits DataForSEO injectés dans le prompt (bypass WAF marchand)`);
+      } else {
+        console.warn(`  ⚠️  DataForSEO: aucun produit pour "${keyword}" — grounding sur sources seules`);
+      }
+    } catch (err) {
+      console.warn(`  ⚠️  DataForSEO produits indisponibles (${err.message}) — grounding sur sources seules`);
+    }
+  }
+
   // 2. Compute slug + output path. Articles are .mdx so they can embed
   // Astro components (<ProductCard />, <ComparisonTable />, ...).
   const articleSlug = asciiSlug(keyword);
@@ -241,6 +262,7 @@ async function generateArticle(siteConfig, { keyword, intent, secondaryKeywords 
     intent,
     secondaryKeywords,
     scrapedSources: scraped,
+    productData,
     siteConfig,
     market,
     articleSlug,

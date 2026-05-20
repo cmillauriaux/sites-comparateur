@@ -173,8 +173,68 @@ ${secondaryKeywords.map(k => `  - "${k}"`).join('\n')}
 `;
 }
 
+/**
+ * Verified product block for product-based intents (comparatif / avis).
+ *
+ * Sourced from DataForSEO's Amazon Products endpoint (amazon-dfs.js), which
+ * routes through its own proxy pool — so it works on GitHub-hosted runners
+ * where the retailer HTML scrape is WAF-blocked. This gives the model the
+ * REAL product layer (exact titles, ratings, price tier) it needs to build a
+ * grounded comparison, instead of relying on retailer SERPs it can't reach.
+ *
+ * Prices are passed for ranking only; the no-price-in-body rule still holds
+ * (the pipeline injects live prices into the components post-write).
+ */
+function buildProductsBlock(productData, isFr) {
+  if (!productData?.length) return '';
+  const lines = productData.map((p, i) => {
+    const flags = [
+      p.isAmazonChoice ? (isFr ? 'Choix Amazon' : "Amazon's Choice") : null,
+      p.isBestSeller ? (isFr ? 'Meilleure vente' : 'Best seller') : null,
+    ].filter(Boolean).join(', ');
+    const rating = p.rating != null
+      ? `${isFr ? 'note' : 'rating'} ${p.rating}/5${p.votesCount != null ? ` (${p.votesCount} ${isFr ? 'avis' : 'reviews'})` : ''}`
+      : (isFr ? 'note indisponible' : 'rating n/a');
+    const price = p.price ? ` — ${p.price}` : '';
+    return `${i + 1}. ${p.title} — ${rating}${price}${flags ? ` — ${flags}` : ''}`;
+  }).join('\n');
+
+  if (isFr) {
+    return `\n==========================================
+PRODUITS DISPONIBLES — DONNÉES MARCHAND VÉRIFIÉES (Amazon, via DataForSEO)
+==========================================
+Ces produits sont RÉELS et vérifiés (titre exact, note clients, prix). Construis
+ta sélection et ton tableau comparatif À PARTIR de cette liste. Règles :
+  - Utilise les noms EXACTS (marque + modèle) dans \`name=\` et \`image="auto:..."\`
+    pour que les images et liens d'affiliation soient résolus automatiquement.
+  - Tu peux écarter un produit hors-sujet ou en doublon, mais n'INVENTE aucun
+    produit absent de cette liste.
+  - Les prix ci-dessous servent UNIQUEMENT à ton classement (le moins cher,
+    meilleur rapport qualité-prix…) — ne les écris PAS dans le corps.
+  - Les notes/avis aident à départager, mais la valeur éditoriale vient de TON
+    analyse des critères de choix (appuyée sur les sources plus bas).
+${lines}
+`;
+  }
+  return `\n==========================================
+AVAILABLE PRODUCTS — VERIFIED MERCHANT DATA (Amazon, via DataForSEO)
+==========================================
+These are REAL, verified products (exact title, customer rating, price). Build
+your selection and comparison table FROM this list. Rules:
+  - Use the EXACT names (brand + model) in \`name=\` and \`image="auto:..."\` so
+    images and affiliate links resolve automatically.
+  - You may drop an off-topic or duplicate product, but do NOT invent any
+    product absent from this list.
+  - Prices below are for YOUR ranking only (cheapest, best value…) — do NOT
+    write them in the body.
+  - Ratings/reviews help you rank, but the editorial value comes from YOUR
+    analysis of the buying criteria (grounded in the sources below).
+${lines}
+`;
+}
+
 // ───────────────────────────────────────────────────────────── FR
-function buildPromptFr({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, clusterBlock = '', secondaryBlock = '' }) {
+function buildPromptFr({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, clusterBlock = '', secondaryBlock = '', productsBlock = '' }) {
   const intentBrief = intent === 'comparatif'
     ? `INTENT = COMPARATIF (multi-produit). Structure REQUISE:
 0. NE PAS écrire de H1 (\`# ...\`) dans le corps : le layout rend déjà le titre comme H1 depuis la frontmatter. Démarrer DIRECTEMENT par l'introduction.
@@ -353,7 +413,7 @@ ${ANTI_LLM_TICS_FR}
 FRONTMATTER YAML
 ==========================================
 ${frontmatterTemplate}
-
+${productsBlock}
 ==========================================
 SOURCES VÉRIFIÉES (${scrapedSources.length} disponibles)
 ==========================================
@@ -370,7 +430,7 @@ Si les sources sont insuffisantes, écris UNIQUEMENT le mot ERROR_INSUFFICIENT_S
 }
 
 // ───────────────────────────────────────────────────────────── EN (US/GB)
-function buildPromptEn({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, market, clusterBlock = '', secondaryBlock = '' }) {
+function buildPromptEn({ keyword, intent, scrapedSources, siteConfig, articleSlug, outputPath, today, sourcesBlock, market, clusterBlock = '', secondaryBlock = '', productsBlock = '' }) {
   const isUS = market === 'us';
   const spelling = isUS ? 'American English' : 'British English';
   const editorial = siteConfig.editorialReference || (isUS ? 'Wirecutter' : 'Which?');
@@ -536,7 +596,7 @@ ${ANTI_LLM_TICS_EN}
 YAML FRONTMATTER
 ==========================================
 ${frontmatterTemplate}
-
+${productsBlock}
 ==========================================
 VERIFIED SOURCES (${scrapedSources.length} available)
 ==========================================
@@ -1105,7 +1165,13 @@ ${s.content}
   const secondaryBlock = isFrMarket
     ? buildSecondaryKeywordsBlockFr(opts.secondaryKeywords)
     : buildSecondaryKeywordsBlockEn(opts.secondaryKeywords);
-  const ctx = { ...opts, today, sourcesBlock, clusterBlock, secondaryBlock };
+  // Verified product layer (DataForSEO Amazon) for product-based intents only.
+  // Bypasses the retailer WAF block: gives the model real products to ground a
+  // comparatif/avis on when the retailer HTML scrape returns nothing.
+  const productsBlock = (opts.intent === 'comparatif' || opts.intent === 'avis')
+    ? buildProductsBlock(opts.productData, isFrMarket)
+    : '';
+  const ctx = { ...opts, today, sourcesBlock, clusterBlock, secondaryBlock, productsBlock };
 
   // Informational pieces have their own affiliate-free prompt branch.
   // Triggered by the weekly informational workflow (article-generator
