@@ -17,7 +17,7 @@
  * market separate to remain queryable along either axis.
  */
 
-export const NICHES = ['jardin-bricolage', 'sport-fitness', 'cuisine', 'maison-elec', 'solaire', 'veto'];
+export const NICHES = ['jardin-bricolage', 'sport-fitness', 'cuisine', 'maison-elec'];
 export const MARKETS = ['fr', 'us', 'gb'];
 
 // Source of truth for what the daily pipeline runs against.
@@ -28,8 +28,6 @@ export const ENABLED_SITES = [
   { niche: 'jardin-bricolage', market: 'us' },
   { niche: 'jardin-bricolage', market: 'gb' },
   { niche: 'cuisine',          market: 'fr' },
-  { niche: 'solaire',          market: 'fr' },
-  { niche: 'veto',             market: 'fr' },
 ];
 
 export function isValidNiche(niche) {
@@ -76,8 +74,6 @@ export const NICHE_EMOJI = {
   'sport-fitness':    '💪',
   'cuisine':          '🍳',
   'maison-elec':      '💡',
-  'solaire':          '☀️',
-  'veto':             '🐾',
 };
 
 export function nicheEmoji(niche) {

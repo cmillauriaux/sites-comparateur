@@ -22,7 +22,6 @@ import ScoreBadge from '../../components/ScoreBadge.astro';
 // up; the duplicate render at most reads as a redundant section, never a
 // 500 page.
 import SourceList from '../../components/SourceList.astro';
-import ROICalculator from '../../components/ROICalculator.astro';
 
 // NOTE: getStaticPaths runs in an isolated scope (Astro hoists it before the
 // frontmatter), so the i18n table must be redeclared inside it.
@@ -42,7 +41,7 @@ export async function getStaticPaths() {
     props: { kind: 'article' as const, article },
   }));
 
-  // Satellite pages live under their hub slug, e.g. /solaire/kit-solaire/.
+  // Satellite pages live under their hub slug, e.g. /jardin/tondeuse/.
   // Only emitted when site.config.js declares hubs — keeps existing sites
   // path-identical (empty union).
   const hubSlugs = new Set<string>((cfg.hubs ?? []).map((h: { slug: string }) => h.slug));
@@ -63,7 +62,7 @@ export async function getStaticPaths() {
 }
 
 const { kind } = Astro.props;
-const components = { AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList, ROICalculator };
+const components = { AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList };
 const entry = kind === 'satellite' ? Astro.props.satellite : Astro.props.article;
 const { Content } = await render(entry);
 ---

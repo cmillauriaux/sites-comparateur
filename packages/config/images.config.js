@@ -56,24 +56,4 @@ export const IMAGE_QUERIES = {
       ventilateur:    ['fan home cooling'],
     },
   },
-  solaire: {
-    hero: ['solar panels house roof', 'solar energy home', 'photovoltaic panels'],
-    categories: {
-      solaire:           ['rooftop solar panels installation', 'solar panel home'],
-      exterieur:         ['solar garden lights', 'outdoor garden lighting'],
-      'volet-store':     ['house roller shutters facade', 'window shutters house'],
-      materiaux:         ['wood panels workshop diy', 'plywood boards stack'],
-      signalisation:     ['road traffic signs', 'construction safety signs'],
-      'prix-renovation': ['house energy renovation', 'home insulation work'],
-    },
-  },
-  veto: {
-    hero: ['veterinarian dog cat clinic', 'happy dog cat owner', 'pet health checkup'],
-    categories: {
-      assurance:       ['veterinarian examining dog', 'pet insurance dog cat'],
-      'tarifs-veto':   ['veterinary clinic consultation', 'vet examining cat'],
-      'sante-animale': ['healthy dog cat', 'puppy kitten vet care'],
-      accessoires:     ['dog cat accessories pet shop', 'pet bed toys'],
-    },
-  },
 };

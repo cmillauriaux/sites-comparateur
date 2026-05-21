@@ -4,7 +4,7 @@ import { i18n } from '@comparateur/config';
 import Logo from './Logo.astro';
 const s = i18n(siteConfig.market);
 
-// Hub-driven sites (e.g. solaire) surface their hubs in the nav instead of the
+// Hub-driven sites (e.g. a hub niche) surface their hubs in the nav instead of the
 // generic intent links. Sites without `hubs` keep the original intent nav,
 // byte-for-byte unchanged.
 const hubs = (siteConfig as { hubs?: { slug: string; label: string }[] }).hubs ?? [];

@@ -115,7 +115,7 @@ const page = defineCollection({
 });
 
 /**
- * Hub-and-spoke pillar pages (e.g. /solaire/, /exterieur/). Hand-authored,
+ * Hub-and-spoke pillar pages (e.g. /jardin/, /exterieur/). Hand-authored,
  * navigable category landing pages — distinct from the CI-generated `articles`.
  * Only present on sites whose site.config.js declares a `hubs` array; sites
  * without a `src/content/hubs/` directory load an empty set (glob → []), so
@@ -141,7 +141,7 @@ const hubs = defineCollection({
 });
 
 /**
- * Satellite pages under a hub (e.g. /solaire/kit-solaire/). Full transactional
+ * Satellite pages under a hub (e.g. /jardin/tondeuse/). Full transactional
  * comparatif/avis pages, hand-authored. Mirrors the `articles` field set so the
  * shared layout + components (ComparisonTable, ProductCard, SourceList…) render
  * them identically, plus hub parenting + intra-hub mesh.
