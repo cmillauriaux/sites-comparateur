@@ -1,0 +1,28 @@
+{
+  "productName": "Sage The Barista Express",
+  "candidates": [
+    {
+      "asin": "B0C3RLTMQ6",
+      "title": "Sage - The Barista Express Impress - Machine à Café avec Mousseur de Lait Manuel & Moulin Intégré - Dosage Intelligent, 25 Réglages de Mouture - Acier Inoxydable Noir"
+    },
+    {
+      "asin": "B07HRCQ7L3",
+      "title": "Sage - The Barista Express - Machine à Café avec Mousseur à Lait Manuel et Moulin - Mouture Automatique, Mousse Personnalisée - Truffe Noire, Pichet à Lait avec Thermomètre"
+    },
+    {
+      "asin": "B0C3RR1KW5",
+      "title": "Sage - The Barista Express Impress - Machine à Café avec Mousseur de Lait Manuel & Moulin Intégré - Dosage Intelligent, 25 Réglages de Mouture - Truffe Noire"
+    },
+    {
+      "asin": "B07B2X1VXZ",
+      "title": "Sage - The Barista Express - Machine à Café avec Mousseur à Lait Manuel et Moulin - Mouture Automatique, Mousse Personnalisée - Acier Inoxydable Brossé, Pichet à Lait avec Thermomètre"
+    },
+    {
+      "asin": "B0B3JFH9KH",
+      "title": "Sage - The Barista Express Impress - Machine à Café avec Mousseur de Lait Manuel & Moulin Intégré - Dosage Intelligent, 25 Réglages de Mouture - Acier Inoxydable Brossé"
+    }
+  ],
+  "pick": "D",
+  "pickedAsin": "B07B2X1VXZ",
+  "decidedAt": "2026-05-28T12:01:53.775Z"
+}
