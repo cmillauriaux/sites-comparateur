@@ -1507,10 +1507,35 @@
         "score": 334,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "errorCount": 0
+        "errorCount": 0,
+        "bundle": {
+          "comparatif": {
+            "keyword": "abri pour tondeuse robot",
+            "slug": "abri-pour-tondeuse-robot",
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/abri-pour-tondeuse-robot/",
+            "publishedAt": "2026-06-07T15:10:48.176Z",
+            "topProductName": "GARDEBRUK Abri Robot Tondeuse 89x90x54cm Toit monopente Anthracite",
+            "topProductAsin": "B0B1QLPD85"
+          },
+          "pillar": {
+            "keyword": "comment choisir un abri pour tondeuse robot",
+            "slug": "comment-choisir-un-abri-pour-tondeuse-robot",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": "GARDEBRUK Abri Robot Tondeuse 89x90x54cm Toit monopente Anthracite avis",
+            "slug": "gardebruk-abri-robot-tondeuse-89x90x54cm-toit-monopente-anthracite-avis",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "jardin-bricolage-fr-brico-depot-nettoyeur-haute-pression",

@@ -283,5 +283,16 @@
     "publishedAt": "2026-05-12T20:05:37.000Z",
     "indexationStatus": "pending",
     "seedRun": true
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/abri-pour-tondeuse-robot/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "abri pour tondeuse robot",
+    "bundleId": "jardin-bricolage-fr-abri-pour-tondeuse-robot",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-06-07T15:10:48.186Z",
+    "indexationStatus": "pending"
   }
 ]
