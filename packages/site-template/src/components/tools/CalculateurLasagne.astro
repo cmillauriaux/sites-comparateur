@@ -1,0 +1,297 @@
+---
+/**
+ * CalculateurLasagne.astro
+ * Planificateur interactif de couches pour carrés potagers en lasagne.
+ * Calcule les volumes et hauteurs des 5 couches de permaculture.
+ */
+---
+
+<div class="calculateur-lasagne-container my-8 p-6 md:p-8 border border-[var(--color-border)] rounded-lg bg-white shadow-sm" id="calc-lasagne-container">
+  <div class="border-b border-[var(--color-border)] pb-4 mb-6">
+    <h3 class="text-xl md:text-2xl font-bold text-[var(--color-primary-dark)] flex items-center gap-2">
+      📦 Planificateur de Carré Potager en Lasagne
+    </h3>
+    <p class="text-sm text-[var(--color-text-muted)] mt-1">
+      Configurez les dimensions de votre bac de culture et visualisez instantanément l'agencement idéal des 5 couches de permaculture ainsi que votre liste de courses.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Formulaire (Saisies) -->
+    <div class="lg:col-span-5 space-y-5">
+      <div class="bg-[var(--color-hero-bg)] p-4 rounded-lg border border-[var(--color-border)] mb-4">
+        <h4 class="font-semibold text-sm text-[var(--color-text)] mb-2 flex items-center gap-1.5">
+          ℹ️ Qu'est-ce que la culture en lasagne ?
+        </h4>
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          Cette technique de permaculture consiste à superposer des couches de matières carbonées (brunes, sèches) et azotées (vertes, fraîches) pour créer un humus ultra-fertile rapidement, sans retournement du sol.
+        </p>
+      </div>
+
+      <!-- Longueur -->
+      <div>
+        <label for="lasagne-longueur" class="block text-sm font-semibold text-[var(--color-text)] mb-1">
+          Longueur du bac (cm)
+        </label>
+        <div class="relative">
+          <input 
+            type="number" 
+            id="lasagne-longueur" 
+            min="30" 
+            max="500" 
+            value="120"
+            class="w-full pl-3 pr-12 py-2 border border-[var(--color-border)] rounded-md text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
+          />
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[var(--color-text-muted)]">
+            cm
+          </div>
+        </div>
+      </div>
+
+      <!-- Largeur -->
+      <div>
+        <label for="lasagne-largeur" class="block text-sm font-semibold text-[var(--color-text)] mb-1">
+          Largeur du bac (cm)
+        </label>
+        <div class="relative">
+          <input 
+            type="number" 
+            id="lasagne-largeur" 
+            min="30" 
+            max="500" 
+            value="120"
+            class="w-full pl-3 pr-12 py-2 border border-[var(--color-border)] rounded-md text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
+          />
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[var(--color-text-muted)]">
+            cm
+          </div>
+        </div>
+      </div>
+
+      <!-- Hauteur -->
+      <div>
+        <label for="lasagne-hauteur" class="block text-sm font-semibold text-[var(--color-text)] mb-1">
+          Hauteur totale du bac (cm)
+        </label>
+        <div class="relative">
+          <input 
+            type="number" 
+            id="lasagne-hauteur" 
+            min="20" 
+            max="150" 
+            value="50"
+            class="w-full pl-3 pr-12 py-2 border border-[var(--color-border)] rounded-md text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
+          />
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[var(--color-text-muted)]">
+            cm
+          </div>
+        </div>
+        <p class="text-xs text-[var(--color-text-muted)] mt-1">
+          Une hauteur de 40 à 60 cm est idéale pour jardiner confortablement sans se baisser.
+        </p>
+      </div>
+
+      <!-- Volume global calculé -->
+      <div class="p-4 rounded-md border border-[var(--color-border)] bg-slate-50 flex items-center justify-between">
+        <span class="text-sm font-medium text-[var(--color-text)]">Volume total estimé :</span>
+        <div class="text-right">
+          <span id="lasagne-volume-total" class="text-xl font-bold text-[var(--color-primary-dark)]">720</span>
+          <span class="text-sm font-bold text-[var(--color-primary-dark)]"> Litres</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rendu Visuel et Résultats -->
+    <div class="lg:col-span-7 flex flex-col justify-between space-y-6">
+      
+      <!-- Visualisation des Couches -->
+      <div>
+        <h4 class="text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3">
+          Représentation visuelle des couches
+        </h4>
+        
+        <!-- Le conteneur de la lasagne en lui-même -->
+        <div class="border-2 border-dashed border-slate-300 rounded-lg p-3 bg-slate-50 flex flex-col-reverse h-72 w-full justify-between gap-1 overflow-hidden">
+          
+          <!-- Couche 1 (Fond - 30%) -->
+          <div id="layer-1" class="rounded flex flex-col justify-center items-center px-3 text-center text-white font-semibold text-xs transition-all duration-300" style="height: 30%; background-color: #5c4033;">
+            <span class="font-bold">1. Fond : Gros bois & bûches mortes (30%)</span>
+            <span class="text-[10px] font-normal opacity-90" id="layer-1-detail">15 cm — 216 L</span>
+          </div>
+
+          <!-- Couche 2 (Broyat - 20%) -->
+          <div id="layer-2" class="rounded flex flex-col justify-center items-center px-3 text-center text-white font-semibold text-xs transition-all duration-300" style="height: 20%; background-color: #8b5a2b;">
+            <span class="font-bold">2. Broyat, rameaux & petites branches (20%)</span>
+            <span class="text-[10px] font-normal opacity-90" id="layer-2-detail">10 cm — 144 L</span>
+          </div>
+
+          <!-- Couche 3 (Déchets verts - 20%) -->
+          <div id="layer-3" class="rounded flex flex-col justify-center items-center px-3 text-center text-white font-semibold text-xs transition-all duration-300" style="height: 20%; background-color: #2e7d32;">
+            <span class="font-bold">3. Matière verte : tontes, feuilles, épluchures (20%)</span>
+            <span class="text-[10px] font-normal opacity-90" id="layer-3-detail">10 cm — 144 L</span>
+          </div>
+
+          <!-- Couche 4 (Compost - 15%) -->
+          <div id="layer-4" class="rounded flex flex-col justify-center items-center px-3 text-center text-white font-semibold text-xs transition-all duration-300" style="height: 15%; background-color: #4a2f13;">
+            <span class="font-bold">4. Compost mûr (15%)</span>
+            <span class="text-[10px] font-normal opacity-90" id="layer-4-detail">7.5 cm — 108 L</span>
+          </div>
+
+          <!-- Couche 5 (Sommet - 15%) -->
+          <div id="layer-5" class="rounded flex flex-col justify-center items-center px-3 text-center text-white font-semibold text-xs transition-all duration-300" style="height: 15%; background-color: #2d1a0c;">
+            <span class="font-bold">5. Sommet : Terreau de plantation (15%)</span>
+            <span class="text-[10px] font-normal opacity-90" id="layer-5-detail">7.5 cm — 108 L</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Liste de Courses détaillée -->
+      <div class="bg-amber-50/50 p-5 rounded-lg border border-amber-200/60 space-y-4">
+        <h4 class="font-bold text-sm text-amber-900 flex items-center gap-1.5">
+          🛒 Votre Liste de Courses & Matériaux :
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <!-- Matières à acheter -->
+          <div class="space-y-2 bg-white p-3 rounded border border-amber-200">
+            <h5 class="font-bold text-amber-800">🛒 Produits du Commerce :</h5>
+            <ul class="space-y-1.5 list-disc pl-4 text-slate-700">
+              <li>
+                <strong>Terreau de plantation :</strong> <span id="shop-terreau-vol" class="font-semibold text-slate-950">108 L</span> (<span id="shop-terreau-bags" class="font-bold text-[var(--color-primary-dark)]">3</span> sacs de 50 Litres)
+              </li>
+              <li>
+                <strong>Compost mûr :</strong> <span id="shop-compost-vol" class="font-semibold text-slate-950">108 L</span> (<span id="shop-compost-bags" class="font-bold text-[var(--color-primary-dark)]">3</span> sacs de 50 Litres)
+              </li>
+            </ul>
+          </div>
+
+          <!-- Matières de récupération -->
+          <div class="space-y-2 bg-white p-3 rounded border border-amber-200">
+            <h5 class="font-bold text-amber-800 font-sans">🌿 Matières à Récupérer :</h5>
+            <ul class="space-y-1.5 list-disc pl-4 text-slate-700">
+              <li>
+                <strong>Déchets verts (Azote) :</strong> env. <span id="shop-verts" class="font-semibold text-slate-950">144 L</span>
+              </li>
+              <li>
+                <strong>Broyat & Rameaux (Carbone fin) :</strong> env. <span id="shop-broyat" class="font-semibold text-slate-950">144 L</span>
+              </li>
+              <li>
+                <strong>Gros bois & Bûches (Carbone brut) :</strong> env. <span id="shop-bois" class="font-semibold text-slate-950">216 L</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="text-[11px] text-amber-800 italic leading-relaxed">
+          💡 <strong>Astuce :</strong> Humidifiez copieusement chaque couche au fur et à mesure du remplissage. La lasagne va se tasser de 30% environ au cours des premières semaines, c'est tout à fait normal !
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function initLasagneCalculator() {
+    const longueurInput = document.getElementById('lasagne-longueur') as HTMLInputElement | null;
+    const largeurInput = document.getElementById('lasagne-largeur') as HTMLInputElement | null;
+    const hauteurInput = document.getElementById('lasagne-hauteur') as HTMLInputElement | null;
+
+    const volumeTotalLabel = document.getElementById('lasagne-volume-total');
+
+    // Details sur les blocs
+    const details = {
+      1: document.getElementById('layer-1-detail'),
+      2: document.getElementById('layer-2-detail'),
+      3: document.getElementById('layer-3-detail'),
+      4: document.getElementById('layer-4-detail'),
+      5: document.getElementById('layer-5-detail'),
+    };
+
+    // Shopping List DOM elements
+    const shopTerreauVol = document.getElementById('shop-terreau-vol');
+    const shopTerreauBags = document.getElementById('shop-terreau-bags');
+    const shopCompostVol = document.getElementById('shop-compost-vol');
+    const shopCompostBags = document.getElementById('shop-compost-bags');
+    const shopVerts = document.getElementById('shop-verts');
+    const shopBroyat = document.getElementById('shop-broyat');
+    const shopBois = document.getElementById('shop-bois');
+
+    if (!longueurInput || !largeurInput || !hauteurInput) return;
+
+    longueurInput.addEventListener('input', calculate);
+    largeurInput.addEventListener('input', calculate);
+    hauteurInput.addEventListener('input', calculate);
+
+    function calculate() {
+      const longueur = parseFloat(longueurInput?.value || '0');
+      const largeur = parseFloat(largeurInput?.value || '0');
+      const hauteur = parseFloat(hauteurInput?.value || '0');
+
+      if (longueur <= 0 || largeur <= 0 || hauteur <= 0) return;
+
+      // Volume (L) = (Longueur * Largeur * Hauteur) / 1000
+      const totalVolume = (longueur * largeur * hauteur) / 1000;
+      if (volumeTotalLabel) {
+        volumeTotalLabel.textContent = Math.round(totalVolume).toLocaleString('fr-FR');
+      }
+
+      // Proportions des couches :
+      // Couche 1 : 30%
+      // Couche 2 : 20%
+      // Couche 3 : 20%
+      // Couche 4 : 15%
+      // Couche 5 : 15%
+      const ratios = {
+        1: { pct: 0.30, label: "Bois mort & bûches (30%)" },
+        2: { pct: 0.20, label: "Broyat & petites branches (20%)" },
+        3: { pct: 0.20, label: "Déchets verts & tontes (20%)" },
+        4: { pct: 0.15, label: "Compost mûr (15%)" },
+        5: { pct: 0.15, label: "Terreau de plantation (15%)" }
+      };
+
+      // Calcul des hauteurs (cm) et volumes (L)
+      const calculatedLayers = {
+        1: { h: hauteur * ratios[1].pct, v: totalVolume * ratios[1].pct },
+        2: { h: hauteur * ratios[2].pct, v: totalVolume * ratios[2].pct },
+        3: { h: hauteur * ratios[3].pct, v: totalVolume * ratios[3].pct },
+        4: { h: hauteur * ratios[4].pct, v: totalVolume * ratios[4].pct },
+        5: { h: hauteur * ratios[5].pct, v: totalVolume * ratios[5].pct }
+      };
+
+      // Mettre à jour l'affichage sur chaque bloc visuel
+      for (let i = 1; i <= 5; i++) {
+        const detEl = details[i as keyof typeof details];
+        if (detEl) {
+          const hRound = (calculatedLayers[i as keyof typeof calculatedLayers].h).toFixed(1);
+          const vRound = Math.round(calculatedLayers[i as keyof typeof calculatedLayers].v);
+          detEl.textContent = `${hRound} cm — ${vRound} L`;
+        }
+      }
+
+      // Mettre à jour la liste de courses
+      const vTerreau = calculatedLayers[5].v;
+      const vCompost = calculatedLayers[4].v;
+      const vVerts = calculatedLayers[3].v;
+      const vBroyat = calculatedLayers[2].v;
+      const vBois = calculatedLayers[1].v;
+
+      const bagsTerreau = Math.ceil(vTerreau / 50);
+      const bagsCompost = Math.ceil(vCompost / 50);
+
+      if (shopTerreauVol) shopTerreauVol.textContent = `${Math.round(vTerreau)} L`;
+      if (shopTerreauBags) shopTerreauBags.textContent = bagsTerreau.toString();
+      if (shopCompostVol) shopCompostVol.textContent = `${Math.round(vCompost)} L`;
+      if (shopCompostBags) shopCompostBags.textContent = bagsCompost.toString();
+      if (shopVerts) shopVerts.textContent = `${Math.round(vVerts)} L`;
+      if (shopBroyat) shopBroyat.textContent = `${Math.round(vBroyat)} L`;
+      if (shopBois) shopBois.textContent = `${Math.round(vBois)} L`;
+    }
+
+    // Calcul initial
+    calculate();
+  }
+
+  // Lancer lors de l'initialisation de la page et lors du routage Astro (transitions)
+  document.addEventListener('DOMContentLoaded', initLasagneCalculator);
+  document.addEventListener('astro:page-load', initLasagneCalculator);
+</script>

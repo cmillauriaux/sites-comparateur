@@ -1,6 +1,16 @@
 ---
 import { getCollection, render } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
+import AffiliateButton from '../components/AffiliateButton.astro';
+import ProductCard from '../components/ProductCard.astro';
+import ComparisonTable from '../components/ComparisonTable.astro';
+import ScoreBadge from '../components/ScoreBadge.astro';
+import SourceList from '../components/SourceList.astro';
+import CalculateurEauPluie from '../components/tools/CalculateurEauPluie.astro';
+import CalculateurLasagne from '../components/tools/CalculateurLasagne.astro';
+import CalculateurPompe from '../components/tools/CalculateurPompe.astro';
+import CalculateurRentabilitePotager from '../components/tools/CalculateurRentabilitePotager.astro';
+import CalendrierSemis from '../components/tools/CalendrierSemis.astro';
 
 export async function getStaticPaths() {
   const all = await getCollection('page', ({ data }) => !data.draft);
@@ -9,10 +19,11 @@ export async function getStaticPaths() {
 
 const { page } = Astro.props;
 const { Content } = await render(page);
+const components = { AffiliateButton, ProductCard, ComparisonTable, ScoreBadge, SourceList, CalculateurEauPluie, CalculateurLasagne, CalculateurPompe, CalculateurRentabilitePotager, CalendrierSemis };
 ---
 <SiteLayout title={page.data.title} description={page.data.description}>
   <article class="mx-auto max-w-3xl px-4 py-12">
     <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-6">{page.data.title}</h1>
-    <div class="prose prose-lg max-w-none"><Content /></div>
+    <div class="prose prose-lg max-w-none"><Content components={components} /></div>
   </article>
 </SiteLayout>

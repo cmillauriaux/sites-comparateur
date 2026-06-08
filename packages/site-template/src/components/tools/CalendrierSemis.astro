@@ -1,0 +1,465 @@
+---
+/**
+ * CalendrierSemis.astro
+ * Calendrier horticole départemental dynamique.
+ * Ajuste les périodes de semis, plantation et récolte selon les gelées locales.
+ */
+
+const departements = [
+  { code: '01', nom: 'Ain', zone: 'est' },
+  { code: '02', nom: 'Aisne', zone: 'centre' },
+  { code: '03', nom: 'Allier', zone: 'est' },
+  { code: '04', nom: 'Alpes-de-Haute-Provence', zone: 'sud' },
+  { code: '05', nom: 'Hautes-Alpes', zone: 'sud' },
+  { code: '06', nom: 'Alpes-Maritimes', zone: 'sud' },
+  { code: '07', nom: 'Ardèche', zone: 'centre' },
+  { code: '08', nom: 'Ardennes', zone: 'centre' },
+  { code: '09', nom: 'Ariège', zone: 'sud' },
+  { code: '10', nom: 'Aube', zone: 'centre' },
+  { code: '11', nom: 'Aude', zone: 'sud' },
+  { code: '12', nom: 'Aveyron', zone: 'centre' },
+  { code: '13', nom: 'Bouches-du-Rhône', zone: 'sud' },
+  { code: '14', nom: 'Calvados', zone: 'ouest' },
+  { code: '15', nom: 'Cantal', zone: 'est' },
+  { code: '16', nom: 'Charente', zone: 'ouest' },
+  { code: '17', nom: 'Charente-Maritime', zone: 'ouest' },
+  { code: '18', nom: 'Cher', zone: 'centre' },
+  { code: '19', nom: 'Corrèze', zone: 'est' },
+  { code: '2A', nom: 'Corse-du-Sud', zone: 'sud' },
+  { code: '2B', nom: 'Haute-Corse', zone: 'sud' },
+  { code: '21', nom: 'Côte-d\'Or', zone: 'est' },
+  { code: '22', nom: 'Côtes-d\'Armor', zone: 'ouest' },
+  { code: '23', nom: 'Creuse', zone: 'est' },
+  { code: '24', nom: 'Dordogne', zone: 'ouest' },
+  { code: '25', nom: 'Doubs', zone: 'est' },
+  { code: '26', nom: 'Drôme', zone: 'centre' },
+  { code: '27', nom: 'Eure', zone: 'centre' },
+  { code: '28', nom: 'Eure-et-Loir', zone: 'centre' },
+  { code: '29', nom: 'Finistère', zone: 'ouest' },
+  { code: '30', nom: 'Gard', zone: 'sud' },
+  { code: '31', nom: 'Haute-Garonne', zone: 'centre' },
+  { code: '32', nom: 'Gers', zone: 'centre' },
+  { code: '33', nom: 'Gironde', zone: 'ouest' },
+  { code: '34', nom: 'Hérault', zone: 'sud' },
+  { code: '35', nom: 'Ille-et-Vilaine', zone: 'ouest' },
+  { code: '36', nom: 'Indre', zone: 'centre' },
+  { code: '37', nom: 'Indre-et-Loire', zone: 'centre' },
+  { code: '38', nom: 'Isère', zone: 'est' },
+  { code: '39', nom: 'Jura', zone: 'est' },
+  { code: '40', nom: 'Landes', zone: 'ouest' },
+  { code: '41', nom: 'Loir-et-Cher', zone: 'centre' },
+  { code: '42', nom: 'Loire', zone: 'est' },
+  { code: '43', nom: 'Haute-Loire', zone: 'est' },
+  { code: '44', nom: 'Loire-Atlantique', zone: 'ouest' },
+  { code: '45', nom: 'Loiret', zone: 'centre' },
+  { code: '46', nom: 'Lot', zone: 'centre' },
+  { code: '47', nom: 'Lot-et-Garonne', zone: 'centre' },
+  { code: '48', nom: 'Lozère', zone: 'est' },
+  { code: '49', nom: 'Maine-et-Loire', zone: 'ouest' },
+  { code: '50', nom: 'Manche', zone: 'ouest' },
+  { code: '51', nom: 'Marne', zone: 'centre' },
+  { code: '52', nom: 'Haute-Marne', zone: 'centre' },
+  { code: '53', nom: 'Mayenne', zone: 'centre' },
+  { code: '54', nom: 'Meurthe-et-Moselle', zone: 'est' },
+  { code: '55', nom: 'Meuse', zone: 'est' },
+  { code: '56', nom: 'Morbihan', zone: 'ouest' },
+  { code: '57', nom: 'Moselle', zone: 'est' },
+  { code: '58', nom: 'Nièvre', zone: 'est' },
+  { code: '59', nom: 'Nord', zone: 'centre' },
+  { code: '60', nom: 'Oise', zone: 'centre' },
+  { code: '61', nom: 'Orne', zone: 'centre' },
+  { code: '62', nom: 'Pas-de-Calais', zone: 'centre' },
+  { code: '63', nom: 'Puy-de-Dôme', zone: 'est' },
+  { code: '64', nom: 'Pyrénées-Atlantiques', zone: 'ouest' },
+  { code: '65', nom: 'Hautes-Pyrénées', zone: 'est' },
+  { code: '66', nom: 'Pyrénées-Orientales', zone: 'sud' },
+  { code: '67', nom: 'Bas-Rhin', zone: 'est' },
+  { code: '68', nom: 'Haut-Rhin', zone: 'est' },
+  { code: '69', nom: 'Rhône', zone: 'est' },
+  { code: '70', nom: 'Haute-Saône', zone: 'est' },
+  { code: '71', nom: 'Saône-et-Loire', zone: 'est' },
+  { code: '72', nom: 'Sarthe', zone: 'centre' },
+  { code: '73', nom: 'Savoie', zone: 'est' },
+  { code: '74', nom: 'Haute-Savoie', zone: 'est' },
+  { code: '75', nom: 'Paris', zone: 'centre' },
+  { code: '76', nom: 'Seine-Maritime', zone: 'centre' },
+  { code: '77', nom: 'Seine-et-Marne', zone: 'centre' },
+  { code: '78', nom: 'Yvelines', zone: 'centre' },
+  { code: '79', nom: 'Deux-Sèvres', zone: 'ouest' },
+  { code: '80', nom: 'Somme', zone: 'ouest' },
+  { code: '81', nom: 'Tarn', zone: 'centre' },
+  { code: '82', nom: 'Tarn-et-Garonne', zone: 'centre' },
+  { code: '83', nom: 'Var', zone: 'sud' },
+  { code: '84', nom: 'Vaucluse', zone: 'sud' },
+  { code: '85', nom: 'Vendée', zone: 'ouest' },
+  { code: '86', nom: 'Vienne', zone: 'ouest' },
+  { code: '87', nom: 'Haute-Vienne', zone: 'est' },
+  { code: '88', nom: 'Vosges', zone: 'est' },
+  { code: '89', nom: 'Yonne', zone: 'centre' },
+  { code: '90', nom: 'Territoire de Belfort', zone: 'est' },
+  { code: '91', nom: 'Essonne', zone: 'centre' },
+  { code: '92', nom: 'Hauts-de-Seine', zone: 'centre' },
+  { code: '93', nom: 'Seine-Saint-Denis', zone: 'centre' },
+  { code: '94', nom: 'Val-de-Marne', zone: 'centre' },
+  { code: '95', nom: 'Val-d\'Oise', zone: 'centre' }
+];
+
+const moisOptionnels = [
+  'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+];
+---
+
+<div class="calendrier-semis-container my-8 p-6 md:p-8 border border-[var(--color-border)] rounded-lg bg-white shadow-sm" id="calendrier-semis-root">
+  <div class="border-b border-[var(--color-border)] pb-4 mb-6">
+    <h3 class="text-xl md:text-2xl font-bold text-[var(--color-primary-dark)] flex items-center gap-2">
+      📅 Calendrier des Semis & Plantation Départemental
+    </h3>
+    <p class="text-sm text-[var(--color-text-muted)] mt-1">
+      Sélectionnez votre département pour adapter dynamiquement vos périodes de cultures maraîchères aux dates de gelées locales estimées.
+    </p>
+  </div>
+
+  <div class="space-y-6">
+    <!-- Dropdown département -->
+    <div class="max-w-md">
+      <label for="semis-dept-select" class="block text-sm font-semibold text-[var(--color-text)] mb-1">
+        Votre Département :
+      </label>
+      <select 
+        id="semis-dept-select" 
+        class="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+      >
+        <option value="" disabled selected>-- Choisissez votre département --</option>
+        {departements.map(d => (
+          <option value={d.zone}>({d.code}) {d.nom}</option>
+        ))}
+      </select>
+    </div>
+
+    <!-- Infos Climatiques -->
+    <div id="semis-info-climat" class="hidden p-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-hero-bg)]">
+      <h4 class="font-bold text-sm text-[var(--color-primary-dark)] mb-1 flex items-center gap-1.5">
+        ❄️ Seuil des gelées tardives ("Saints de Glace")
+      </h4>
+      <p class="text-xs text-[var(--color-text)] leading-relaxed">
+        Dans votre département, la date médiane du dernier gel printanier est estimée au <strong id="semis-date-gel" class="text-[var(--color-primary)]">...</strong>. Vos cultures sensibles (tomates, courgettes) sont décalées en conséquence.
+      </p>
+    </div>
+
+    <!-- Légende des Actions -->
+    <div class="flex flex-wrap gap-4 text-xs font-semibold bg-slate-50 p-3 rounded border border-slate-200">
+      <span class="flex items-center gap-1.5">
+        <span class="w-3.5 h-3.5 rounded bg-amber-200 border border-amber-300 block"></span>
+        <span class="text-slate-700">S : Semis sous abri (serre / chaud)</span>
+      </span>
+      <span class="flex items-center gap-1.5">
+        <span class="w-3.5 h-3.5 rounded bg-emerald-100 border border-emerald-300 block"></span>
+        <span class="text-slate-700">T : Semis pleine terre direct</span>
+      </span>
+      <span class="flex items-center gap-1.5">
+        <span class="w-3.5 h-3.5 rounded bg-emerald-500 border border-emerald-600 block"></span>
+        <span class="text-slate-700">P : Repiquage / Plantation</span>
+      </span>
+      <span class="flex items-center gap-1.5">
+        <span class="w-3.5 h-3.5 rounded bg-orange-400 border border-orange-500 block"></span>
+        <span class="text-slate-700">R : Récolte</span>
+      </span>
+    </div>
+
+    <!-- Tableau interactif -->
+    <div class="overflow-x-auto border border-[var(--color-border)] rounded-lg">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="bg-slate-100 border-b border-[var(--color-border)] text-[var(--color-text-muted)] font-bold">
+            <th class="p-3 font-semibold min-w-[140px]">Légume</th>
+            {moisOptionnels.map(m => (
+              <th class="p-2 text-center font-semibold uppercase tracking-wider text-[10px] w-12">{m.substring(0, 3)}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody id="semis-table-body" class="divide-y divide-slate-100">
+          <tr class="text-slate-500">
+            <td colspan="13" class="p-8 text-center text-sm italic">
+              Sélectionnez un département ci-dessus pour afficher le calendrier dynamique.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Base de données calendrier par zone
+  const calendarData: Record<string, { gel: string, cultures: Record<string, { label: string, emoji: string, abri: string[], terre: string[], plant: string[], recolte: string[] }> }> = {
+    sud: {
+      gel: '31 Mars',
+      cultures: {
+        tomate: {
+          label: 'Tomates',
+          emoji: '🍅',
+          abri: ['Janvier', 'Février', 'Mars'],
+          terre: [],
+          plant: ['Avril', 'Mai'],
+          recolte: ['Juin', 'Juillet', 'Août', 'Septembre', 'Octobre']
+        },
+        courgette: {
+          label: 'Courgettes',
+          emoji: '🥒',
+          abri: ['Février', 'Mars'],
+          terre: ['Avril'],
+          plant: ['Avril', 'Mai'],
+          recolte: ['Juin', 'Juillet', 'Août', 'Septembre', 'Octobre']
+        },
+        carotte: {
+          label: 'Carottes',
+          emoji: '🥕',
+          abri: [],
+          terre: ['Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août'],
+          plant: [],
+          recolte: ['Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre']
+        },
+        radis: {
+          label: 'Radis',
+          emoji: '🌿',
+          abri: ['Janvier'],
+          terre: ['Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre'],
+          plant: [],
+          recolte: ['Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre']
+        },
+        haricot: {
+          label: 'Haricots',
+          emoji: '🌱',
+          abri: [],
+          terre: ['Avril', 'Mai', 'Juin', 'Juillet'],
+          plant: [],
+          recolte: ['Juin', 'Juillet', 'Août', 'Septembre', 'Octobre']
+        }
+      }
+    },
+    ouest: {
+      gel: '15 Avril',
+      cultures: {
+        tomate: {
+          label: 'Tomates',
+          emoji: '🍅',
+          abri: ['Février', 'Mars'],
+          terre: [],
+          plant: ['Avril', 'Mai'],
+          recolte: ['Juillet', 'Août', 'Septembre', 'Octobre']
+        },
+        courgette: {
+          label: 'Courgettes',
+          emoji: '🥒',
+          abri: ['Mars', 'Avril'],
+          terre: ['Mai'],
+          plant: ['Mai', 'Juin'],
+          recolte: ['Juillet', 'Août', 'Septembre', 'Octobre']
+        },
+        carotte: {
+          label: 'Carottes',
+          emoji: '🥕',
+          abri: [],
+          terre: ['Mars', 'Avril', 'Mai', 'Juin', 'Juillet'],
+          plant: [],
+          recolte: ['Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre']
+        },
+        radis: {
+          label: 'Radis',
+          emoji: '🌿',
+          abri: ['Février'],
+          terre: ['Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre'],
+          plant: [],
+          recolte: ['Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre']
+        },
+        haricot: {
+          label: 'Haricots',
+          emoji: '🌱',
+          abri: [],
+          terre: ['Avril', 'Mai', 'Juin', 'Juillet'],
+          plant: [],
+          recolte: ['Juillet', 'Août', 'Septembre', 'Octobre']
+        }
+      }
+    },
+    centre: {
+      gel: '30 Avril',
+      cultures: {
+        tomate: {
+          label: 'Tomates',
+          emoji: '🍅',
+          abri: ['Février', 'Mars'],
+          terre: [],
+          plant: ['Mai'],
+          recolte: ['Juillet', 'Août', 'Septembre', 'Octobre']
+        },
+        courgette: {
+          label: 'Courgettes',
+          emoji: '🥒',
+          abri: ['Mars', 'Avril'],
+          terre: ['Mai'],
+          plant: ['Mai', 'Juin'],
+          recolte: ['Juillet', 'Août', 'Septembre', 'Octobre']
+        },
+        carotte: {
+          label: 'Carottes',
+          emoji: '🥕',
+          abri: [],
+          terre: ['Mars', 'Avril', 'Mai', 'Juin', 'Juillet'],
+          plant: [],
+          recolte: ['Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre']
+        },
+        radis: {
+          label: 'Radis',
+          emoji: '🌿',
+          abri: ['Février'],
+          terre: ['Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre'],
+          plant: [],
+          recolte: ['Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre']
+        },
+        haricot: {
+          label: 'Haricots',
+          emoji: '🌱',
+          abri: [],
+          terre: ['Mai', 'Juin', 'Juillet'],
+          plant: [],
+          recolte: ['Juillet', 'Août', 'Septembre', 'Octobre']
+        }
+      }
+    },
+    est: {
+      gel: '15 Mai',
+      cultures: {
+        tomate: {
+          label: 'Tomates',
+          emoji: '🍅',
+          abri: ['Mars', 'Avril'],
+          terre: [],
+          plant: ['Mai', 'Juin'],
+          recolte: ['Août', 'Septembre', 'Octobre']
+        },
+        courgette: {
+          label: 'Courgettes',
+          emoji: '🥒',
+          abri: ['Avril'],
+          terre: ['Juin'],
+          plant: ['Juin'],
+          recolte: ['Août', 'Septembre', 'Octobre']
+        },
+        carotte: {
+          label: 'Carottes',
+          emoji: '🥕',
+          abri: [],
+          terre: ['Avril', 'Mai', 'Juin', 'Juillet'],
+          plant: [],
+          recolte: ['Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre']
+        },
+        radis: {
+          label: 'Radis',
+          emoji: '🌿',
+          abri: ['Mars'],
+          terre: ['Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre'],
+          plant: [],
+          recolte: ['Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre']
+        },
+        haricot: {
+          label: 'Haricots',
+          emoji: '🌱',
+          abri: [],
+          terre: ['Mai', 'Juin', 'Juillet'],
+          plant: [],
+          recolte: ['Août', 'Septembre', 'Octobre']
+        }
+      }
+    }
+  };
+
+  const moisOptionnels = [
+    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+  ];
+
+  function initCalendrierSemis() {
+    const deptSelect = document.getElementById('semis-dept-select') as HTMLSelectElement | null;
+    const infoClimat = document.getElementById('semis-info-climat');
+    const dateGel = document.getElementById('semis-date-gel');
+    const tableBody = document.getElementById('semis-table-body');
+
+    if (!deptSelect || !tableBody) return;
+
+    deptSelect.addEventListener('change', () => {
+      const zone = deptSelect.value;
+      const data = calendarData[zone];
+
+      if (!data) return;
+
+      // Afficher les infos climatiques
+      if (infoClimat && dateGel) {
+        infoClimat.classList.remove('hidden');
+        dateGel.textContent = data.gel;
+      }
+
+      // Re-générer le tableau
+      tableBody.innerHTML = '';
+
+      Object.entries(data.cultures).forEach(([key, crop]) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 transition-colors";
+
+        // Colonne Nom culture
+        const tdName = document.createElement('td');
+        tdName.className = "p-3 font-semibold text-slate-900 border-r border-slate-100 flex items-center gap-2";
+        tdName.innerHTML = `<span class="text-lg">${crop.emoji}</span> <span>${crop.label}</span>`;
+        tr.appendChild(tdName);
+
+        // Colonnes des mois
+        moisOptionnels.forEach(m => {
+          const tdMonth = document.createElement('td');
+          tdMonth.className = "p-1 text-center align-middle border-r border-slate-100 last:border-r-0";
+
+          const isAbri = crop.abri.includes(m);
+          const isTerre = crop.terre.includes(m);
+          const isPlant = crop.plant.includes(m);
+          const isRecolte = crop.recolte.includes(m);
+
+          let badge = null;
+
+          if (isAbri) {
+            badge = document.createElement('span');
+            badge.className = "block py-1 rounded bg-amber-200 border border-amber-300 text-amber-900 font-bold text-[10px]";
+            badge.textContent = "S";
+            badge.title = "Semis sous abri (serre, châssis ou intérieur)";
+          } else if (isTerre) {
+            badge = document.createElement('span');
+            badge.className = "block py-1 rounded bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold text-[10px]";
+            badge.textContent = "T";
+            badge.title = "Semis direct en pleine terre";
+          } else if (isPlant) {
+            badge = document.createElement('span');
+            badge.className = "block py-1 rounded bg-emerald-500 border border-emerald-600 text-white font-bold text-[10px]";
+            badge.textContent = "P";
+            badge.title = "Plantation / Repiquage de jeunes plants";
+          } else if (isRecolte) {
+            badge = document.createElement('span');
+            badge.className = "block py-1 rounded bg-orange-400 border border-orange-500 text-white font-bold text-[10px]";
+            badge.textContent = "R";
+            badge.title = "Période de récolte";
+          }
+
+          if (badge) {
+            tdMonth.appendChild(badge);
+          } else {
+            tdMonth.className += " opacity-25";
+          }
+
+          tr.appendChild(tdMonth);
+        });
+
+        tableBody.appendChild(tr);
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCalendrierSemis);
+  document.addEventListener('astro:page-load', initCalendrierSemis);
+</script>

@@ -8,17 +8,21 @@ const s = i18n(siteConfig.market);
 // generic intent links. Sites without `hubs` keep the original intent nav,
 // byte-for-byte unchanged.
 const hubs = (siteConfig as { hubs?: { slug: string; label: string }[] }).hubs ?? [];
+const hasTools = (siteConfig as { hasTools?: boolean }).hasTools === true;
+
 const navItems = hubs.length > 0
   ? [
       { label: s.home, href: '/', hideOnMobile: true },
       ...hubs.map(h => ({ label: h.label, href: `/${h.slug}/` })),
       { label: s.navGuides, href: `/${s.slugGuides}/` },
+      ...(hasTools ? [{ label: s.navTools, href: '/outils/' }] : []),
     ]
   : [
       { label: s.home,           href: '/',                       hideOnMobile: true },
       { label: s.navReviews,     href: `/${s.slugReviews}/` },
       { label: s.navComparisons, href: `/${s.slugComparisons}/` },
       { label: s.navGuides,      href: `/${s.slugGuides}/` },
+      ...(hasTools ? [{ label: s.navTools, href: '/outils/' }] : []),
     ];
 ---
 <header class="border-b border-[var(--color-border)] bg-white sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/85">

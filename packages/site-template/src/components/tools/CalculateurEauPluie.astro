@@ -1,0 +1,325 @@
+---
+/**
+ * CalculateurEauPluie.astro
+ * Composant de calcul interactif de volume de récupération d'eau de pluie.
+ * Utilise des données météo réelles agrégées par département français.
+ * Codé en Vanilla JS côté client pour une vitesse optimale sans dépendances.
+ */
+
+// Données pluviométriques moyennes annuelles en mm (Source : Météo-France)
+const departements = [
+  { code: '01', nom: 'Ain', pluie: 1100 },
+  { code: '02', nom: 'Aisne', pluie: 700 },
+  { code: '03', nom: 'Allier', pluie: 750 },
+  { code: '04', nom: 'Alpes-de-Haute-Provence', pluie: 800 },
+  { code: '05', nom: 'Hautes-Alpes', pluie: 850 },
+  { code: '06', nom: 'Alpes-Maritimes', pluie: 900 },
+  { code: '07', nom: 'Ardèche', pluie: 1100 },
+  { code: '08', nom: 'Ardennes', pluie: 850 },
+  { code: '09', nom: 'Ariège', pluie: 1000 },
+  { code: '10', nom: 'Aube', pluie: 650 },
+  { code: '11', nom: 'Aude', pluie: 650 },
+  { code: '12', nom: 'Aveyron', pluie: 900 },
+  { code: '13', nom: 'Bouches-du-Rhône', pluie: 600 },
+  { code: '14', nom: 'Calvados', pluie: 750 },
+  { code: '15', nom: 'Cantal', pluie: 1150 },
+  { code: '16', nom: 'Charente', pluie: 800 },
+  { code: '17', nom: 'Charente-Maritime', pluie: 800 },
+  { code: '18', nom: 'Cher', pluie: 700 },
+  { code: '19', nom: 'Corrèze', pluie: 1000 },
+  { code: '2A', nom: 'Corse-du-Sud', pluie: 900 },
+  { code: '2B', nom: 'Haute-Corse', pluie: 850 },
+  { code: '21', nom: 'Côte-d\'Or', pluie: 750 },
+  { code: '22', nom: 'Côtes-d\'Armor', pluie: 850 },
+  { code: '23', nom: 'Creuse', pluie: 950 },
+  { code: '24', nom: 'Dordogne', pluie: 900 },
+  { code: '25', nom: 'Doubs', pluie: 1150 },
+  { code: '26', nom: 'Drôme', pluie: 900 },
+  { code: '27', nom: 'Eure', pluie: 700 },
+  { code: '28', nom: 'Eure-et-Loir', pluie: 600 },
+  { code: '29', nom: 'Finistère', pluie: 1100 },
+  { code: '30', nom: 'Gard', pluie: 750 },
+  { code: '31', nom: 'Haute-Garonne', pluie: 750 },
+  { code: '32', nom: 'Gers', pluie: 750 },
+  { code: '33', nom: 'Gironde', pluie: 900 },
+  { code: '34', nom: 'Hérault', pluie: 750 },
+  { code: '35', nom: 'Ille-et-Vilaine', pluie: 750 },
+  { code: '36', nom: 'Indre', pluie: 700 },
+  { code: '37', nom: 'Indre-et-Loire', pluie: 650 },
+  { code: '38', nom: 'Isère', pluie: 1000 },
+  { code: '39', nom: 'Jura', pluie: 1150 },
+  { code: '40', nom: 'Landes', pluie: 1100 },
+  { code: '41', nom: 'Loir-et-Cher', pluie: 600 },
+  { code: '42', nom: 'Loire', pluie: 800 },
+  { code: '43', nom: 'Haute-Loire', pluie: 850 },
+  { code: '44', nom: 'Loire-Atlantique', pluie: 800 },
+  { code: '45', nom: 'Loiret', pluie: 650 },
+  { code: '46', nom: 'Lot', pluie: 850 },
+  { code: '47', nom: 'Lot-et-Garonne', pluie: 750 },
+  { code: '48', nom: 'Lozère', pluie: 1050 },
+  { code: '49', nom: 'Maine-et-Loire', pluie: 650 },
+  { code: '50', nom: 'Manche', pluie: 900 },
+  { code: '51', nom: 'Marne', pluie: 650 },
+  { code: '52', nom: 'Haute-Marne', pluie: 800 },
+  { code: '53', nom: 'Mayenne', pluie: 750 },
+  { code: '54', nom: 'Meurthe-et-Moselle', pluie: 750 },
+  { code: '55', nom: 'Meuse', pluie: 850 },
+  { code: '56', nom: 'Morbihan', pluie: 900 },
+  { code: '57', nom: 'Moselle', pluie: 750 },
+  { code: '58', nom: 'Nièvre', pluie: 800 },
+  { code: '59', nom: 'Nord', pluie: 750 },
+  { code: '60', nom: 'Oise', pluie: 650 },
+  { code: '61', nom: 'Orne', pluie: 800 },
+  { code: '62', nom: 'Pas-de-Calais', pluie: 800 },
+  { code: '63', nom: 'Puy-de-Dôme', pluie: 800 },
+  { code: '64', nom: 'Pyrénées-Atlantiques', pluie: 1200 },
+  { code: '65', nom: 'Hautes-Pyrénées', pluie: 1050 },
+  { code: '66', nom: 'Pyrénées-Orientales', pluie: 600 },
+  { code: '67', nom: 'Bas-Rhin', pluie: 700 },
+  { code: '68', nom: 'Haut-Rhin', pluie: 750 },
+  { code: '69', nom: 'Rhône', pluie: 850 },
+  { code: '70', nom: 'Haute-Saône', pluie: 1000 },
+  { code: '71', nom: 'Saône-et-Loire', pluie: 800 },
+  { code: '72', nom: 'Sarthe', pluie: 650 },
+  { code: '73', nom: 'Savoie', pluie: 1100 },
+  { code: '74', nom: 'Haute-Savoie', pluie: 1250 },
+  { code: '75', nom: 'Paris', pluie: 640 },
+  { code: '76', nom: 'Seine-Maritime', pluie: 800 },
+  { code: '77', nom: 'Seine-et-Marne', pluie: 650 },
+  { code: '78', nom: 'Yvelines', pluie: 650 },
+  { code: '79', nom: 'Deux-Sèvres', pluie: 800 },
+  { code: '80', nom: 'Somme', pluie: 700 },
+  { code: '81', nom: 'Tarn', pluie: 850 },
+  { code: '82', nom: 'Tarn-et-Garonne', pluie: 700 },
+  { code: '83', nom: 'Var', pluie: 750 },
+  { code: '84', nom: 'Vaucluse', pluie: 700 },
+  { code: '85', nom: 'Vendée', pluie: 800 },
+  { code: '86', nom: 'Vienne', pluie: 700 },
+  { code: '87', nom: 'Haute-Vienne', pluie: 950 },
+  { code: '88', nom: 'Vosges', pluie: 1050 },
+  { code: '89', nom: 'Yonne', pluie: 700 },
+  { code: '90', nom: 'Territoire de Belfort', pluie: 1050 },
+  { code: '91', nom: 'Essonne', pluie: 600 },
+  { code: '92', nom: 'Hauts-de-Seine', pluie: 640 },
+  { code: '93', nom: 'Seine-Saint-Denis', pluie: 640 },
+  { code: '94', nom: 'Val-de-Marne', pluie: 640 },
+  { code: '95', nom: 'Val-d\'Oise', pluie: 650 }
+];
+
+const typesToit = [
+  { label: 'Tuiles classiques (Coeff 0.8)', value: '0.8', desc: 'Rendement élevé, quelques micro-pertes.' },
+  { label: 'Ardoises naturelles (Coeff 0.9)', value: '0.9', desc: 'Idéal, écoulement fluide et rapide.' },
+  { label: 'Bac acier / Tôle (Coeff 0.9)', value: '0.9', desc: 'Idéal, pas d\'absorption d\'eau.' },
+  { label: 'Toit plat végétalisé (Coeff 0.3)', value: '0.3', desc: 'Faible rendement, la terre absorbe la majorité de l\'eau.' }
+];
+---
+
+<div class="calculateur-eau-container my-8 p-6 md:p-8 border border-[var(--color-border)] rounded-lg bg-white shadow-sm" id="calc-container">
+  <div class="border-b border-[var(--color-border)] pb-4 mb-6">
+    <h3 class="text-xl md:text-2xl font-bold text-[var(--color-primary-dark)] flex items-center gap-2">
+      💧 Simuler vos besoins en eau de pluie
+    </h3>
+    <p class="text-sm text-[var(--color-text-muted)] mt-1">
+      Estimez instantanément le volume d'eau annuel récupérable par votre toiture selon votre département et déterminez le volume idéal de cuve d'arrosage.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Formulaire -->
+    <div class="space-y-4">
+      <!-- Département -->
+      <div>
+        <label for="dept-select" class="block text-sm font-semibold text-[var(--color-text)] mb-1">
+          Votre Département
+        </label>
+        <select 
+          id="dept-select" 
+          class="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+        >
+          <option value="" disabled selected>-- Choisissez votre département --</option>
+          {departements.map(d => (
+            <option value={d.pluie}>({d.code}) {d.nom} — {d.pluie} mm/an</option>
+          ))}
+        </select>
+      </div>
+
+      <!-- Surface de toit -->
+      <div>
+        <label for="surface-input" class="block text-sm font-semibold text-[var(--color-text)] mb-1">
+          Surface au sol de la toiture (m²)
+        </label>
+        <div class="relative">
+          <input 
+            type="number" 
+            id="surface-input" 
+            min="5" 
+            max="1000" 
+            value="80"
+            class="w-full pl-3 pr-10 py-2 border border-[var(--color-border)] rounded-md text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
+            placeholder="Ex : 80"
+          />
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[var(--color-text-muted)]">
+            m²
+          </div>
+        </div>
+        <p class="text-xs text-[var(--color-text-muted)] mt-1">
+          Utilisez la surface au sol du bâtiment (projection horizontale du toit), pas la surface développée des pentes.
+        </p>
+      </div>
+
+      <!-- Type de toit -->
+      <div>
+        <label for="toit-select" class="block text-sm font-semibold text-[var(--color-text)] mb-1">
+          Revêtement du Toit
+        </label>
+        <select 
+          id="toit-select" 
+          class="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+        >
+          {typesToit.map(t => (
+            <option value={t.value}>{t.label}</option>
+          ))}
+        </select>
+        <p class="text-xs text-[var(--color-text-muted)] mt-1" id="toit-desc">
+          Rendement élevé, quelques micro-pertes.
+        </p>
+      </div>
+    </div>
+
+    <!-- Résultats -->
+    <div class="bg-[var(--color-hero-bg)] p-6 rounded-lg border border-[var(--color-border)] flex flex-col justify-between">
+      <div id="results-placeholder" class="h-full flex flex-col items-center justify-center text-center py-8">
+        <div class="text-4xl mb-2">📊</div>
+        <h4 class="font-bold text-[var(--color-text)]">En attente de saisie</h4>
+        <p class="text-sm text-[var(--color-text-muted)] max-w-xs mt-1">
+          Sélectionnez votre département à gauche pour calculer instantanément les résultats.
+        </p>
+      </div>
+
+      <div id="results-content" class="hidden space-y-6 h-full flex flex-col justify-between">
+        <div>
+          <h4 class="text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-2">
+            Résultats de l'estimation
+          </h4>
+
+          <!-- Volume Récupérable -->
+          <div class="mb-4">
+            <span class="block text-xs text-[var(--color-text-muted)]">Volume d'eau récupérable :</span>
+            <span class="text-3xl md:text-4xl font-extrabold text-[var(--color-primary)]" id="result-volume">0</span>
+            <span class="text-lg font-bold text-[var(--color-primary)]"> Litres / an</span>
+          </div>
+
+          <!-- Capacité de cuve conseillée -->
+          <div class="border-t border-[var(--color-border)] pt-4">
+            <span class="block text-xs text-[var(--color-text-muted)]">Capacité de cuve recommandée :</span>
+            <span class="text-xl md:text-2xl font-bold text-[var(--color-primary-dark)]" id="result-tank">0 Litres</span>
+            <p class="text-sm text-[var(--color-text)] mt-2 bg-white/70 p-3 rounded border border-[var(--color-border)] leading-relaxed" id="result-tip">
+              ...
+            </p>
+          </div>
+        </div>
+
+        <!-- Call to Action contextuel -->
+        <div class="mt-4 pt-4 border-t border-[var(--color-border)]" id="cta-section">
+          <a 
+            id="cta-link"
+            href="/comparatifs/recuperateur-eau-de-pluie/" 
+            class="block w-full text-center px-4 py-2.5 rounded bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold transition-colors duration-150 shadow-sm text-sm"
+          >
+            Voir notre comparatif des récupérateurs d'eau →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Les descriptions de toit dynamiques pour l'UX
+  const toitDescriptions: Record<string, string> = {
+    '0.8': 'Tuiles classiques (Rendement 80%) : Excellent choix, quelques pertes par évaporation ou filtration.',
+    '0.9': 'Ardoises ou Bac Acier (Rendement 90%) : Écoulement maximal de l\'eau, rendement idéal.',
+    '0.3': 'Toit plat végétalisé (Rendement 30%) : La terre et la mousse absorbent la majorité de l\'eau, le volume récupérable est fortement diminué.'
+  };
+
+  function initCalculator() {
+    const deptSelect = document.getElementById('dept-select') as HTMLSelectElement | null;
+    const surfaceInput = document.getElementById('surface-input') as HTMLInputElement | null;
+    const toitSelect = document.getElementById('toit-select') as HTMLSelectElement | null;
+    const toitDesc = document.getElementById('toit-desc');
+
+    const resultsPlaceholder = document.getElementById('results-placeholder');
+    const resultsContent = document.getElementById('results-content');
+    const resultVolume = document.getElementById('result-volume');
+    const resultTank = document.getElementById('result-tank');
+    const resultTip = document.getElementById('result-tip');
+
+    if (!deptSelect || !surfaceInput || !toitSelect || !resultsPlaceholder || !resultsContent || !resultVolume || !resultTank || !resultTip) {
+      return;
+    }
+
+    // Gestion du changement de description du toit
+    toitSelect.addEventListener('change', () => {
+      const val = toitSelect.value;
+      if (toitDesc && toitDescriptions[val]) {
+        toitDesc.textContent = toitDescriptions[val];
+      }
+      calculate();
+    });
+
+    // Événements de mise à jour automatique
+    deptSelect.addEventListener('change', calculate);
+    surfaceInput.addEventListener('input', calculate);
+
+    function calculate() {
+      const pluie = parseFloat(deptSelect?.value || '0');
+      const surface = parseFloat(surfaceInput?.value || '0');
+      const coeff = parseFloat(toitSelect?.value || '0.8');
+
+      if (!pluie || !surface) {
+        resultsPlaceholder?.classList.remove('hidden');
+        resultsContent?.classList.add('hidden');
+        return;
+      }
+
+      resultsPlaceholder?.classList.add('hidden');
+      resultsContent?.classList.remove('hidden');
+
+      // Calcul du volume annuel collectable (Litre = mm * m²)
+      const volumeAnnuel = Math.round(pluie * surface * coeff);
+
+      // Règle de dimensionnement standard de la cuve (environ 3 à 5% du volume annuel)
+      // On prend 4% comme standard, arrondi à des valeurs de cuve commerciales courantes.
+      const cuveBrute = volumeAnnuel * 0.04;
+      let cuveConseillee = 500;
+      let descriptionTip = '';
+
+      if (cuveBrute < 400) {
+        cuveConseillee = 300;
+        descriptionTip = 'Une cuve aérienne standard (300 L à 500 L) est amplement suffisante. Idéal pour l\'arrosage d\'un petit potager de terrasse, d\'une serre ou de quelques plantes d\'intérieur et massifs.';
+      } else if (cuveBrute >= 400 && cuveBrute < 900) {
+        cuveConseillee = 500;
+        descriptionTip = 'Une cuve aérienne de 500 L à 800 L répondra parfaitement à vos besoins d\'arrosage régulier pour un petit jardin ornemental ou un potager de taille moyenne.';
+      } else if (cuveBrute >= 900 && cuveBrute < 1800) {
+        cuveConseillee = 1000;
+        descriptionTip = 'Nous vous conseillons une cuve aérienne renforcée (type cuve IBC sur palette de 1000 Litres) ou une cuve murale décorative. Parfait pour l\'irrigation d\'un potager conséquent et les nettoyages courants.';
+      } else if (cuveBrute >= 1800 && cuveBrute < 3500) {
+        cuveConseillee = 2000;
+        descriptionTip = 'Une cuve XXL ou une citerne souple de 2000 L à 3000 L est recommandée. Elle vous permettra de stocker de grands volumes d\'eau pour faire face aux sécheresses estivales et arroser de grandes surfaces.';
+      } else {
+        cuveConseillee = Math.round(cuveBrute / 1000) * 1000;
+        if (cuveConseillee < 5000) cuveConseillee = 5000;
+        descriptionTip = `Une citerne souple XXL ou une cuve enterrée de ${cuveConseillee.toLocaleString('fr-FR')} Litres est idéale. À ce volume, vous pouvez envisager un raccordement de maison pour alimenter les WC et la machine à laver en plus de l'arrosage total du jardin.`;
+      }
+
+      // Formatage français des nombres
+      if (resultVolume) resultVolume.textContent = volumeAnnuel.toLocaleString('fr-FR');
+      if (resultTank) resultTank.textContent = cuveConseillee.toLocaleString('fr-FR') + ' Litres';
+      if (resultTip) resultTip.textContent = descriptionTip;
+    }
+  }
+
+  // Lancement à l'initialisation de la page et lors du routage Astro (transitions)
+  document.addEventListener('DOMContentLoaded', initCalculator);
+  document.addEventListener('astro:page-load', initCalculator);
+</script>

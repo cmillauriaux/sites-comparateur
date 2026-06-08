@@ -123,4 +123,6 @@ export default {
     host: 'https://vps-4db95b47.vps.ovh.net',
     websiteId: '48b02c61-0116-4b99-9202-4feeb1957cd9',
   },
+
+  hasTools: true,
 };

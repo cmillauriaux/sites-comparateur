@@ -1,0 +1,60 @@
+---
+title: "Calculateur HMT & Puissance de Pompe : Trouvez la pompe idéale"
+description: "Calculez gratuitement la Hauteur Manométrique Totale (HMT), le débit requis et la puissance en Watts pour votre installation de pompage ou puits d'arrosage."
+draft: false
+---
+
+import CalculateurPompe from '@comparateur/site-template/src/components/tools/CalculateurPompe.astro';
+
+Que vous souhaitiez puiser l'eau d'un puits de jardin, d'une citerne enterrée ou d'une rivière pour alimenter votre réseau d'arrosage automatique, le choix de la pompe est crucial. Une erreur de dimensionnement se solde par une pompe qui s'use prématurément, un débit d'arrosage famélique, ou une absence totale de pression en bout de ligne.
+
+Pour dimensionner correctement votre équipement, vous devez calculer deux critères fondamentaux : le **débit nécessaire** (en m³/h) et la **Hauteur Manométrique Totale (HMT)** (exprimée en mètres de colonne d'eau). Notre simulateur réalise ces calculs physiques complexes selon vos données réelles.
+
+<CalculateurPompe />
+
+---
+
+## 📐 Comprendre les fondamentaux : Débit et HMT
+
+Le choix d'une pompe ne se limite pas à sa puissance électrique en Watts. Deux valeurs hydrauliques dictent le fonctionnement :
+
+### 1. Le Débit requis
+Il représente la quantité d'eau que la pompe peut fournir dans un laps de temps donné. Pour l'arrosage, on l'estime en mètres cubes par heure (m³/h) ou en litres par heure (L/h). 
+*   Un arroseur de pelouse standard (oscillant ou rotatif) consomme en moyenne **600 L/h**.
+*   Si vous souhaitez faire fonctionner 3 arroseurs simultanément, votre pompe devra être capable de fournir un débit utile d'au moins **1 800 L/h (1.8 m³/h)**.
+
+### 2. La Hauteur Manométrique Totale (HMT)
+La HMT est la pression totale que la pompe doit générer pour acheminer l'eau du point de prélèvement jusqu'à l'arroseur le plus éloigné, à la pression de service requise. La formule physique exacte est :
+
+**HMT (m) = Hauteur d'aspiration + Hauteur de refoulement + Pertes de charge + Pression d'utilisation requise (convertie en mètres)**
+
+*Note hydraulique : 1 bar de pression correspond à 10 mètres de dénivelé vertical (colonne d'eau).*
+
+*   **Hauteur d'aspiration :** Distance verticale entre la pompe (si elle est en surface) et la surface de l'eau.
+*   **Hauteur de refoulement :** Dénivelé vertical entre la pompe et le point de sortie de l'eau le plus haut.
+*   **Pertes de charge :** Frottements de l'eau contre les parois des tuyaux. On les estime à environ 10% de la longueur totale de la tuyauterie.
+*   **Pression d'utilisation :** Pour faire fonctionner convenablement un arroseur de surface, il faut au moins 2.5 bars de pression résiduelle (soit l'équivalent de 25 mètres).
+
+---
+
+## 🚫 La limite physique des 7 mètres : Pourquoi ?
+
+C'est une loi de la physique terrestre inviolable : **une pompe de surface ne peut pas aspirer de l'eau à plus de 7 ou 8 mètres de profondeur**, quelle que soit sa puissance électrique (fût-elle de 2000 Watts !).
+
+### L'explication scientifique
+Une pompe de surface n'aspire pas l'eau directement ; elle crée un vide d'air dans le tuyau d'aspiration. C'est ensuite la **pression atmosphérique** de la Terre (qui s'exerce sur la surface de l'eau du puits) qui pousse l'eau à monter à l'intérieur du tuyau pour combler ce vide. 
+
+La pression atmosphérique normale au niveau de la mer (1013 hPa) équivaut précisément à une colonne d'eau de **10,33 mètres**. En théorie, le vide parfait pourrait soulever l'eau de 10 mètres. Cependant, en pratique (frottements, étanchéité imparfaite, pertes de charge), la limite réelle d'aspiration d'une pompe de surface se situe entre **7 et 8 mètres maximum**.
+
+### Quelle solution au-delà de 7 mètres ?
+Si la surface de l'eau de votre puits se trouve à 8, 10 ou 30 mètres de profondeur, vous devez obligatoirement utiliser une **pompe immergée** (pompe de puits ou de forage). Ce type de pompe ne travaille pas par aspiration mais par **refoulement** : plongée directement dans l'eau, elle pousse l'eau vers le haut, ce qui élimine la contrainte physique atmosphérique liée au vide.
+
+---
+
+## 🛠️ Conseils d'installation pour éviter le désamorçage
+
+Une installation de pompage est sensible à la moindre entrée d'air. Voici nos recommandations pour garantir une pression maximale :
+
+1.  **Installez un clapet anti-retour :** Indispensable à l'extrémité basse du tuyau d'aspiration (crépine). Il empêche l'eau de redescendre dans le puits lorsque la pompe s'arrête, ce qui évite d'avoir à réamorcer la pompe à chaque démarrage.
+2.  **Assurez une étanchéité parfaite :** Utilisez du ruban Téflon ou de la filasse de qualité sur tous les raccords filetés de la ligne d'aspiration. Une micro-bulle d'air aspirée suffit à désamorcer une pompe de surface.
+3.  **Respectez le diamètre des tuyaux :** À l'aspiration, n'utilisez jamais un tuyau de diamètre inférieur à l'orifice d'entrée de la pompe (généralement 1 pouce, soit 26/34 mm). Un tuyau trop étroit bride le débit et fait caviter la pompe.

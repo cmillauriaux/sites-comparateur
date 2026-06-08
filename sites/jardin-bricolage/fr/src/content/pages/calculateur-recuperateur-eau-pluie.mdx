@@ -1,0 +1,68 @@
+---
+title: "Calculateur de Récupération d'Eau de Pluie : Simulez votre volume de cuve"
+description: "Estimez gratuitement le volume d'eau annuel récupérable par votre toiture selon votre département en France et trouvez la capacité idéale de votre récupérateur d'eau."
+draft: false
+---
+
+import CalculateurEauPluie from '@comparateur/site-template/src/components/tools/CalculateurEauPluie.astro';
+
+La récupération de l'eau de pluie est devenue un enjeu majeur, autant pour préserver les nappes phréatiques face aux sécheresses à répétition que pour réduire les factures d'eau potable. Cependant, investir dans une cuve trop petite ou surdimensionnée est une erreur fréquente. 
+
+Notre simulateur utilise des données pluviométriques réelles de **Météo-France** (moyennes sur 30 ans par département) et les coefficients d'absorption de chaque type de toiture pour vous donner un résultat d'une grande précision agronomique.
+
+<CalculateurEauPluie />
+
+---
+
+## Comment fonctionne le calcul du volume récupérable ?
+
+Le volume annuel d'eau collectable dépend de trois facteurs clés, reliés par la formule standard du bâtiment :
+
+**Volume Récupérable (L/an) = Pluviométrie moyenne (mm) × Surface au sol du toit (m²) × Coefficient de perte**
+
+### 1. La pluviométrie de votre département
+En France métropolitaine, la pluviométrie moyenne oscille entre **500 mm par an** dans les départements les plus secs (comme l'Eure-et-Loir ou l'Essonne) et plus de **1200 mm par an** dans les zones montagneuses ou océaniques humides (comme les Pyrénées-Atlantiques ou la Haute-Savoie). Notre outil sélectionne automatiquement la valeur historique réelle de votre station départementale de référence.
+
+### 2. La surface de toiture exploitable
+La surface à renseigner est la **surface au sol du bâtiment** (longueur × largeur hors-tout du toit), et non la surface réelle des pentes inclinées. C'est en effet la projection horizontale qui intercepte les gouttes de pluie.
+
+### 3. Le coefficient de perte (selon le matériau de couverture)
+Tous les toits ne se valent pas pour diriger l'eau vers les gouttières. Une partie de l'eau s'évapore ou est absorbée par le matériau :
+*   **Ardoises et Bac Acier (Coeff 0.90) :** Surfaces ultra-lisses. Seulement 10% d'eau perdue par évaporation ou rejaillissement.
+*   **Tuiles classiques en terre cuite ou béton (Coeff 0.80) :** Légèrement poreuses, elles retiennent environ 20% de l'humidité.
+*   **Toit plat végétalisé (Coeff 0.30) :** Les plantes et le substrat absorbent la majeure partie de l'eau. Le rendement est très faible (perte de 70%).
+
+---
+
+## Comment dimensionner la capacité de sa cuve ?
+
+Un réservoir trop petit débordera constamment lors des fortes averses d'automne et de printemps, vous faisant perdre une ressource précieuse. Un réservoir trop grand représentera un investissement financier inutile et l'eau risque de stagner trop longtemps.
+
+La règle d'or pour dimensionner sa cuve est de pouvoir stocker environ **3 à 5% de la récolte annuelle estimée** (ce qui correspond à environ 21 jours de réserve d'arrosage sans pluie en été). 
+
+### Quelle cuve pour quel usage ?
+
+| Capacité recommandée | Type de matériel | Usages idéaux |
+| :--- | :--- | :--- |
+| **300 L à 500 L** | Cuve aérienne simple (murale ou colonne) | Arrosage de plantes d'intérieur, de jardinières de balcon, de petites serres ou d'un carré potager miniature. |
+| **500 L à 1500 L** | Cuve aérienne renforcée ou cuve IBC | Arrosage complet d'un potager familial moyen (50 à 100 m²), lavage occasionnel des outils de jardin ou de vélos. |
+| **2000 L à 4000 L** | Citerne souple de surface ou cuve enterrée compacte | Arrosage quotidien d'un grand jardin, nettoyage de terrasse, lavage régulier de voitures. |
+| **5000 L et plus** | Grande cuve enterrée béton/PEHD ou citerne souple XXL | Arrosage de grandes propriétés (> 500 m²). Avec un système de filtration et de pompage dédié, raccordement possible au réseau de la maison (alimentation des WC et du lave-linge). |
+
+---
+
+## 🙋 FAQ : Questions fréquentes sur la récupération de l'eau
+
+### L'eau de pluie est-elle potable ?
+**Non.** L'eau de pluie n'est pas potable. Elle est chimiquement et microbiologiquement contaminée par l'air et les poussières du toit (fientes d'oiseaux, débris végétaux). Elle ne doit jamais être consommée, ni utilisée pour la vaisselle ou la douche sans un système de traitement/filtration extrêmement poussé et homologué.
+
+### Quelle est la législation en vigueur en France ?
+En France (loi encadrée par l'article R211-124 et suivants du Code de l'environnement), l'usage de l'eau de pluie est strictement réglementé :
+*   **Arrosage du jardin et lavage des voitures :** Autorisé sans restriction ni déclaration.
+*   **Usage intérieur (WC, lave-linge, lavage des sols) :** Autorisé à condition que le réseau d'eau de pluie soit totalement indépendant du réseau d'eau potable (interdiction absolue de contamination). Une déclaration en mairie émettant des rejets vers les égouts est obligatoire (pour le calcul de la taxe d'assainissement).
+
+### Comment éviter que l'eau de la cuve ne tourne ou ne verdisse ?
+Pour garder une eau limpide et sans odeur :
+1.  **Filtrez les débris :** Installez un crapaudine sur la gouttière et un collecteur filtrant autonettoyant à l'entrée de la cuve pour retenir les feuilles et insectes.
+2.  **Bloquez la lumière :** Le verdissement est dû aux algues, qui ont besoin de soleil pour se développer. Utilisez des cuves opaques (vertes, noires, grises) ou stockez-les à l'ombre.
+3.  **Luttez contre les moustiques :** Veillez à ce que l'accès de votre cuve soit hermétiquement fermé ou protégé par une moustiquaire fine pour empêcher la ponte.

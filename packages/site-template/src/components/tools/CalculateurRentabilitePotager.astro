@@ -1,0 +1,295 @@
+---
+/**
+ * CalculateurRentabilitePotager.astro
+ * Simulateur interactif de budget et rentabilité d'un potager familial.
+ * Compare les coûts des intrants et de l'eau avec le prix du marché bio.
+ */
+---
+
+<div class="calculateur-rentabilite-container my-8 p-6 md:p-8 border border-[var(--color-border)] rounded-lg bg-white shadow-sm" id="calc-rentabilite-container">
+  <div class="border-b border-[var(--color-border)] pb-4 mb-6">
+    <h3 class="text-xl md:text-2xl font-bold text-[var(--color-primary-dark)] flex items-center gap-2">
+      🥗 Simulateur de Rentabilité & Budget Potager
+    </h3>
+    <p class="text-sm text-[var(--color-text-muted)] mt-1">
+      Saisissez le nombre de plants que vous envisagez de cultiver et découvrez l'économie financière réalisée par rapport à l'achat de légumes bio du commerce.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Formulaire (Saisies) -->
+    <div class="lg:col-span-6 space-y-4">
+      <h4 class="text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] border-b border-[var(--color-border)] pb-2">
+        🍅 Vos prévisions de plantation
+      </h4>
+
+      <!-- Tomates ronds -->
+      <div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-slate-200 bg-slate-50/50 transition-colors">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🍅</span>
+          <div>
+            <h5 class="text-sm font-semibold text-slate-800">Tomates rondes</h5>
+            <p class="text-[10px] text-[var(--color-text-muted)]">Rendement : 4.5 kg/pied — Équiv Bio : 4.50 €/kg</p>
+          </div>
+        </div>
+        <div class="w-24">
+          <input 
+            type="number" 
+            id="rent-tomates" 
+            min="0" 
+            max="100" 
+            value="6"
+            class="w-full text-center px-2 py-1.5 border border-[var(--color-border)] rounded-md text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+          />
+        </div>
+      </div>
+
+      <!-- Tomates cerises -->
+      <div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-slate-200 bg-slate-50/50 transition-colors">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🍒</span>
+          <div>
+            <h5 class="text-sm font-semibold text-slate-800">Tomates cerises</h5>
+            <p class="text-[10px] text-[var(--color-text-muted)]">Rendement : 3.0 kg/pied — Équiv Bio : 6.00 €/kg</p>
+          </div>
+        </div>
+        <div class="w-24">
+          <input 
+            type="number" 
+            id="rent-cerises" 
+            min="0" 
+            max="100" 
+            value="4"
+            class="w-full text-center px-2 py-1.5 border border-[var(--color-border)] rounded-md text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+          />
+        </div>
+      </div>
+
+      <!-- Courgettes -->
+      <div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-slate-200 bg-slate-50/50 transition-colors">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🥒</span>
+          <div>
+            <h5 class="text-sm font-semibold text-slate-800">Courgettes</h5>
+            <p class="text-[10px] text-[var(--color-text-muted)]">Rendement : 5.0 kg/pied — Équiv Bio : 3.50 €/kg</p>
+          </div>
+        </div>
+        <div class="w-24">
+          <input 
+            type="number" 
+            id="rent-courgettes" 
+            min="0" 
+            max="100" 
+            value="3"
+            class="w-full text-center px-2 py-1.5 border border-[var(--color-border)] rounded-md text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+          />
+        </div>
+      </div>
+
+      <!-- Poivrons -->
+      <div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-slate-200 bg-slate-50/50 transition-colors">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🫑</span>
+          <div>
+            <h5 class="text-sm font-semibold text-slate-800">Poivrons</h5>
+            <p class="text-[10px] text-[var(--color-text-muted)]">Rendement : 2.5 kg/pied — Équiv Bio : 5.00 €/kg</p>
+          </div>
+        </div>
+        <div class="w-24">
+          <input 
+            type="number" 
+            id="rent-poivrons" 
+            min="0" 
+            max="100" 
+            value="4"
+            class="w-full text-center px-2 py-1.5 border border-[var(--color-border)] rounded-md text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+          />
+        </div>
+      </div>
+
+      <!-- Salades -->
+      <div class="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:border-slate-200 bg-slate-50/50 transition-colors">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🥬</span>
+          <div>
+            <h5 class="text-sm font-semibold text-slate-800">Salades / Laitues</h5>
+            <p class="text-[10px] text-[var(--color-text-muted)]">Rendement : 1 unité/pied — Équiv Bio : 1.50 €/u</p>
+          </div>
+        </div>
+        <div class="w-24">
+          <input 
+            type="number" 
+            id="rent-salades" 
+            min="0" 
+            max="200" 
+            value="15"
+            class="w-full text-center px-2 py-1.5 border border-[var(--color-border)] rounded-md text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+          />
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bilan Financier -->
+    <div class="lg:col-span-6 flex flex-col justify-between space-y-6">
+      <div class="bg-slate-50 p-6 rounded-lg border border-[var(--color-border)] space-y-5">
+        <h4 class="text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] border-b border-[var(--color-border)] pb-2">
+          💰 Bilan financier annuel
+        </h4>
+
+        <!-- Chiffres clés -->
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="bg-white p-3 rounded border border-slate-200">
+            <span class="block text-[10px] text-[var(--color-text-muted)] font-medium">Valeur Récolte</span>
+            <span id="rent-brut" class="text-base md:text-lg font-bold text-slate-900">0.00 €</span>
+          </div>
+          <div class="bg-white p-3 rounded border border-slate-200">
+            <span class="block text-[10px] text-[var(--color-text-muted)] font-medium">Coût Estimé</span>
+            <span id="rent-cout" class="text-base md:text-lg font-bold text-red-500">0.00 €</span>
+          </div>
+          <div class="bg-white p-3 rounded border border-slate-200">
+            <span class="block text-[10px] text-[var(--color-text-muted)] font-medium">Bénéfice Net</span>
+            <span id="rent-net" class="text-base md:text-lg font-extrabold text-[var(--color-primary)]">0.00 €</span>
+          </div>
+        </div>
+
+        <!-- Jauge visuelle de rentabilité -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-semibold text-slate-700">
+            <span>Seuil de rentabilité</span>
+            <span id="rent-status-label">Excellent (ROI : 240%)</span>
+          </div>
+          <div class="w-full h-3.5 bg-slate-200 rounded-full overflow-hidden flex">
+            <div id="rent-bar-red" class="h-full bg-red-400 transition-all duration-300" style="width: 20%"></div>
+            <div id="rent-bar-green" class="h-full bg-[var(--color-primary)] transition-all duration-300" style="width: 80%"></div>
+          </div>
+          <p class="text-[10px] text-[var(--color-text-muted)]">
+            *Le coût comprend l'achat du jeune plant, l'eau d'arrosage au tarif réseau, et l'amendement du sol initial.
+          </p>
+        </div>
+      </div>
+
+      <!-- Conseils d'optimisation personnalisés -->
+      <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-lg space-y-3">
+        <h4 class="font-bold text-sm text-emerald-900 flex items-center gap-1.5">
+          💡 Secrets de maraîchers pour doper votre ROI :
+        </h4>
+        <ul class="text-xs text-emerald-800 space-y-2 pl-4 list-disc">
+          <li>
+            <strong>Semez vous-même vos graines :</strong> Acheter un sachet de graines (env. 3 € pour 100 graines) plutôt que des plants en godet (3.50 € l'unité) <strong>divise vos coûts par 10</strong> et fait bondir votre bénéfice net !
+          </li>
+          <li>
+            <strong>Récupérez l'eau de pluie :</strong> L'arrosage représente 25% du coût estimé. En installant une simple cuve de récupération, vous réduisez les coûts d'eau à 0 € tout en préservant la nappe phréatique.
+          </li>
+          <li>
+            <strong>Faites votre compost :</strong> Recyclez vos épluchures de cuisine et déchets de tonte dans un composteur. Vous n'aurez plus jamais besoin d'acheter de l'engrais chimique ou du terreau de marque.
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function initRentabiliteCalculator() {
+    const tomatesInput = document.getElementById('rent-tomates') as HTMLInputElement | null;
+    const cerisesInput = document.getElementById('rent-cerises') as HTMLInputElement | null;
+    const courgettesInput = document.getElementById('rent-courgettes') as HTMLInputElement | null;
+    const poivronsInput = document.getElementById('rent-poivrons') as HTMLInputElement | null;
+    const saladesInput = document.getElementById('rent-salades') as HTMLInputElement | null;
+
+    const rentBrut = document.getElementById('rent-brut');
+    const rentCout = document.getElementById('rent-cout');
+    const rentNet = document.getElementById('rent-net');
+
+    const rentStatusLabel = document.getElementById('rent-status-label');
+    const rentBarRed = document.getElementById('rent-bar-red');
+    const rentBarGreen = document.getElementById('rent-bar-green');
+
+    if (!tomatesInput || !cerisesInput || !courgettesInput || !poivronsInput || !saladesInput) return;
+
+    const inputs = [tomatesInput, cerisesInput, courgettesInput, poivronsInput, saladesInput];
+    inputs.forEach(input => input.addEventListener('input', calculate));
+
+    function calculate() {
+      const qTomates = Math.max(0, parseInt(tomatesInput?.value || '0', 10));
+      const qCerises = Math.max(0, parseInt(cerisesInput?.value || '0', 10));
+      const qCourgettes = Math.max(0, parseInt(courgettesInput?.value || '0', 10));
+      const qPoivrons = Math.max(0, parseInt(poivronsInput?.value || '0', 10));
+      const qSalades = Math.max(0, parseInt(saladesInput?.value || '0', 10));
+
+      // Caractéristiques agronomiques
+      // Tomates : Rendement 4.5kg, prix bio 4.5€
+      // Cerises : Rendement 3kg, prix bio 6€
+      // Courgettes : Rendement 5kg, prix bio 3.5€
+      // Poivrons : Rendement 2.5kg, prix bio 5€
+      // Salades : Rendement 1u, prix bio 1.5€
+      const valTomates = qTomates * 4.5 * 4.50;
+      const valCerises = qCerises * 3.0 * 6.00;
+      const valCourgettes = qCourgettes * 5.0 * 3.50;
+      const valPoivrons = qPoivrons * 2.5 * 5.00;
+      const valSalades = qSalades * 1.0 * 1.50;
+
+      const economieBrute = valTomates + valCerises + valCourgettes + valPoivrons + valSalades;
+
+      // Coût estimé des fournitures (€) = (Pieds de salade * 1.0) + (Autres pieds * 3.5)
+      const nSalades = qSalades;
+      const nAutres = qTomates + qCerises + qCourgettes + qPoivrons;
+      const coutFournitures = (nSalades * 1.0) + (nAutres * 3.5);
+
+      const economieNette = economieBrute - coutFournitures;
+
+      // Mettre à jour les labels financiers
+      if (rentBrut) rentBrut.textContent = economieBrute.toFixed(2) + ' €';
+      if (rentCout) rentCout.textContent = coutFournitures.toFixed(2) + ' €';
+      if (rentNet) {
+        rentNet.textContent = economieNette.toFixed(2) + ' €';
+        if (economieNette < 0) {
+          rentNet.className = "text-base md:text-lg font-extrabold text-red-500";
+        } else {
+          rentNet.className = "text-base md:text-lg font-extrabold text-[var(--color-primary)]";
+        }
+      }
+
+      // Gestion de la jauge et du statut de rentabilité
+      if (rentStatusLabel && rentBarRed && rentBarGreen) {
+        if (economieBrute === 0) {
+          rentStatusLabel.textContent = "Aucun plant configuré";
+          rentBarRed.style.width = "100%";
+          rentBarGreen.style.width = "0%";
+        } else if (economieNette <= 0) {
+          rentStatusLabel.textContent = "Déficitaire (Achat de plants onéreux)";
+          rentBarRed.style.width = "100%";
+          rentBarGreen.style.width = "0%";
+        } else {
+          const roi = (economieNette / coutFournitures) * 100;
+          let rating = "Correct";
+          if (roi > 300) {
+            rating = "Exceptionnel 🚀";
+          } else if (roi > 150) {
+            rating = "Très Rentable 🌟";
+          } else if (roi > 50) {
+            rating = "Rentable ✅";
+          }
+
+          rentStatusLabel.textContent = `${rating} (ROI : ${Math.round(roi)}%)`;
+          
+          // Proportion rouge / vert
+          const totalScale = coutFournitures + economieNette;
+          const redPct = (coutFournitures / totalScale) * 100;
+          const greenPct = (economieNette / totalScale) * 100;
+
+          rentBarRed.style.width = `${redPct}%`;
+          rentBarGreen.style.width = `${greenPct}%`;
+        }
+      }
+    }
+
+    // Calcul initial
+    calculate();
+  }
+
+  document.addEventListener('DOMContentLoaded', initRentabiliteCalculator);
+  document.addEventListener('astro:page-load', initRentabiliteCalculator);
+</script>
