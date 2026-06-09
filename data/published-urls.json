@@ -294,5 +294,16 @@
     "intent": "comparatif",
     "publishedAt": "2026-06-07T15:10:48.186Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/guides/comment-choisir-un-abri-pour-tondeuse-robot/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "comment choisir un abri pour tondeuse robot",
+    "bundleId": "jardin-bricolage-fr-abri-pour-tondeuse-robot",
+    "bundleSlot": "pillar",
+    "intent": "guide",
+    "publishedAt": "2026-06-09T15:33:45.808Z",
+    "indexationStatus": "pending"
   }
 ]
