@@ -1533,7 +1533,8 @@
             "slug": "gardebruk-abri-robot-tondeuse-89x90x54cm-toit-monopente-anthracite-avis",
             "status": "pending",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1
           }
         }
       },
