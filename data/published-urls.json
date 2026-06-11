@@ -305,5 +305,16 @@
     "intent": "guide",
     "publishedAt": "2026-06-09T15:33:45.808Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://cuisineexpert.fr/comparatifs/barista-machine-a-cafe/",
+    "niche": "cuisine",
+    "market": "fr",
+    "keyword": "barista machine a café",
+    "bundleId": "cuisine-fr-barista-machine-a-café",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-05-28T11:52:12.077Z",
+    "indexationStatus": "pending"
   }
 ]

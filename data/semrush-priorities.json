@@ -6361,12 +6361,38 @@
         "score": 147,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-12T21:14:52.499Z",
-        "generatedAt": null,
-        "publishedUrl": null,
-        "longtail": true
+        "generatedAt": "2026-05-28T11:52:12.077Z",
+        "publishedUrl": "https://cuisineexpert.fr/comparatifs/barista-machine-a-cafe/",
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "barista machine a café",
+            "slug": "barista-machine-a-cafe",
+            "status": "generated",
+            "url": "https://cuisineexpert.fr/comparatifs/barista-machine-a-cafe/",
+            "publishedAt": "2026-05-28T11:52:12.077Z",
+            "topProductName": "Sage The Barista Express",
+            "topProductAsin": "B07B2X1VXZ"
+          },
+          "pillar": {
+            "keyword": "comment choisir un barista machine a café",
+            "slug": "comment-choisir-un-barista-machine-a-cafe",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": "Sage The Barista Express avis",
+            "slug": "sage-the-barista-express-avis",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "errorCount": 0
+          }
+        }
       },
       {
         "id": "cuisine-fr-machine-a-café-krups-lidl",
