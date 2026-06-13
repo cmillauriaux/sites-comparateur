@@ -1507,7 +1507,7 @@
         "score": 334,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "partial",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0,
@@ -1531,9 +1531,9 @@
           "avis": {
             "keyword": "GARDEBRUK Abri Robot Tondeuse 89x90x54cm Toit monopente Anthracite avis",
             "slug": "gardebruk-abri-robot-tondeuse-89x90x54cm-toit-monopente-anthracite-avis",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/gardebruk-abri-robot-tondeuse-89x90x54cm-toit-monopente-anthracite-avis/",
+            "publishedAt": "2026-06-13T19:24:03.212Z",
             "errorCount": 1
           }
         }

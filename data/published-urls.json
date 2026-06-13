@@ -316,5 +316,16 @@
     "intent": "comparatif",
     "publishedAt": "2026-05-28T11:52:12.077Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/avis/gardebruk-abri-robot-tondeuse-89x90x54cm-toit-monopente-anthracite-avis/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "GARDEBRUK Abri Robot Tondeuse 89x90x54cm Toit monopente Anthracite avis",
+    "bundleId": "jardin-bricolage-fr-abri-pour-tondeuse-robot",
+    "bundleSlot": "avis",
+    "intent": "avis",
+    "publishedAt": "2026-06-13T19:24:03.236Z",
+    "indexationStatus": "pending"
   }
 ]
