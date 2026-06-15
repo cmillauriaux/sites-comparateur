@@ -65,7 +65,13 @@ export default defineConfig({
   },
 
   integrations: [
-    sitemap(),
+    sitemap({
+      // Site jeune peu re-crawlé : <lastmod> pour inciter Google à re-explorer (sitemaps.org).
+      serialize(item) {
+        item.lastmod = new Date().toISOString();
+        return item;
+      },
+    }),
     mdx(),
     pagefind(),
     icon({
