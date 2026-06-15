@@ -1675,10 +1675,35 @@
         "score": 290,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "errorCount": 0
+        "errorCount": 0,
+        "bundle": {
+          "comparatif": {
+            "keyword": "robot tondeuse sans fil périphérique gps",
+            "slug": "robot-tondeuse-sans-fil-peripherique-gps",
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/robot-tondeuse-sans-fil-peripherique-gps/",
+            "publishedAt": "2026-06-15T08:38:33.780Z",
+            "topProductName": "MOVA ViAX 250",
+            "topProductAsin": "B0G5B2W2MD"
+          },
+          "pillar": {
+            "keyword": "comment choisir un robot tondeuse sans fil périphérique gps",
+            "slug": "comment-choisir-un-robot-tondeuse-sans-fil-peripherique-gps",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": "MOVA ViAX 250 avis",
+            "slug": "mova-viax-250-avis",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "jardin-bricolage-fr-tondeuse-robot-comparatif",

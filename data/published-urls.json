@@ -327,5 +327,16 @@
     "intent": "avis",
     "publishedAt": "2026-06-13T19:24:03.236Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/robot-tondeuse-sans-fil-peripherique-gps/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "robot tondeuse sans fil périphérique gps",
+    "bundleId": "jardin-bricolage-fr-robot-tondeuse-sans-fil-périphérique-gps",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-06-15T08:38:33.790Z",
+    "indexationStatus": "pending"
   }
 ]

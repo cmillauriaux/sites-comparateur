@@ -1,0 +1,20 @@
+{
+  "productName": "ECOVACS Goat O1200 LiDAR",
+  "candidates": [
+    {
+      "asin": "B0G62PK4LK",
+      "title": "Ecovacs Goat O1200 LiDAR Pro Care Kit Robot Tondeuse sans Fil, 1200 M², Navigation Dual-LiDAR 360°, Cartographie Auto, Évitement d'obstacles 3D par IA, Coupe Précise des Bords"
+    },
+    {
+      "asin": "B0GSQRSBBX",
+      "title": "ECOVACS Goat O1200 LiDAR Pro Care Kit Robot Tondeuse sans Fil + Garage pour Robot Tondeuse Gratuit, 1200 m², Navigation Dual-LiDAR 360°, Cartographie Auto, Évitement d'obstacles 3D par IA"
+    },
+    {
+      "asin": "B0DQY66Z9N",
+      "title": "ECOVACS Goat Abri pour Robot Tondeuse Compatible avec Les modèles O600 RTK, O800 RTK, O1200 RTK/LiDAR Pro, A1600 RTK/LiDAR Pro et A3000 LiDAR/LiDAR Pro"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B0G62PK4LK",
+  "decidedAt": "2026-06-15T08:38:32.810Z"
+}
