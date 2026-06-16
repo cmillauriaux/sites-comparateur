@@ -338,5 +338,16 @@
     "intent": "comparatif",
     "publishedAt": "2026-06-15T08:38:33.790Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/guides/comment-choisir-un-robot-tondeuse-sans-fil-peripherique-gps/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "comment choisir un robot tondeuse sans fil périphérique gps",
+    "bundleId": "jardin-bricolage-fr-robot-tondeuse-sans-fil-périphérique-gps",
+    "bundleSlot": "pillar",
+    "intent": "guide",
+    "publishedAt": "2026-06-16T20:03:23.772Z",
+    "indexationStatus": "pending"
   }
 ]
