@@ -6386,7 +6386,7 @@
         "score": 147,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "generated",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-12T21:14:52.499Z",
         "generatedAt": "2026-05-28T11:52:12.077Z",
@@ -6405,9 +6405,9 @@
           "pillar": {
             "keyword": "comment choisir un barista machine a café",
             "slug": "comment-choisir-un-barista-machine-a-cafe",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://cuisineexpert.fr/guides/comment-choisir-un-barista-machine-a-cafe/",
+            "publishedAt": "2026-06-19T19:24:47.705Z"
           },
           "avis": {
             "keyword": "Sage The Barista Express avis",

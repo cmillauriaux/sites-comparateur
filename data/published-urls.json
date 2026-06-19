@@ -349,5 +349,16 @@
     "intent": "guide",
     "publishedAt": "2026-06-16T20:03:23.772Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://cuisineexpert.fr/guides/comment-choisir-un-barista-machine-a-cafe/",
+    "niche": "cuisine",
+    "market": "fr",
+    "keyword": "comment choisir un barista machine a café",
+    "bundleId": "cuisine-fr-barista-machine-a-café",
+    "bundleSlot": "pillar",
+    "intent": "guide",
+    "publishedAt": "2026-06-19T19:24:47.720Z",
+    "indexationStatus": "pending"
   }
 ]
