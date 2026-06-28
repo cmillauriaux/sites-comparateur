@@ -1,0 +1,28 @@
+{
+  "productName": "MOVA ViAX 250",
+  "candidates": [
+    {
+      "asin": "B0G5B2W2MD",
+      "title": "MOVA ViAX 250 Robot Tondeuse sans Fil périphérique, Recommandé 250 m², Cartographie à Assistance IA, Trajectoire en U, Évitement Double Vision, Coupe Bordure Optimisée, Tous Terrains, Contrôle App"
+    },
+    {
+      "asin": "B0GL8KP243",
+      "title": "MOVA ViAX 500 Robot Tondeuse sans Fil périphérique, Recommandé 600 m², Cartographie à Assistance IA, LiDAR 360° + IA Double Vision, évitement d’Obstacles, trajectoire U, Coupe des Bords, Contrôle App"
+    },
+    {
+      "asin": "B0GQYVG5MN",
+      "title": "MOVA ViAX 250 Robot Tondeuse sans Fil périphérique, Recommandé 250 m², Cartographie à Assistance IA, Trajectoire en U, Évitement Double Vision, Coupe Bordure Optimisée, Tous Terrains, Contrôle App"
+    },
+    {
+      "asin": "B0GCDPTG25",
+      "title": "MOVA ViAX 250 Robot Tondeuse + Garage de Protection – Recommandé 250 m², Cartographie à Assistance IA, Étanche, Compatible avec ViAX 250/500, MOVA 600/1000, LiDAX Ultra 800/1200/1600"
+    },
+    {
+      "asin": "B0GBVKNZ4F",
+      "title": "BEOS Premium Robot Tondeuse Tuning - pour Dreame Mova, ViAX et LiDAX - Plateau de Coupe pour 6 Lames - Disque de Coupe renforcé de Fibre de Verre - Ø 170 mm - Fabriqué en Allemagne"
+    }
+  ],
+  "pick": "C",
+  "pickedAsin": "B0GQYVG5MN",
+  "decidedAt": "2026-06-28T15:05:56.794Z"
+}

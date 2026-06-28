@@ -360,5 +360,16 @@
     "intent": "guide",
     "publishedAt": "2026-06-19T19:24:47.720Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/avis/mova-viax-250-avis/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "MOVA ViAX 250 avis",
+    "bundleId": "jardin-bricolage-fr-robot-tondeuse-sans-fil-périphérique-gps",
+    "bundleSlot": "avis",
+    "intent": "avis",
+    "publishedAt": "2026-06-28T15:05:58.879Z",
+    "indexationStatus": "pending"
   }
 ]

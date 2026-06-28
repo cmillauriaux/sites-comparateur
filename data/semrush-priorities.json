@@ -1675,7 +1675,7 @@
         "score": 290,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "partial",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0,
@@ -1699,9 +1699,9 @@
           "avis": {
             "keyword": "MOVA ViAX 250 avis",
             "slug": "mova-viax-250-avis",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/mova-viax-250-avis/",
+            "publishedAt": "2026-06-28T15:05:58.856Z"
           }
         }
       },
