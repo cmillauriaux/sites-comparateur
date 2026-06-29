@@ -371,5 +371,16 @@
     "intent": "avis",
     "publishedAt": "2026-06-28T15:05:58.879Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://cuisineexpert.fr/avis/sage-the-barista-express-avis/",
+    "niche": "cuisine",
+    "market": "fr",
+    "keyword": "Sage The Barista Express avis",
+    "bundleId": "cuisine-fr-barista-machine-a-café",
+    "bundleSlot": "avis",
+    "intent": "avis",
+    "publishedAt": "2026-06-29T19:34:01.615Z",
+    "indexationStatus": "pending"
   }
 ]

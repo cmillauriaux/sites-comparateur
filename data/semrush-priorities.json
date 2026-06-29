@@ -6386,7 +6386,7 @@
         "score": 147,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "partial",
+        "status": "generated",
         "source": "semrush",
         "createdAt": "2026-05-12T21:14:52.499Z",
         "generatedAt": "2026-05-28T11:52:12.077Z",
@@ -6412,9 +6412,9 @@
           "avis": {
             "keyword": "Sage The Barista Express avis",
             "slug": "sage-the-barista-express-avis",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null,
+            "status": "generated",
+            "url": "https://cuisineexpert.fr/avis/sage-the-barista-express-avis/",
+            "publishedAt": "2026-06-29T19:34:01.596Z",
             "errorCount": 0
           }
         }
