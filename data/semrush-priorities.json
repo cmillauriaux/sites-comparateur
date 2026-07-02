@@ -6631,12 +6631,37 @@
         "score": 112,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-12T21:14:52.499Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "location machine a cafe pro",
+            "slug": "location-machine-a-cafe-pro",
+            "status": "generated",
+            "url": "https://cuisineexpert.fr/comparatifs/location-machine-a-cafe-pro/",
+            "publishedAt": "2026-07-02T11:37:28.008Z",
+            "topProductName": "Neretva Machine a Cafe 20 Bar Compacte",
+            "topProductAsin": "B0GKFRHRFM"
+          },
+          "pillar": {
+            "keyword": "comment choisir un location machine a cafe pro",
+            "slug": "comment-choisir-un-location-machine-a-cafe-pro",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": "Neretva Machine a Cafe 20 Bar Compacte avis",
+            "slug": "neretva-machine-a-cafe-20-bar-compacte-avis",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "cuisine-fr-extracteur-de-jus-à-froid",

@@ -382,5 +382,16 @@
     "intent": "avis",
     "publishedAt": "2026-06-29T19:34:01.615Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://cuisineexpert.fr/comparatifs/location-machine-a-cafe-pro/",
+    "niche": "cuisine",
+    "market": "fr",
+    "keyword": "location machine a cafe pro",
+    "bundleId": "cuisine-fr-location-machine-a-cafe-pro",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-07-02T11:37:28.020Z",
+    "indexationStatus": "pending"
   }
 ]
