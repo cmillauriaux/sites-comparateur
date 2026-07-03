@@ -1,0 +1,24 @@
+{
+  "productName": "ECOVACS Goat O800 RTK",
+  "candidates": [
+    {
+      "asin": "B0G57XY1TP",
+      "title": "ECOVACS Goat O800 RTK Care Kit Robot Tondeuse sans Fil périphérique 800 m², RTK+Vision Améliorée par Lidar, Cartographie Automatique, Passages étroits jusqu'à 0,7 m, Tonte précise des Bordures"
+    },
+    {
+      "asin": "B0DQ8KYLYR",
+      "title": "ECOVACS Goat O800 RTK Robot Tondeuse sans Fil périphérique 800 m², RTK+Vision Améliorée par Lidar, Cartographie Automatique, Passages étroits jusqu'à 0,7 m, Tonte précise des Bordures, Pente 45%"
+    },
+    {
+      "asin": "B0H3NTHQDX",
+      "title": "ECOVACS Goat O800 RTK Robot Tondeuse avec Garage & Jeu de Lames, sans Fil périphérique 800 m², RTK+Vision Améliorée par Lidar, Cartographie Automatique, Tonte précise des Bordures"
+    },
+    {
+      "asin": "B0DQY66Z9N",
+      "title": "ECOVACS Goat Abri pour Robot Tondeuse Compatible avec Les modèles O600 RTK, O800 RTK, O1200 RTK/LiDAR Pro, A1600 RTK/LiDAR Pro et A3000 LiDAR/LiDAR Pro"
+    }
+  ],
+  "pick": "B",
+  "pickedAsin": "B0DQ8KYLYR",
+  "decidedAt": "2026-07-03T12:35:47.900Z"
+}

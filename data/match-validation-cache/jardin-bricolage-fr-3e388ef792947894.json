@@ -1,0 +1,20 @@
+{
+  "productName": "WORX Vision Cloud 2WD WR308E",
+  "candidates": [
+    {
+      "asin": "B0GK135DMY",
+      "title": "WORX Vision Cloud 2WD WR308E Robot Tondeuse 800 m² sans Fil périphérique + Garage (évitement d'obstacles par IA, Navigation VSLAM + RTK, cartographie Auto, contrôle Via Application, Cut-to-Zero)"
+    },
+    {
+      "asin": "B0GJZP887Z",
+      "title": "WORX Vision Cloud 2WD WR308E Robot Tondeuse 800 m² sans Fil périphérique + Phares LED (évitement d'obstacles par IA, Navigation VSLAM + RTK, cartographie Auto, contrôle Via app, Cut-to-Zero)"
+    },
+    {
+      "asin": "B0FVG31S3K",
+      "title": "WORX Vision Cloud 2WD Robot Tondeuse WR308E, sans Fil périphérique, jusqu'à 800 m² (évitement d'obstacles par IA, Navigation VSLAM + RTK Cloud, cartographie Auto, contrôle Via l'app, Cut-to-Zero)"
+    }
+  ],
+  "pick": "C",
+  "pickedAsin": "B0FVG31S3K",
+  "decidedAt": "2026-07-03T12:35:47.900Z"
+}

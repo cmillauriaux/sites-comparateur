@@ -393,5 +393,16 @@
     "intent": "comparatif",
     "publishedAt": "2026-07-02T11:37:28.020Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/tondeuse-robot-comparatif/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "tondeuse robot comparatif",
+    "bundleId": "jardin-bricolage-fr-tondeuse-robot-comparatif",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-07-03T12:35:48.390Z",
+    "indexationStatus": "pending"
   }
 ]

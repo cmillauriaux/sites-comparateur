@@ -1,0 +1,24 @@
+{
+  "productName": "WORX Vision Cloud 2WD WR305E",
+  "candidates": [
+    {
+      "asin": "B0FVG2L52Q",
+      "title": "WORX Vision Cloud 2WD Robot Tondeuse WR305E, sans Fil périphérique, jusqu'à 500 m² (évitement d'obstacles par IA, Navigation VSLAM + RTK Cloud, cartographie Automatique, contrôle Via l'application)"
+    },
+    {
+      "asin": "B0GJZSNBXR",
+      "title": "WORX Vision Cloud 2WD WR305E Robot Tondeuse 500 m² sans Fil périphérique + Garage (évitement d'obstacles par IA, Navigation VSLAM + RTK, cartographie Automatique, contrôle Via Application)"
+    },
+    {
+      "asin": "B0GR5WRJN3",
+      "title": "WORX Vision Cloud 2WD WR305E Robot Tondeuse 500 m² sans Fil périphérique + Cut-to-Zero (évitement d'obstacles par IA, Navigation VSLAM + RTK Cloud, cartographie Automatique, contrôle Via Application)"
+    },
+    {
+      "asin": "B0GR5ZT528",
+      "title": "WORX Vision Cloud 2WD WR305E Robot Tondeuse 500 m² sans Fil périphérique + Garage + Cut-to-Zero + Brosses de Roues + Lames Longue durée (évitement d'obstacles par IA, Navigation VSLAM + RTK Cloud)"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B0FVG2L52Q",
+  "decidedAt": "2026-07-03T12:35:47.899Z"
+}

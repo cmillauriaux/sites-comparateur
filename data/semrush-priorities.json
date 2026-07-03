@@ -1771,10 +1771,35 @@
         "score": 281,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "errorCount": 0
+        "errorCount": 0,
+        "bundle": {
+          "comparatif": {
+            "keyword": "tondeuse robot comparatif",
+            "slug": "tondeuse-robot-comparatif",
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/tondeuse-robot-comparatif/",
+            "publishedAt": "2026-07-03T12:35:48.379Z",
+            "topProductName": "WORX Vision Cloud 2WD WR305E",
+            "topProductAsin": "B0FVG2L52Q"
+          },
+          "pillar": {
+            "keyword": "comment choisir un tondeuse robot",
+            "slug": "comment-choisir-un-tondeuse-robot",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": "WORX Vision Cloud 2WD WR305E avis",
+            "slug": "worx-vision-cloud-2wd-wr305e-avis",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-sans-fil",
