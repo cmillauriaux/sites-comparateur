@@ -404,5 +404,16 @@
     "intent": "comparatif",
     "publishedAt": "2026-07-03T12:35:48.390Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/guides/comment-choisir-un-tondeuse-robot/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "comment choisir un tondeuse robot",
+    "bundleId": "jardin-bricolage-fr-tondeuse-robot-comparatif",
+    "bundleSlot": "pillar",
+    "intent": "guide",
+    "publishedAt": "2026-07-04T11:57:19.741Z",
+    "indexationStatus": "pending"
   }
 ]
