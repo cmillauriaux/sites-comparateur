@@ -6677,7 +6677,8 @@
             "slug": "comment-choisir-un-location-machine-a-cafe-pro",
             "status": "pending",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1
           },
           "avis": {
             "keyword": "Neretva Machine a Cafe 20 Bar Compacte avis",
