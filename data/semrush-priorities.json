@@ -1797,7 +1797,8 @@
             "slug": "worx-vision-cloud-2wd-wr305e-avis",
             "status": "pending",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1
           }
         }
       },
