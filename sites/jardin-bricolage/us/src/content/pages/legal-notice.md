@@ -22,7 +22,21 @@ Brand names, logos, and product names mentioned belong to their respective owner
 
 ## Affiliate links
 
-This site contains affiliate links. See our [Affiliate disclosure](/affiliate-disclosure/) for details.
+This site contains affiliate links and participates in affiliate programs
+(including the Amazon Associates Program). As an affiliate, we may earn a
+commission on qualifying purchases made through our links, at no extra cost to
+you. This disclosure is made in accordance with the FTC's 16 CFR Part 255. See
+our [Affiliate disclosure](/affiliate-disclosure/) for details.
+
+## Disclaimer and limitation of liability
+
+The content and tools on this site are provided for general informational
+purposes only, "as is" and without warranty of any kind. Prices and availability
+are indicative and may change; only the price shown on the retailer's website at
+the time of purchase is authoritative. To the fullest extent permitted by
+applicable law, the publisher shall not be liable for any damages arising from
+the use of this site. **These terms do not affect any mandatory consumer rights
+you may have under the laws of your state of residence.**
 
 ## Personal data
 
