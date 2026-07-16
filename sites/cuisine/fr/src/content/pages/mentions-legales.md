@@ -5,14 +5,16 @@ description: "Mentions légales de CuisineExpert.fr"
 
 ## Éditeur du site
 
-Site édité par **Claire Vasseur**.
+Site édité par **MCS**, société immatriculée sous le n° **SIREN 106 942 600
+(R.C.S. Nantes)**, numéro d'identification européen **FR4401.106942600**, dont
+le siège est situé **5Q Avenue des Naudières, 44800 Saint-Herblain, France**.
 
 - Email de contact : contact@cuisineexpert.fr
 - Hébergeur : Cloudflare Pages — Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, USA
 
 ## Directeur de publication
 
-Claire Vasseur
+Cédric Millauriaux
 
 ## Propriété intellectuelle
 
