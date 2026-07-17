@@ -6,7 +6,7 @@ description: "Mentions légales de CuisineExpert.fr"
 ## Éditeur du site
 
 Site édité par **MCS**, société immatriculée sous le n° **SIREN 106 942 600
-(R.C.S. Nantes)**, numéro d'identification européen **FR4401.106942600**, dont
+(R.C.S. Nantes)**, numéro d'identification européen **FR21106942600**, dont
 le siège est situé **5Q Avenue des Naudières, 44800 Saint-Herblain, France**.
 
 - Email de contact : contact@cuisineexpert.fr
