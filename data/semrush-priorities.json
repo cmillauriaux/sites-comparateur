@@ -1795,10 +1795,11 @@
           "avis": {
             "keyword": "WORX Vision Cloud 2WD WR305E avis",
             "slug": "worx-vision-cloud-2wd-wr305e-avis",
-            "status": "pending",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
-            "errorCount": 2
+            "errorCount": 3,
+            "lastError": "Claude finished but did not write /home/runner/work/sites-comparateur/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/worx-vision-cloud-2wd-wr305e-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           }
         }
       },
