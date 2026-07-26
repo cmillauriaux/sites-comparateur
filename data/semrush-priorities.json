@@ -6677,10 +6677,11 @@
           "pillar": {
             "keyword": "comment choisir un location machine a cafe pro",
             "slug": "comment-choisir-un-location-machine-a-cafe-pro",
-            "status": "pending",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
-            "errorCount": 2
+            "errorCount": 3,
+            "lastError": "Claude finished but did not write /home/runner/work/sites-comparateur/sites-comparateur/sites/cuisine/fr/src/content/articles/comment-choisir-un-location-machine-a-cafe-pro.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           },
           "avis": {
             "keyword": "Neretva Machine a Cafe 20 Bar Compacte avis",
