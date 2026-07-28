@@ -415,5 +415,16 @@
     "intent": "guide",
     "publishedAt": "2026-07-04T11:57:19.741Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://cuisineexpert.fr/avis/neretva-machine-a-cafe-20-bar-compacte-avis/",
+    "niche": "cuisine",
+    "market": "fr",
+    "keyword": "Neretva Machine a Cafe 20 Bar Compacte avis",
+    "bundleId": "cuisine-fr-location-machine-a-cafe-pro",
+    "bundleSlot": "avis",
+    "intent": "avis",
+    "publishedAt": "2026-07-28T08:56:29.826Z",
+    "indexationStatus": "pending"
   }
 ]

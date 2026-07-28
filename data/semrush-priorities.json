@@ -6686,9 +6686,9 @@
           "avis": {
             "keyword": "Neretva Machine a Cafe 20 Bar Compacte avis",
             "slug": "neretva-machine-a-cafe-20-bar-compacte-avis",
-            "status": "pending",
-            "url": null,
-            "publishedAt": null
+            "status": "generated",
+            "url": "https://cuisineexpert.fr/avis/neretva-machine-a-cafe-20-bar-compacte-avis/",
+            "publishedAt": "2026-07-28T08:56:29.808Z"
           }
         }
       },
