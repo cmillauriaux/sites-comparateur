@@ -6758,12 +6758,37 @@
         "score": 110,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-12T21:14:52.499Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "extracteur de jus à froid",
+            "slug": "extracteur-de-jus-a-froid",
+            "status": "generated",
+            "url": "https://cuisineexpert.fr/comparatifs/extracteur-de-jus-a-froid/",
+            "publishedAt": "2026-07-31T12:39:45.750Z",
+            "topProductName": "Fretta Extracteur de Jus",
+            "topProductAsin": "B0FBGD5PHF"
+          },
+          "pillar": {
+            "keyword": "comment choisir un extracteur de jus à froid",
+            "slug": "comment-choisir-un-extracteur-de-jus-a-froid",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": "Fretta Extracteur de Jus avis",
+            "slug": "fretta-extracteur-de-jus-avis",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "cuisine-fr-air-fryer-ohmex-8l",
