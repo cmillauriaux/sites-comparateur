@@ -1869,10 +1869,35 @@
         "score": 280,
         "intent": "comparatif",
         "semrushIntent": "informational",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "errorCount": 0
+        "errorCount": 0,
+        "bundle": {
+          "comparatif": {
+            "keyword": "taille haie sans fil",
+            "slug": "taille-haie-sans-fil",
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/taille-haie-sans-fil/",
+            "publishedAt": "2026-08-01T20:01:04.970Z",
+            "topProductName": "RYOBI RY18HT50A-0 18V One+",
+            "topProductAsin": "B0B31KL8XV"
+          },
+          "pillar": {
+            "keyword": "comment choisir un taille haie sans fil",
+            "slug": "comment-choisir-un-taille-haie-sans-fil",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": "RYOBI RY18HT50A-0 18V One+ avis",
+            "slug": "ryobi-ry18ht50a-0-18v-one-avis",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-thermique-perche",
