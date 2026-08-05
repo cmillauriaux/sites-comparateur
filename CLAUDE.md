@@ -131,6 +131,26 @@ AMAZON_AFFILIATE_ID_US
 AMAZON_AFFILIATE_ID_GB
 ```
 
+Google Search Console — **no secret**. The `madcat-studio.com` GCP org enforces
+`constraints/iam.disableServiceAccountKeyCreation`, so `GSC_SERVICE_ACCOUNT_KEY`
+cannot exist. `gsc-indexing.yml` authenticates via Workload Identity Federation
+instead: the job mints an OIDC token (`permissions: id-token: write`),
+`google-github-actions/auth` exchanges it for short-lived credentials, and
+`googleAuthCredentials()` in [lib/env.js](packages/scripts/lib/env.js) falls
+through to Application Default Credentials. The federation is pinned to this
+repo — widening it means editing the `attribute.repository` binding:
+
+```
+project        jardinguide-gsc (297376749169)
+pool/provider  workloadIdentityPools/github/providers/github
+service acct   gsc-indexing@jardinguide-gsc.iam.gserviceaccount.com
+bound to       attribute.repository/cmillauriaux/sites-comparateur
+```
+
+The service account must be **Owner** on each GSC property (the Indexing API
+rejects anything lower). Locally, run `gcloud auth application-default login`
+rather than looking for a key.
+
 Add these to the brief's [section 8](claude-code-guide-affiliation-sites.md) secrets list. The legacy `AMAZON_AFFILIATE_ID` (no suffix) is retired — `buildAmazonUrl` only reads `AMAZON_AFFILIATE_ID_<MARKET>`.
 
 ## Anti-spam AI — what the pipeline enforces and what stays manual

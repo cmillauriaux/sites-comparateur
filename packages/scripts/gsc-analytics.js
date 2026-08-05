@@ -28,7 +28,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { google } from 'googleapis';
-import { DATA_DIR, requireEnv } from './lib/env.js';
+import { DATA_DIR, googleAuthCredentials } from './lib/env.js';
 import { readPublished, writePublished } from './lib/queue.js';
 import { loadSiteConfig, parseArgs, resolveTargets, isLaunched, siteId } from './lib/site-config.js';
 
@@ -70,9 +70,8 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   const targets = resolveTargets(args);
 
-  const credentials = JSON.parse(requireEnv('GSC_SERVICE_ACCOUNT_KEY'));
   const auth = new google.auth.GoogleAuth({
-    credentials,
+    ...googleAuthCredentials(),
     scopes: ['https://www.googleapis.com/auth/webmasters.readonly'],
   });
   const searchconsole = google.searchconsole({ version: 'v1', auth });
