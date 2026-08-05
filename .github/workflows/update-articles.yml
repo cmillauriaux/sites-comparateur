@@ -24,6 +24,12 @@ jobs:
       NICHE:  ${{ matrix.niche }}
       MARKET: ${{ matrix.market }}
       SITE:   ${{ matrix.niche }}-${{ matrix.market }}
+      # Job-level (not step-level): AffiliateButton.astro resolves the Associates
+      # tag at BUILD time, so `astro build` needs these too — not just the
+      # content-updater step. Missing here = untagged Amazon links in prod.
+      AMAZON_AFFILIATE_ID_FR:     ${{ secrets.AMAZON_AFFILIATE_ID_FR }}
+      AMAZON_AFFILIATE_ID_US:     ${{ secrets.AMAZON_AFFILIATE_ID_US }}
+      AMAZON_AFFILIATE_ID_GB:     ${{ secrets.AMAZON_AFFILIATE_ID_GB }}
 
     steps:
       - uses: actions/checkout@v4
@@ -49,9 +55,6 @@ jobs:
       - name: Refresh oldest articles
         env:
           CLAUDE_CODE_OAUTH_TOKEN:    ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          AMAZON_AFFILIATE_ID_FR:     ${{ secrets.AMAZON_AFFILIATE_ID_FR }}
-          AMAZON_AFFILIATE_ID_US:     ${{ secrets.AMAZON_AFFILIATE_ID_US }}
-          AMAZON_AFFILIATE_ID_GB:     ${{ secrets.AMAZON_AFFILIATE_ID_GB }}
           AWIN_PUBLISHER_ID:          ${{ secrets.AWIN_PUBLISHER_ID }}
           AWIN_LEROY_MERLIN_ID:       ${{ secrets.AWIN_LEROY_MERLIN_ID }}
           AWIN_BOULANGER_ID:          ${{ secrets.AWIN_BOULANGER_ID }}
@@ -78,6 +81,11 @@ jobs:
             pnpm --filter "./sites/$NICHE/$MARKET" build
             echo "DEPLOY=1" >> "$GITHUB_ENV"
           fi
+
+      - name: Assert Amazon CTAs carry the Associates tag
+        if: env.DEPLOY == '1'
+        # Fails the run before deploy if the tag didn't reach `astro build`.
+        run: node packages/scripts/check-affiliate-tags.js --niche "$NICHE" --market "$MARKET"
 
       - name: Deploy if changed
         if: env.DEPLOY == '1'

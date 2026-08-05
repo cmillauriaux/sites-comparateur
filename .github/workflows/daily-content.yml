@@ -54,6 +54,12 @@ jobs:
       NICHE:  ${{ matrix.niche }}
       MARKET: ${{ matrix.market }}
       SITE:   ${{ matrix.niche }}-${{ matrix.market }}
+      # Job-level (not step-level): AffiliateButton.astro resolves the Associates
+      # tag at BUILD time, so `astro build` needs these too — not just the
+      # article-generator step. Missing here = untagged Amazon links in prod.
+      AMAZON_AFFILIATE_ID_FR:     ${{ secrets.AMAZON_AFFILIATE_ID_FR }}
+      AMAZON_AFFILIATE_ID_US:     ${{ secrets.AMAZON_AFFILIATE_ID_US }}
+      AMAZON_AFFILIATE_ID_GB:     ${{ secrets.AMAZON_AFFILIATE_ID_GB }}
       MANUAL_SITE: ${{ github.event.inputs.site }}
       TRIGGER_CRON: ${{ github.event.schedule }}
       FORCE_SLOT: ${{ github.event.inputs.force_slot }}
@@ -139,9 +145,6 @@ jobs:
           DATAFORSEO_PASSWORD:        ${{ secrets.DATAFORSEO_PASSWORD }}
           PEXELS_API_KEY:             ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY:            ${{ secrets.PIXABAY_API_KEY }}
-          AMAZON_AFFILIATE_ID_FR:     ${{ secrets.AMAZON_AFFILIATE_ID_FR }}
-          AMAZON_AFFILIATE_ID_US:     ${{ secrets.AMAZON_AFFILIATE_ID_US }}
-          AMAZON_AFFILIATE_ID_GB:     ${{ secrets.AMAZON_AFFILIATE_ID_GB }}
           AWIN_PUBLISHER_ID:          ${{ secrets.AWIN_PUBLISHER_ID }}
           AWIN_LEROY_MERLIN_ID:       ${{ secrets.AWIN_LEROY_MERLIN_ID }}
           AWIN_BOULANGER_ID:          ${{ secrets.AWIN_BOULANGER_ID }}
@@ -175,6 +178,11 @@ jobs:
       - if: env.SKIP != '1'
         name: Build site
         run: pnpm --filter "./sites/$NICHE/$MARKET" build
+
+      - if: env.SKIP != '1'
+        name: Assert Amazon CTAs carry the Associates tag
+        # Fails the run before deploy if the tag didn't reach `astro build`.
+        run: node packages/scripts/check-affiliate-tags.js --niche "$NICHE" --market "$MARKET"
 
       - if: env.SKIP != '1'
         name: Deploy to Cloudflare Pages
