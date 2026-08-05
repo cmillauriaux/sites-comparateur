@@ -448,5 +448,24 @@
     "intent": "comparatif",
     "publishedAt": "2026-08-01T20:01:04.980Z",
     "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/robot-tondeuse-1000m2/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "robot tondeuse 1000m2",
+    "secondaryKeywords": [
+      "robot tondeuse 2000m2",
+      "robot tondeuse pour 5000m2",
+      "meilleur robot tondeuse 500m2",
+      "robot tondeuse grandes surfaces",
+      "robot tondeuse pour 1000m2",
+      "robot tondeuse 800m2",
+      "robot tondeuse 4000m2"
+    ],
+    "clusterId": "jardin-bricolage-fr-robot-tondeuse-1000m2",
+    "intent": "comparatif",
+    "publishedAt": "2026-08-05T19:25:52.038Z",
+    "indexationStatus": "pending"
   }
 ]

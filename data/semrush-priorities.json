@@ -162,11 +162,10 @@
           "avis": {
             "keyword": "Bosch Professional GST 18 V-Li S avis",
             "slug": "bosch-professional-gst-18-v-li-s-avis",
-            "status": "failed",
+            "status": "pending",
             "url": null,
             "publishedAt": null,
-            "errorCount": 1,
-            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/bosch-professional-gst-18-v-li-s-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
+            "errorCount": 0
           }
         }
       },
@@ -525,11 +524,10 @@
           "avis": {
             "keyword": "Oregon 91PX AdvanceCut avis",
             "slug": "oregon-91px-advancecut-avis",
-            "status": "failed",
+            "status": "pending",
             "url": null,
             "publishedAt": null,
-            "errorCount": 1,
-            "lastError": "Claude finished but did not write /Users/cedric/projects/perso/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/oregon-91px-advancecut-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
+            "errorCount": 0
           }
         }
       },
@@ -1442,103 +1440,6 @@
         "errorCount": 0
       },
       {
-        "id": "jardin-bricolage-fr-abri-pour-tondeuse-robot",
-        "niche": "jardin-bricolage",
-        "market": "fr",
-        "primaryKeyword": "abri pour tondeuse robot",
-        "secondaryKeywords": [
-          "robot tondeuse 1000m2",
-          "comparatif tondeuse robot",
-          "tondeuse robot husqvarna",
-          "robot tondeuse 2000m2",
-          "robot tondeuse pas cher",
-          "robot tondeuse ecovacs",
-          "lidl robot tondeuse"
-        ],
-        "secondaryDetails": [
-          {
-            "keyword": "robot tondeuse 1000m2",
-            "volume": 1600,
-            "kd": 19,
-            "similarity": 0.5
-          },
-          {
-            "keyword": "comparatif tondeuse robot",
-            "volume": 1600,
-            "kd": 25,
-            "similarity": 0.5
-          },
-          {
-            "keyword": "tondeuse robot husqvarna",
-            "volume": 1600,
-            "kd": 25,
-            "similarity": 0.5
-          },
-          {
-            "keyword": "robot tondeuse 2000m2",
-            "volume": 1300,
-            "kd": 16,
-            "similarity": 0.5
-          },
-          {
-            "keyword": "robot tondeuse pas cher",
-            "volume": 1300,
-            "kd": 19,
-            "similarity": 0.4
-          },
-          {
-            "keyword": "robot tondeuse ecovacs",
-            "volume": 1300,
-            "kd": 22,
-            "similarity": 0.5
-          },
-          {
-            "keyword": "lidl robot tondeuse",
-            "volume": 1300,
-            "kd": 27,
-            "similarity": 0.5
-          }
-        ],
-        "primaryVolume": 1600,
-        "totalVolume": 11600,
-        "avgKD": 21.5,
-        "avgCPC": 0.41,
-        "primaryKD": 19,
-        "score": 334,
-        "intent": "comparatif",
-        "semrushIntent": "informational",
-        "status": "generated",
-        "source": "semrush",
-        "createdAt": "2026-05-10T19:18:21.331Z",
-        "errorCount": 0,
-        "bundle": {
-          "comparatif": {
-            "keyword": "abri pour tondeuse robot",
-            "slug": "abri-pour-tondeuse-robot",
-            "status": "generated",
-            "url": "https://jardinguide.fr/comparatifs/abri-pour-tondeuse-robot/",
-            "publishedAt": "2026-06-07T15:10:48.176Z",
-            "topProductName": "GARDEBRUK Abri Robot Tondeuse 89x90x54cm Toit monopente Anthracite",
-            "topProductAsin": "B0B1QLPD85"
-          },
-          "pillar": {
-            "keyword": "comment choisir un abri pour tondeuse robot",
-            "slug": "comment-choisir-un-abri-pour-tondeuse-robot",
-            "status": "generated",
-            "url": "https://jardinguide.fr/guides/comment-choisir-un-abri-pour-tondeuse-robot/",
-            "publishedAt": "2026-06-09T15:33:45.793Z"
-          },
-          "avis": {
-            "keyword": "GARDEBRUK Abri Robot Tondeuse 89x90x54cm Toit monopente Anthracite avis",
-            "slug": "gardebruk-abri-robot-tondeuse-89x90x54cm-toit-monopente-anthracite-avis",
-            "status": "generated",
-            "url": "https://jardinguide.fr/avis/gardebruk-abri-robot-tondeuse-89x90x54cm-toit-monopente-anthracite-avis/",
-            "publishedAt": "2026-06-13T19:24:03.212Z",
-            "errorCount": 1
-          }
-        }
-      },
-      {
         "id": "jardin-bricolage-fr-brico-depot-nettoyeur-haute-pression",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -2078,6 +1979,79 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-robot-tondeuse-1000m2",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "robot tondeuse 1000m2",
+        "secondaryKeywords": [
+          "robot tondeuse 2000m2",
+          "robot tondeuse pour 5000m2",
+          "meilleur robot tondeuse 500m2",
+          "robot tondeuse grandes surfaces",
+          "robot tondeuse pour 1000m2",
+          "robot tondeuse 800m2",
+          "robot tondeuse 4000m2"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "robot tondeuse 2000m2",
+            "volume": 1300,
+            "kd": 16,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "robot tondeuse pour 5000m2",
+            "volume": 590,
+            "kd": 14,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "meilleur robot tondeuse 500m2",
+            "volume": 590,
+            "kd": 12,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "robot tondeuse grandes surfaces",
+            "volume": 590,
+            "kd": 13,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "robot tondeuse pour 1000m2",
+            "volume": 590,
+            "kd": 18,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "robot tondeuse 800m2",
+            "volume": 480,
+            "kd": 17,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "robot tondeuse 4000m2",
+            "volume": 390,
+            "kd": 12,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 1900,
+        "totalVolume": 6430,
+        "avgKD": 14.9,
+        "avgCPC": 0.35,
+        "primaryKD": 17,
+        "score": 249,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "generated",
+        "source": "semrush-manual-kmt-2026-08-04",
+        "createdAt": "2026-08-05T19:18:51.822Z",
+        "generatedAt": "2026-08-05T19:25:52.033Z",
+        "publishedUrl": "https://jardinguide.fr/comparatifs/robot-tondeuse-1000m2/",
+        "longtail": true
+      },
+      {
         "id": "jardin-bricolage-fr-nettoyeur-haute-pression-à-eau-chaude",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -2218,6 +2192,89 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-abri-pour-tondeuse-robot",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "abri pour tondeuse robot",
+        "secondaryKeywords": [
+          "comparatif tondeuse robot",
+          "tondeuse robot husqvarna",
+          "robot tondeuse pas cher",
+          "robot tondeuse ecovacs",
+          "lidl robot tondeuse"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "comparatif tondeuse robot",
+            "volume": 1600,
+            "kd": 25,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse robot husqvarna",
+            "volume": 1600,
+            "kd": 25,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "robot tondeuse pas cher",
+            "volume": 1300,
+            "kd": 19,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "robot tondeuse ecovacs",
+            "volume": 1300,
+            "kd": 22,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "lidl robot tondeuse",
+            "volume": 1300,
+            "kd": 27,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 1600,
+        "totalVolume": 8700,
+        "avgKD": 22.8,
+        "avgCPC": 0.41,
+        "primaryKD": 19,
+        "score": 237,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "generated",
+        "source": "semrush",
+        "createdAt": "2026-05-10T19:18:21.331Z",
+        "errorCount": 0,
+        "bundle": {
+          "comparatif": {
+            "keyword": "abri pour tondeuse robot",
+            "slug": "abri-pour-tondeuse-robot",
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/abri-pour-tondeuse-robot/",
+            "publishedAt": "2026-06-07T15:10:48.176Z",
+            "topProductName": "GARDEBRUK Abri Robot Tondeuse 89x90x54cm Toit monopente Anthracite",
+            "topProductAsin": "B0B1QLPD85"
+          },
+          "pillar": {
+            "keyword": "comment choisir un abri pour tondeuse robot",
+            "slug": "comment-choisir-un-abri-pour-tondeuse-robot",
+            "status": "generated",
+            "url": "https://jardinguide.fr/guides/comment-choisir-un-abri-pour-tondeuse-robot/",
+            "publishedAt": "2026-06-09T15:33:45.793Z"
+          },
+          "avis": {
+            "keyword": "GARDEBRUK Abri Robot Tondeuse 89x90x54cm Toit monopente Anthracite avis",
+            "slug": "gardebruk-abri-robot-tondeuse-89x90x54cm-toit-monopente-anthracite-avis",
+            "status": "generated",
+            "url": "https://jardinguide.fr/avis/gardebruk-abri-robot-tondeuse-89x90x54cm-toit-monopente-anthracite-avis/",
+            "publishedAt": "2026-06-13T19:24:03.212Z",
+            "errorCount": 1
+          }
+        }
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-autoportée",
@@ -6195,6 +6252,23 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-robot-tondeuse-1000m2-pillar",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "comment choisir robot tondeuse 1000m2",
+        "secondaryKeywords": [],
+        "intent": "guide",
+        "status": "pending",
+        "source": "cluster-pillar",
+        "parentClusterId": "jardin-bricolage-fr-robot-tondeuse-1000m2",
+        "parentPublishedUrl": "https://jardinguide.fr/comparatifs/robot-tondeuse-1000m2/",
+        "parentPrimaryKeyword": "robot tondeuse 1000m2",
+        "score": 249,
+        "totalVolume": 6430,
+        "avgKD": 14.9,
+        "createdAt": "2026-08-05T19:25:52.034Z"
       }
     ]
   },

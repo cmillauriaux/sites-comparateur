@@ -1,0 +1,16 @@
+{
+  "productName": "Sunseeker S4",
+  "candidates": [
+    {
+      "asin": "B0GH7LYB5Z",
+      "title": "Sunseeker S4 Robot Tondeuse sans Fil Périphérique pour 1000 m² – LiDAR 360° et Vision IA, Cartographie Automatique, Évitement Intelligent des Obstacles, Multi-Zones, Contrôle Via Application"
+    },
+    {
+      "asin": "B0G7ZFMQZ5",
+      "title": "Sunseeker Tondeuse Robot S4 LiDAR pour jusqu'à 1000 m², Vision AI + Navigation 3D LiDAR 360°, sans Fil, Limite virtuelle, Tonte systématique, Inclinaison de 42%, contrôle par Application, 60 DB"
+    }
+  ],
+  "pick": "A",
+  "pickedAsin": "B0GH7LYB5Z",
+  "decidedAt": "2026-08-05T19:25:50.729Z"
+}
