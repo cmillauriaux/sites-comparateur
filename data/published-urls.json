@@ -41,8 +41,9 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-03-20T20:11:19.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:48.328Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-scie-sauteuse/",
@@ -53,8 +54,9 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-03-22T14:15:22.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:49.440Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/tondeuse-a-gazon/",
@@ -65,8 +67,9 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-03-29T17:42:23.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:50.570Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-tondeuse-a-gazon/",
@@ -77,8 +80,9 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-04-01T18:40:37.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:51.726Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/robot-tondeuse-parkside/",
@@ -89,8 +93,9 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-04-09T08:31:28.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:52.825Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-robot-tondeuse-parkside/",
@@ -101,8 +106,9 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-04-12T11:46:40.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:53.986Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/chaine-tronconneuse/",
@@ -113,8 +119,9 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-04-18T18:23:53.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:55.145Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-chaine-tronconneuse/",
@@ -125,8 +132,9 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-04-21T19:00:48.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:56.265Z"
   },
   {
     "url": "https://jardinguide.fr/avis/stiga-combi-53-s-avis/",
@@ -137,8 +145,9 @@
     "bundleSlot": "avis",
     "intent": "avis",
     "publishedAt": "2026-04-29T15:58:19.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:57.377Z"
   },
   {
     "url": "https://jardinguide.fr/avis/segway-navimow-i105e-avis/",
@@ -149,8 +158,9 @@
     "bundleSlot": "avis",
     "intent": "avis",
     "publishedAt": "2026-04-30T21:08:56.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:58.433Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/souffleur-de-feuilles/",
@@ -161,8 +171,9 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-05-03T08:52:47.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:13:59.562Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-souffleur-de-feuilles/",
@@ -173,8 +184,9 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-05-03T18:34:23.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:00.723Z"
   },
   {
     "url": "https://jardinguide.fr/avis/ryobi-obl1820s-18v-one-avis/",
@@ -185,8 +197,9 @@
     "bundleSlot": "avis",
     "intent": "avis",
     "publishedAt": "2026-05-04T08:53:38.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:01.885Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/tondeuse-husqvarna-robot/",
@@ -197,8 +210,9 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-05-04T11:49:09.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:03.002Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-tondeuse-husqvarna-robot/",
@@ -209,8 +223,9 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-05-05T14:59:33.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:04.136Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/lavor-nettoyeur-haute-pression/",
@@ -221,8 +236,9 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-05-06T19:58:04.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:05.281Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-lavor-nettoyeur-haute-pression/",
@@ -233,8 +249,9 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-05-07T21:24:48.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:06.344Z"
   },
   {
     "url": "https://jardinguide.fr/avis/lavor-galaxy-160-essential-gl-avis/",
@@ -245,8 +262,9 @@
     "bundleSlot": "avis",
     "intent": "avis",
     "publishedAt": "2026-05-08T14:48:50.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:07.414Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/taille-haie-sur-perche-thermique/",
@@ -257,8 +275,9 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-05-10T09:45:34.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:08.562Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-taille-haie-sur-perche-thermique/",
@@ -269,8 +288,9 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-05-10T19:18:12.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:09.725Z"
   },
   {
     "url": "https://jardinguide.fr/avis/gt-garden-taille-haie-thermique-sur-perche-52cc-avis/",
@@ -281,8 +301,9 @@
     "bundleSlot": "avis",
     "intent": "avis",
     "publishedAt": "2026-05-12T20:05:37.000Z",
-    "indexationStatus": "pending",
-    "seedRun": true
+    "indexationStatus": "submitted",
+    "seedRun": true,
+    "submittedAt": "2026-08-05T20:14:10.846Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/abri-pour-tondeuse-robot/",
@@ -293,7 +314,8 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-06-07T15:10:48.186Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:12.009Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-abri-pour-tondeuse-robot/",
@@ -304,7 +326,8 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-06-09T15:33:45.808Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:13.137Z"
   },
   {
     "url": "https://cuisineexpert.fr/comparatifs/barista-machine-a-cafe/",
@@ -326,7 +349,8 @@
     "bundleSlot": "avis",
     "intent": "avis",
     "publishedAt": "2026-06-13T19:24:03.236Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:14.308Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/robot-tondeuse-sans-fil-peripherique-gps/",
@@ -337,7 +361,8 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-06-15T08:38:33.790Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:15.405Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-robot-tondeuse-sans-fil-peripherique-gps/",
@@ -348,7 +373,8 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-06-16T20:03:23.772Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:16.522Z"
   },
   {
     "url": "https://cuisineexpert.fr/guides/comment-choisir-un-barista-machine-a-cafe/",
@@ -370,7 +396,8 @@
     "bundleSlot": "avis",
     "intent": "avis",
     "publishedAt": "2026-06-28T15:05:58.879Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:17.685Z"
   },
   {
     "url": "https://cuisineexpert.fr/avis/sage-the-barista-express-avis/",
@@ -403,7 +430,8 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-07-03T12:35:48.390Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:18.896Z"
   },
   {
     "url": "https://jardinguide.fr/guides/comment-choisir-un-tondeuse-robot/",
@@ -414,7 +442,8 @@
     "bundleSlot": "pillar",
     "intent": "guide",
     "publishedAt": "2026-07-04T11:57:19.741Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:19.988Z"
   },
   {
     "url": "https://cuisineexpert.fr/avis/neretva-machine-a-cafe-20-bar-compacte-avis/",
@@ -447,7 +476,8 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-08-01T20:01:04.980Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:21.203Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/robot-tondeuse-1000m2/",
@@ -466,6 +496,7 @@
     "clusterId": "jardin-bricolage-fr-robot-tondeuse-1000m2",
     "intent": "comparatif",
     "publishedAt": "2026-08-05T19:25:52.038Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-05T20:14:22.321Z"
   }
 ]
