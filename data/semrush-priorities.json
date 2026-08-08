@@ -6878,7 +6878,8 @@
             "slug": "comment-choisir-un-extracteur-de-jus-a-froid",
             "status": "pending",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1
           },
           "avis": {
             "keyword": "Fretta Extracteur de Jus avis",
