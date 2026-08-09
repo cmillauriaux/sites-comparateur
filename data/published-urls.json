@@ -498,5 +498,16 @@
     "publishedAt": "2026-08-05T19:25:52.038Z",
     "indexationStatus": "submitted",
     "submittedAt": "2026-08-05T20:14:22.321Z"
+  },
+  {
+    "url": "https://jardinguide.fr/avis/bosch-professional-gst-18-v-li-s-avis/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "Bosch Professional GST 18 V-Li S avis",
+    "bundleId": "jardin-bricolage-fr-scie-sauteuse",
+    "bundleSlot": "avis",
+    "intent": "avis",
+    "publishedAt": "2026-08-09T15:01:34.338Z",
+    "indexationStatus": "pending"
   }
 ]

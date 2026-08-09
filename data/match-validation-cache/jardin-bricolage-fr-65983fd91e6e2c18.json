@@ -1,0 +1,28 @@
+{
+  "productName": "Bosch Professional GST 18V-Li S",
+  "candidates": [
+    {
+      "asin": "B0BS9RND5N",
+      "title": "Bosch Professional 18V System scie sauteuse sans-fil GST 18V-125 B (avec poignée étrier, coupes inclinées jusqu’à un angle de 45°, dans L-BOXX)"
+    },
+    {
+      "asin": "B0BS9TZZN2",
+      "title": "Bosch Professional 18V System scie sauteuse sans-fil GST 18V-125 B (avec poignée étrier, coupes inclinées jusqu’à un angle de 45°, 1 lame de scie, set d’aspiration)"
+    },
+    {
+      "asin": "B07RCWP9XC",
+      "title": "Bosch Professional GST 18V-LI S (avec 2 batteries 4,0 Ah + chargeur, 3 lames pour bois, capot de recouvrement, calage L-BOXX, L-BOXX 136)"
+    },
+    {
+      "asin": "B07RCHF6RC",
+      "title": "Bosch Professional 18V System scie sauteuse sans-fil GST 18V-LI B (avec 2 batteries 4,0 Ah, chargeur rapide, 3 lames, capot de recouvrement, dans L-BOXX 136)"
+    },
+    {
+      "asin": "B0C3VMBCY5",
+      "title": "Bosch Professional 18V System scie sauteuse sans-fil GST 18V-125 S (idéale pour les coupes courbes, porte-lame SDS, avec 1 lame de scie sauteuse, set d’aspiration, dans L-BOXX)"
+    }
+  ],
+  "pick": "C",
+  "pickedAsin": "B07RCWP9XC",
+  "decidedAt": "2026-08-09T15:01:32.707Z"
+}
