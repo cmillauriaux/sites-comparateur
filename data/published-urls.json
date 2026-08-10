@@ -508,6 +508,7 @@
     "bundleSlot": "avis",
     "intent": "avis",
     "publishedAt": "2026-08-09T15:01:34.338Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-08-10T09:53:14.213Z"
   }
 ]
