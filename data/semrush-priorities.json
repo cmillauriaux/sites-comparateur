@@ -527,7 +527,7 @@
             "status": "pending",
             "url": null,
             "publishedAt": null,
-            "errorCount": 0
+            "errorCount": 1
           }
         }
       },
