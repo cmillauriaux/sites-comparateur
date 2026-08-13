@@ -524,10 +524,11 @@
           "avis": {
             "keyword": "Oregon 91PX AdvanceCut avis",
             "slug": "oregon-91px-advancecut-avis",
-            "status": "pending",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
-            "errorCount": 2
+            "errorCount": 3,
+            "lastError": "Claude finished but did not write /home/runner/work/sites-comparateur/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/oregon-91px-advancecut-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           }
         }
       },
