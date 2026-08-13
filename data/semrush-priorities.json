@@ -6876,10 +6876,11 @@
           "pillar": {
             "keyword": "comment choisir un extracteur de jus à froid",
             "slug": "comment-choisir-un-extracteur-de-jus-a-froid",
-            "status": "pending",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
-            "errorCount": 2
+            "errorCount": 3,
+            "lastError": "Claude finished but did not write /home/runner/work/sites-comparateur/sites-comparateur/sites/cuisine/fr/src/content/articles/comment-choisir-un-extracteur-de-jus-a-froid.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           },
           "avis": {
             "keyword": "Fretta Extracteur de Jus avis",
