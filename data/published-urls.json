@@ -510,5 +510,16 @@
     "publishedAt": "2026-08-09T15:01:34.338Z",
     "indexationStatus": "submitted",
     "submittedAt": "2026-08-10T09:53:14.213Z"
+  },
+  {
+    "url": "https://jardinguide.fr/guides/comment-choisir-un-taille-haie-sans-fil/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "comment choisir un taille haie sans fil",
+    "bundleId": "jardin-bricolage-fr-taille-haie-sans-fil",
+    "bundleSlot": "pillar",
+    "intent": "guide",
+    "publishedAt": "2026-08-16T14:47:50.098Z",
+    "indexationStatus": "pending"
   }
 ]
