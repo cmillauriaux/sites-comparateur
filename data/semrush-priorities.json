@@ -1797,7 +1797,8 @@
             "slug": "ryobi-ry18ht50a-0-18v-one-avis",
             "status": "pending",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1
           }
         }
       },
