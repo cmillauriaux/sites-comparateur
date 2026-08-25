@@ -1795,10 +1795,11 @@
           "avis": {
             "keyword": "RYOBI RY18HT50A-0 18V One+ avis",
             "slug": "ryobi-ry18ht50a-0-18v-one-avis",
-            "status": "pending",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
-            "errorCount": 2
+            "errorCount": 3,
+            "lastError": "Claude finished but did not write /home/runner/work/sites-comparateur/sites-comparateur/sites/jardin-bricolage/fr/src/content/articles/ryobi-ry18ht50a-0-18v-one-avis.mdx (possible ERROR_INSUFFICIENT_SOURCES)"
           }
         }
       },
