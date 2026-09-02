@@ -6890,7 +6890,8 @@
             "slug": "fretta-extracteur-de-jus-avis",
             "status": "pending",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1
           }
         }
       },
