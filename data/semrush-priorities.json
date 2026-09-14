@@ -1888,7 +1888,8 @@
             "slug": "comment-choisir-un-taille-haie-thermique-perche",
             "status": "pending",
             "url": null,
-            "publishedAt": null
+            "publishedAt": null,
+            "errorCount": 1
           },
           "avis": {
             "keyword": null,
