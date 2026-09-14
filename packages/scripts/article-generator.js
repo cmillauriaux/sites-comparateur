@@ -962,6 +962,35 @@ async function runBundle(targets) {
     console.log(`\n📦 BUNDLE ${pick.opp.id} → slot=${pick.slot} (${pick.kind})`);
     console.log(`   keyword="${slotMeta.keyword}" slug="${slotMeta.slug}"`);
 
+    // L'article de ce slot est-il déjà sur le disque ?
+    //
+    // Cas réel observé du 5 août au 14 septembre 2026 : un slot dont l'article
+    // avait été généré ET publié restait sélectionné à chaque run. generateArticle
+    // levait `output already exists`, le catch tentait d'incrémenter errorCount
+    // sur un bundle absent du disque (pick.kind === 'bundle-fresh' : il n'a
+    // jamais été persisté), donc n'écrivait rien, donc ne committait rien — et
+    // le run suivant repartait à l'identique. Quarante jours sans publication,
+    // 140 opportunités bloquées derrière un article déjà en ligne.
+    //
+    // Un fichier de sortie présent ne signifie pas « erreur » mais « déjà fait ».
+    // On enregistre le slot comme livré et on laisse le picker passer au suivant.
+    const existingPath = join(
+      resolve(SITES_DIR, niche, market, 'src/content/articles'),
+      `${asciiSlug(slotMeta.keyword)}.mdx`,
+    );
+    if (existsSync(existingPath)) {
+      const knownUrl = bundleSlotUrl({ siteOrigin, market, slot: pick.slot, keyword: slotMeta.keyword });
+      console.log(`   ↷ article déjà présent (${existingPath}) — slot marqué livré, passage au suivant`);
+      const fresh = readPriorities();
+      const target = fresh?.[niche]?.[market]?.find(o => o.id === pick.opp.id);
+      if (target) {
+        if (!target.bundle) initBundle(target, market);
+        markBundleSlotShipped(target, pick.slot, { url: knownUrl });
+        writePriorities(fresh);
+      }
+      continue;
+    }
+
     // Parent comparatif URL/title for pillar + avis slots — used by the
     // prompts to insert mandatory cross-links into the live comparatif.
     let parentComparatifUrl, parentComparatifTitle;
@@ -1036,7 +1065,12 @@ async function runBundle(targets) {
       console.error(`❌ Bundle ${pick.opp.id} slot=${pick.slot} failed: ${err.message}`);
       const fresh = readPriorities();
       const target = fresh?.[niche]?.[market]?.find(o => o.id === pick.opp.id);
-      if (target?.bundle) {
+      if (target) {
+        // Le bundle peut ne pas exister sur disque : il vient d'être initialisé en
+        // mémoire pour ce run (pick.kind === 'bundle-fresh'). Sans cette
+        // initialisation ici, errorCount n'était jamais écrit, la règle des trois
+        // échecs ne se déclenchait pas, et le même slot était retenté indéfiniment.
+        if (!target.bundle) initBundle(target, market);
         target.bundle[pick.slot].errorCount = (target.bundle[pick.slot].errorCount || 0) + 1;
         if (target.bundle[pick.slot].errorCount >= 3) markBundleSlotFailed(target, pick.slot, err.message);
         writePriorities(fresh);
