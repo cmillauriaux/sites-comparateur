@@ -1869,10 +1869,35 @@
         "score": 274,
         "intent": "comparatif",
         "semrushIntent": "commercial",
-        "status": "pending",
+        "status": "partial",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "errorCount": 0
+        "errorCount": 0,
+        "bundle": {
+          "comparatif": {
+            "keyword": "taille haie thermique perche",
+            "slug": "taille-haie-thermique-perche",
+            "status": "generated",
+            "url": "https://jardinguide.fr/comparatifs/taille-haie-thermique-perche/",
+            "publishedAt": "2026-09-14T14:58:40.516Z",
+            "topProductName": null,
+            "topProductAsin": null
+          },
+          "pillar": {
+            "keyword": "comment choisir un taille haie thermique perche",
+            "slug": "comment-choisir-un-taille-haie-thermique-perche",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "jardin-bricolage-fr-guide-tronconneuse",
