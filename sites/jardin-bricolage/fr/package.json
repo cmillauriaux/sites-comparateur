@@ -9,7 +9,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "indexnow": "INDEXNOW_DOMAIN=jardinguide.fr INDEXNOW_KEY=2bed292228cd42970a95c1f2300286b2 node scripts/indexnow-submit.mjs --sitemap ./dist/sitemap-0.xml",
+    "indexnow:all": "npm run indexnow -- --all",
+    "indexnow:dry": "npm run indexnow -- --dry-run"
   },
   "dependencies": {
     "@comparateur/config": "workspace:*",
