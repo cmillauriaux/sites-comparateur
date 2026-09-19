@@ -1886,10 +1886,11 @@
           "pillar": {
             "keyword": "comment choisir un taille haie thermique perche",
             "slug": "comment-choisir-un-taille-haie-thermique-perche",
-            "status": "pending",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
-            "errorCount": 2
+            "errorCount": 3,
+            "lastError": "claude CLI exited with status 1"
           },
           "avis": {
             "keyword": null,
