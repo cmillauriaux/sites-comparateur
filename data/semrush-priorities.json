@@ -1963,7 +1963,33 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "errorCount": 0
+        "errorCount": 0,
+        "bundle": {
+          "comparatif": {
+            "keyword": "meilleur tronconneuse",
+            "slug": "meilleur-tronconneuse",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 1
+          },
+          "pillar": {
+            "keyword": "comment choisir un tronconneuse",
+            "slug": "comment-choisir-un-tronconneuse",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-electrique",
