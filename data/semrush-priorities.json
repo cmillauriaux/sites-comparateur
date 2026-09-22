@@ -1968,12 +1968,13 @@
           "comparatif": {
             "keyword": "meilleur tronconneuse",
             "slug": "meilleur-tronconneuse",
-            "status": "pending",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
             "topProductName": null,
             "topProductAsin": null,
-            "errorCount": 2
+            "errorCount": 3,
+            "lastError": "claude CLI exited with status 1"
           },
           "pillar": {
             "keyword": "comment choisir un tronconneuse",
