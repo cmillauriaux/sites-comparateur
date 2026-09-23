@@ -2177,7 +2177,33 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "errorCount": 0
+        "errorCount": 0,
+        "bundle": {
+          "comparatif": {
+            "keyword": "nettoyeur haute pression à eau chaude",
+            "slug": "nettoyeur-haute-pression-a-eau-chaude",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 1
+          },
+          "pillar": {
+            "keyword": "comment choisir un nettoyeur haute pression à eau chaude",
+            "slug": "comment-choisir-un-nettoyeur-haute-pression-a-eau-chaude",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "jardin-bricolage-fr-lames-scie-sauteuse",
