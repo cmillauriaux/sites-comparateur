@@ -2275,7 +2275,33 @@
         "status": "pending",
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
-        "errorCount": 0
+        "errorCount": 0,
+        "bundle": {
+          "comparatif": {
+            "keyword": "lames scie sauteuse",
+            "slug": "lames-scie-sauteuse",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 1
+          },
+          "pillar": {
+            "keyword": "comment choisir un lames scie sauteuse",
+            "slug": "comment-choisir-un-lames-scie-sauteuse",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "jardin-bricolage-fr-abri-pour-tondeuse-robot",
