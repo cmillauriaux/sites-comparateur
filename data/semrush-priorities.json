@@ -7022,10 +7022,11 @@
           "avis": {
             "keyword": "Fretta Extracteur de Jus avis",
             "slug": "fretta-extracteur-de-jus-avis",
-            "status": "pending",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
-            "errorCount": 2
+            "errorCount": 3,
+            "lastError": "claude CLI exited with status 1"
           }
         }
       },
