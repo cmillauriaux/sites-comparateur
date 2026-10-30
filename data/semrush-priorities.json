@@ -7228,7 +7228,33 @@
         "createdAt": "2026-05-12T21:14:52.499Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "robot patissier professionnelle",
+            "slug": "robot-patissier-professionnelle",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 1
+          },
+          "pillar": {
+            "keyword": "comment choisir un robot patissier professionnelle",
+            "slug": "comment-choisir-un-robot-patissier-professionnelle",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "cuisine-fr-artichaut-cuisson-autocuiseur",
