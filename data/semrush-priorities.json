@@ -7674,7 +7674,33 @@
         "createdAt": "2026-05-12T21:14:52.499Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "machine a cafe a grain compacte",
+            "slug": "machine-a-cafe-a-grain-compacte",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 1
+          },
+          "pillar": {
+            "keyword": "comment choisir un machine a cafe a grain compacte",
+            "slug": "comment-choisir-un-machine-a-cafe-a-grain-compacte",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "cuisine-fr-pomme-de-terre-roties-air-fryer",
