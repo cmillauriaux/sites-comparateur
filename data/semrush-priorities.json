@@ -2841,12 +2841,13 @@
           "comparatif": {
             "keyword": "robot tondeuse husqvarna 600m2",
             "slug": "robot-tondeuse-husqvarna-600m2",
-            "status": "pending",
+            "status": "failed",
             "url": null,
             "publishedAt": null,
             "topProductName": null,
             "topProductAsin": null,
-            "errorCount": 2
+            "errorCount": 3,
+            "lastError": "claude CLI exited with status 1"
           },
           "pillar": {
             "keyword": "comment choisir un robot tondeuse husqvarna 600m2",
