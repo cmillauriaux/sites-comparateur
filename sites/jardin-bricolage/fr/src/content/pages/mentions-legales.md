@@ -42,8 +42,4 @@ Voir notre [politique de confidentialité](/politique-confidentialite/).
 
 ## Droit applicable
 
-Les présentes mentions sont régies par le **droit français**. À défaut de
-résolution amiable, tout litige relève des **juridictions françaises
-compétentes**, sans préjudice des dispositions impératives protectrices dont
-bénéficie le consommateur dans son pays de résidence. Le consommateur peut
-recourir gratuitement à un **médiateur de la consommation**.
+Les présentes mentions sont régies par le droit français. Si vous agissez en qualité de consommateur et résidez dans l'Union européenne, vous conservez la protection des dispositions impératives de la loi de votre pays de résidence. Pour les litiges avec un professionnel, le tribunal de commerce de Nantes (France) est seul compétent. Le consommateur peut saisir, à son choix, la juridiction territorialement compétente ou celle du lieu où il demeure, et recourir gratuitement à un médiateur de la consommation.
