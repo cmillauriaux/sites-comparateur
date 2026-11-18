@@ -7947,7 +7947,33 @@
         "createdAt": "2026-05-12T21:14:52.499Z",
         "generatedAt": null,
         "publishedUrl": null,
-        "longtail": true
+        "longtail": true,
+        "bundle": {
+          "comparatif": {
+            "keyword": "location machine a cafe pour restaurant",
+            "slug": "location-machine-a-cafe-pour-restaurant",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null,
+            "topProductName": null,
+            "topProductAsin": null,
+            "errorCount": 1
+          },
+          "pillar": {
+            "keyword": "comment choisir un location machine a cafe pour restaurant",
+            "slug": "comment-choisir-un-location-machine-a-cafe-pour-restaurant",
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          },
+          "avis": {
+            "keyword": null,
+            "slug": null,
+            "status": "pending",
+            "url": null,
+            "publishedAt": null
+          }
+        }
       },
       {
         "id": "cuisine-fr-cafetiere-filtre-manuelle",
