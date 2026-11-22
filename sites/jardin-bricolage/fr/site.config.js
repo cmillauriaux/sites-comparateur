@@ -89,6 +89,7 @@ export default {
     },
   },
 
+  amazonAffiliateId: 'mcs05e8-21',
   affiliatePrograms: ['amazon-fr', 'awin-leroy-merlin', 'awin-mr-bricolage', 'awin-castorama'],
 
   // Publisher Organization sameAs — populates the JSON-LD social proof

@@ -51,7 +51,7 @@ if (isNonAffiliate) {
   label = market === 'fr' ? `Voir sur ${merchantLabel}` : `View on ${merchantLabel}`;
 } else {
   const tagEnvKey = `AMAZON_AFFILIATE_ID_${market.toUpperCase()}`;
-  const amazonTag = import.meta.env[tagEnvKey] || process.env[tagEnvKey] || '';
+  const amazonTag = siteConfig.amazonAffiliateId || import.meta.env[tagEnvKey] || process.env[tagEnvKey] || '';
   finalHref = href || buildAmazonUrl({ asin, query: product, market, tag: amazonTag });
   finalVariant = variant;
   rel = 'sponsored nofollow noopener';

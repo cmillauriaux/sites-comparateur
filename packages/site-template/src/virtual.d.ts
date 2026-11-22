@@ -52,6 +52,7 @@ declare module 'virtual:site-config' {
     heroBlurb?: string;
     keywords?: Record<string, unknown>;
     theme?: SiteTheme;
+    amazonAffiliateId?: string;
     affiliatePrograms?: string[];
     [key: string]: unknown;
   }
