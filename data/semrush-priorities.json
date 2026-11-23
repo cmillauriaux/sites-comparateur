@@ -2,6 +2,150 @@
   "jardin-bricolage": {
     "fr": [
       {
+        "id": "jardin-bricolage-fr-tondeuse-robot",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tondeuse robot",
+        "secondaryKeywords": [
+          "robot tondeuse sans fil périphérique",
+          "robot tondeuse husqvarna",
+          "robot tondeuse sans fil",
+          "robot tondeuse worx",
+          "abri tondeuse robot",
+          "robot tondeuse gardena",
+          "robot tondeuse parkside performance"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "robot tondeuse sans fil périphérique",
+            "volume": 14800,
+            "kd": 20,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "robot tondeuse husqvarna",
+            "volume": 14800,
+            "kd": 27,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "robot tondeuse sans fil",
+            "volume": 8100,
+            "kd": 24,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "robot tondeuse worx",
+            "volume": 3600,
+            "kd": 23,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "abri tondeuse robot",
+            "volume": 1900,
+            "kd": 23,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "robot tondeuse gardena",
+            "volume": 1900,
+            "kd": 29,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "robot tondeuse parkside performance",
+            "volume": 1600,
+            "kd": 19,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 22200,
+        "totalVolume": 68900,
+        "avgKD": 23.6,
+        "avgCPC": 0.48,
+        "primaryKD": 24,
+        "score": 1913,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-taille-haie",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "taille haie",
+        "secondaryKeywords": [
+          "taille haie telescopique",
+          "taille haie electrique",
+          "taille haie ryobi",
+          "taille-haie",
+          "lidl taille haie",
+          "taille haie sur batterie",
+          "taille-haie électrique"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "taille haie telescopique",
+            "volume": 12100,
+            "kd": 28,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "taille haie electrique",
+            "volume": 9900,
+            "kd": 26,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "taille haie ryobi",
+            "volume": 5400,
+            "kd": 23,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "taille-haie",
+            "volume": 4400,
+            "kd": 25,
+            "similarity": 1
+          },
+          {
+            "keyword": "lidl taille haie",
+            "volume": 2900,
+            "kd": 24,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "taille haie sur batterie",
+            "volume": 2400,
+            "kd": 20,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "taille-haie électrique",
+            "volume": 2400,
+            "kd": 21,
+            "similarity": 0.67
+          }
+        ],
+        "primaryVolume": 33100,
+        "totalVolume": 72600,
+        "avgKD": 23.5,
+        "avgCPC": 0.23,
+        "primaryKD": 21,
+        "score": 1624,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.016Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-taille-haie-thermique",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -895,6 +1039,80 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-perceuse-visseuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "perceuse visseuse",
+        "secondaryKeywords": [
+          "makita visseuse perceuse",
+          "visseuse perceuse parkside",
+          "lidl perceuse visseuse",
+          "perceuse-visseuse",
+          "perceuse visseuse ryobi",
+          "ryobi perceuse visseuse",
+          "visseuse perceuse dewalt"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "makita visseuse perceuse",
+            "volume": 1900,
+            "kd": 23,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "visseuse perceuse parkside",
+            "volume": 1600,
+            "kd": 25,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "lidl perceuse visseuse",
+            "volume": 1300,
+            "kd": 27,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "perceuse-visseuse",
+            "volume": 1000,
+            "kd": 23,
+            "similarity": 1
+          },
+          {
+            "keyword": "perceuse visseuse ryobi",
+            "volume": 1000,
+            "kd": 26,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "ryobi perceuse visseuse",
+            "volume": 720,
+            "kd": 25,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "visseuse perceuse dewalt",
+            "volume": 590,
+            "kd": 19,
+            "similarity": 0.67
+          }
+        ],
+        "primaryVolume": 14800,
+        "totalVolume": 22910,
+        "avgKD": 24.6,
+        "avgCPC": 0.25,
+        "primaryKD": 29,
+        "score": 501,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "generated",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": "2026-11-23T00:33:54.265Z",
+        "publishedUrl": "https://jardinguide.fr/comparatifs/perceuse-visseuse/",
+        "errorCount": 1,
+        "lastError": "claude CLI exited with status 1"
+      },
+      {
         "id": "jardin-bricolage-fr-visseuse-perceuse",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -1028,6 +1246,150 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-tondeuse-a-gazon-electrique",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tondeuse à gazon électrique",
+        "secondaryKeywords": [
+          "tondeuse a gazon",
+          "tondeuse gazon manuelle",
+          "tondeuse gazon thermique",
+          "tondeuse manuelle pour gazon",
+          "tondeuse thermique gazon",
+          "tondeuse gazon sur batterie",
+          "tondeuse electrique pour gazon"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tondeuse a gazon",
+            "volume": 4400,
+            "kd": 29,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "tondeuse gazon manuelle",
+            "volume": 2400,
+            "kd": 24,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse gazon thermique",
+            "volume": 2400,
+            "kd": 26,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse manuelle pour gazon",
+            "volume": 1900,
+            "kd": 22,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse thermique gazon",
+            "volume": 1900,
+            "kd": 26,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse gazon sur batterie",
+            "volume": 1600,
+            "kd": 21,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse electrique pour gazon",
+            "volume": 1300,
+            "kd": 26,
+            "similarity": 1
+          }
+        ],
+        "primaryVolume": 4400,
+        "totalVolume": 20300,
+        "avgKD": 25,
+        "avgCPC": 0.24,
+        "primaryKD": 26,
+        "score": 432,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "generated",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": "2026-11-23T00:33:54.265Z",
+        "publishedUrl": "https://jardinguide.fr/comparatifs/tondeuse-a-gazon-electrique/"
+      },
+      {
+        "id": "jardin-bricolage-fr-nettoyeur-haute-pression-lidl",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "nettoyeur haute pression lidl",
+        "secondaryKeywords": [
+          "parkside nettoyeur haute pression",
+          "nettoyeur haute pression karcher",
+          "nettoyeur lavor haute pression",
+          "nettoyeur haute pression 180 bars",
+          "nettoyeur haute pression le meilleur",
+          "nettoyeur haute pression style",
+          "nettoyeur haute pression lance"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "parkside nettoyeur haute pression",
+            "volume": 2900,
+            "kd": 20,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur haute pression karcher",
+            "volume": 2900,
+            "kd": 25,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur lavor haute pression",
+            "volume": 1600,
+            "kd": 18,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur haute pression 180 bars",
+            "volume": 1300,
+            "kd": 21,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "nettoyeur haute pression le meilleur",
+            "volume": 880,
+            "kd": 12,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur haute pression style",
+            "volume": 720,
+            "kd": 11,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur haute pression lance",
+            "volume": 720,
+            "kd": 14,
+            "similarity": 0.6
+          }
+        ],
+        "primaryVolume": 3600,
+        "totalVolume": 14620,
+        "avgKD": 18.1,
+        "avgCPC": 0.24,
+        "primaryKD": 24,
+        "score": 424,
+        "intent": "informational",
+        "semrushIntent": "transactional",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-taille-haie-thermique-stihl",
@@ -1439,6 +1801,78 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-taille-haie-electrique",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "taille haie électrique",
+        "secondaryKeywords": [
+          "taille haie perche thermique",
+          "batterie pour taille-haie stihl",
+          "taille haie ryobi batterie",
+          "taille haie telescopique electrique",
+          "taille haie electrique stihl",
+          "taille haie quand",
+          "taille haie télescopique"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "taille haie perche thermique",
+            "volume": 1900,
+            "kd": 15,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "batterie pour taille-haie stihl",
+            "volume": 1900,
+            "kd": 19,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "taille haie ryobi batterie",
+            "volume": 1900,
+            "kd": 25,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "taille haie telescopique electrique",
+            "volume": 1600,
+            "kd": 19,
+            "similarity": 0.75
+          },
+          {
+            "keyword": "taille haie electrique stihl",
+            "volume": 1600,
+            "kd": 21,
+            "similarity": 0.75
+          },
+          {
+            "keyword": "taille haie quand",
+            "volume": 1000,
+            "kd": 13,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "taille haie télescopique",
+            "volume": 1000,
+            "kd": 22,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 2400,
+        "totalVolume": 13300,
+        "avgKD": 20.4,
+        "avgCPC": 0.21,
+        "primaryKD": 29,
+        "score": 333,
+        "intent": "comparatif",
+        "semrushIntent": null,
+        "status": "generated",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": "2026-11-23T00:33:54.265Z",
+        "publishedUrl": "https://jardinguide.fr/comparatifs/taille-haie-electrique/"
       },
       {
         "id": "jardin-bricolage-fr-brico-depot-nettoyeur-haute-pression",
@@ -1902,6 +2336,78 @@
         }
       },
       {
+        "id": "jardin-bricolage-fr-scie-sauteuse-parkside",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "scie sauteuse parkside",
+        "secondaryKeywords": [
+          "festool ou bosch en scie sauteuse",
+          "festool ou bosh scie sauteuse",
+          "dewalt scie sauteuse",
+          "lame scie sauteuse bois",
+          "location scie sauteuse",
+          "black decker scie sauteuse",
+          "scie sauteuse makita 18 v"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "festool ou bosch en scie sauteuse",
+            "volume": 1900,
+            "kd": 12,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "festool ou bosh scie sauteuse",
+            "volume": 1600,
+            "kd": 12,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "dewalt scie sauteuse",
+            "volume": 1000,
+            "kd": 19,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "lame scie sauteuse bois",
+            "volume": 590,
+            "kd": 16,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "location scie sauteuse",
+            "volume": 590,
+            "kd": 16,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "black decker scie sauteuse",
+            "volume": 590,
+            "kd": 19,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "scie sauteuse makita 18 v",
+            "volume": 590,
+            "kd": 19,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 2900,
+        "totalVolume": 9760,
+        "avgKD": 17,
+        "avgCPC": 0.15,
+        "primaryKD": 23,
+        "score": 272,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-guide-tronconneuse",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -1993,6 +2499,27 @@
         }
       },
       {
+        "id": "jardin-bricolage-fr-accident-mortel-tronconneuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "accident mortel tronconneuse",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 14800,
+        "totalVolume": 14800,
+        "avgKD": 22,
+        "avgCPC": 0,
+        "primaryKD": 22,
+        "score": 261,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-debroussailleuse-electrique",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -2034,6 +2561,36 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-debroussailleuse-batterie",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "debroussailleuse batterie",
+        "secondaryKeywords": [
+          "debroussailleuse ryobi batterie"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "debroussailleuse ryobi batterie",
+            "volume": 1000,
+            "kd": 28,
+            "similarity": 0.67
+          }
+        ],
+        "primaryVolume": 12100,
+        "totalVolume": 13100,
+        "avgKD": 28.5,
+        "avgCPC": 0.26,
+        "primaryKD": 29,
+        "score": 251,
+        "intent": "comparatif",
+        "semrushIntent": null,
+        "status": "generated",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": "2026-11-23T00:33:54.265Z",
+        "publishedUrl": "https://jardinguide.fr/comparatifs/debroussailleuse-batterie/"
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-1000m2",
@@ -2107,6 +2664,95 @@
         "generatedAt": "2026-08-05T19:25:52.033Z",
         "publishedUrl": "https://jardinguide.fr/comparatifs/robot-tondeuse-1000m2/",
         "longtail": true
+      },
+      {
+        "id": "jardin-bricolage-fr-robot-tondeuse-1000m2-pillar",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "comment choisir robot tondeuse 1000m2",
+        "secondaryKeywords": [],
+        "intent": "guide",
+        "status": "pending",
+        "source": "cluster-pillar",
+        "parentClusterId": "jardin-bricolage-fr-robot-tondeuse-1000m2",
+        "parentPublishedUrl": "https://jardinguide.fr/comparatifs/robot-tondeuse-1000m2/",
+        "parentPrimaryKeyword": "robot tondeuse 1000m2",
+        "score": 249,
+        "totalVolume": 6430,
+        "avgKD": 14.9,
+        "createdAt": "2026-08-05T19:25:52.034Z"
+      },
+      {
+        "id": "jardin-bricolage-fr-robot-tondeuse-gps",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "robot tondeuse gps",
+        "secondaryKeywords": [
+          "worx robot tondeuse",
+          "prix d une tondeuse robot",
+          "gardena robot tondeuse",
+          "tondeuse robot gardena",
+          "prix tondeuse robot",
+          "tondeuse gardena robot",
+          "robot tondeuse stiga"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "worx robot tondeuse",
+            "volume": 1600,
+            "kd": 28,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "prix d une tondeuse robot",
+            "volume": 1300,
+            "kd": 23,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "gardena robot tondeuse",
+            "volume": 1300,
+            "kd": 29,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse robot gardena",
+            "volume": 1000,
+            "kd": 22,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "prix tondeuse robot",
+            "volume": 1000,
+            "kd": 25,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse gardena robot",
+            "volume": 1000,
+            "kd": 28,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "robot tondeuse stiga",
+            "volume": 1000,
+            "kd": 29,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 1600,
+        "totalVolume": 9800,
+        "avgKD": 26.1,
+        "avgCPC": 0.49,
+        "primaryKD": 25,
+        "score": 249,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-nettoyeur-haute-pression-à-eau-chaude",
@@ -2768,6 +3414,78 @@
         }
       },
       {
+        "id": "jardin-bricolage-fr-robot-tondeuse-sthil",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "robot tondeuse sthil",
+        "secondaryKeywords": [
+          "tondeuse robot sans fils",
+          "robot tondeuse navimow",
+          "lames pour robot tondeuse",
+          "garage pour tondeuse robot",
+          "lame robot tondeuse husqvarna",
+          "abris pour robot tondeuse",
+          "garage tondeuse robot"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tondeuse robot sans fils",
+            "volume": 880,
+            "kd": 21,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "robot tondeuse navimow",
+            "volume": 880,
+            "kd": 28,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "lames pour robot tondeuse",
+            "volume": 720,
+            "kd": 15,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "garage pour tondeuse robot",
+            "volume": 720,
+            "kd": 16,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "lame robot tondeuse husqvarna",
+            "volume": 720,
+            "kd": 17,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "abris pour robot tondeuse",
+            "volume": 720,
+            "kd": 20,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "garage tondeuse robot",
+            "volume": 720,
+            "kd": 20,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 880,
+        "totalVolume": 6240,
+        "avgKD": 19.5,
+        "avgCPC": 0.55,
+        "primaryKD": 19,
+        "score": 219,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-robot-tondeuse-husqvarna-600m2",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -3341,6 +4059,78 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-robot-tondeuse-huskvarna",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "robot tondeuse huskvarna",
+        "secondaryKeywords": [
+          "lame tondeuse robot",
+          "meilleur robot tondeuse 2026",
+          "abris pour tondeuse robot",
+          "lames pour robot tondeuse husqvarna",
+          "lames robot tondeuse husqvarna",
+          "quel robot tondeuse choisir",
+          "promo robot tondeuse"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "lame tondeuse robot",
+            "volume": 590,
+            "kd": 11,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "meilleur robot tondeuse 2026",
+            "volume": 590,
+            "kd": 14,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "abris pour tondeuse robot",
+            "volume": 590,
+            "kd": 16,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "lames pour robot tondeuse husqvarna",
+            "volume": 590,
+            "kd": 16,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "lames robot tondeuse husqvarna",
+            "volume": 590,
+            "kd": 17,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "quel robot tondeuse choisir",
+            "volume": 590,
+            "kd": 17,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "promo robot tondeuse",
+            "volume": 590,
+            "kd": 18,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 720,
+        "totalVolume": 4850,
+        "avgKD": 17,
+        "avgCPC": 0.5,
+        "primaryKD": 27,
+        "score": 187,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-taille-haie-manuel",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -3512,6 +4302,57 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-tondeuses-a-gazon-manuelles",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tondeuses à gazon manuelles",
+        "secondaryKeywords": [
+          "tondeuses gazon thermiques",
+          "tondeuses gazon thermique",
+          "tondeuses à gazon batterie",
+          "tondeuses gazon sans fil"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tondeuses gazon thermiques",
+            "volume": 1900,
+            "kd": 23,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuses gazon thermique",
+            "volume": 1000,
+            "kd": 18,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuses à gazon batterie",
+            "volume": 1000,
+            "kd": 20,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuses gazon sans fil",
+            "volume": 590,
+            "kd": 18,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1900,
+        "totalVolume": 6390,
+        "avgKD": 20.2,
+        "avgCPC": 0.23,
+        "primaryKD": 22,
+        "score": 165,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-tronconneuse-sur-perche",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -3624,6 +4465,43 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-tronconneuse-chaine",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse chaine",
+        "secondaryKeywords": [
+          "sens chaine tronconneuse",
+          "guide et chaine pour tronconneuse"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "sens chaine tronconneuse",
+            "volume": 1000,
+            "kd": 17,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "guide et chaine pour tronconneuse",
+            "volume": 720,
+            "kd": 14,
+            "similarity": 0.67
+          }
+        ],
+        "primaryVolume": 3600,
+        "totalVolume": 5320,
+        "avgKD": 16.7,
+        "avgCPC": 0.19,
+        "primaryKD": 19,
+        "score": 158,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-a-roue",
@@ -3875,6 +4753,78 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-karcher-nettoyeurs-haute-pression",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "karcher nettoyeurs haute pression",
+        "secondaryKeywords": [
+          "nettoyeurs haute pression nilfisk",
+          "nettoyeurs haute pression kranzle",
+          "kärcher nettoyeur haute pression",
+          "nettoyeur karcher haute pression",
+          "kärcher nettoyeur haute pression k 7",
+          "nettoyeur haute pression karcher k4",
+          "nettoyeur haute pression karcher k5"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "nettoyeurs haute pression nilfisk",
+            "volume": 880,
+            "kd": 23,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeurs haute pression kranzle",
+            "volume": 720,
+            "kd": 16,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "kärcher nettoyeur haute pression",
+            "volume": 720,
+            "kd": 21,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur karcher haute pression",
+            "volume": 720,
+            "kd": 29,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "kärcher nettoyeur haute pression k 7",
+            "volume": 590,
+            "kd": 22,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur haute pression karcher k4",
+            "volume": 590,
+            "kd": 28,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "nettoyeur haute pression karcher k5",
+            "volume": 590,
+            "kd": 28,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 1600,
+        "totalVolume": 6410,
+        "avgKD": 23.8,
+        "avgCPC": 0.25,
+        "primaryKD": 23,
+        "score": 145,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "generated",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": "2026-11-23T00:33:54.265Z",
+        "publishedUrl": "https://jardinguide.fr/comparatifs/karcher-nettoyeurs-haute-pression/"
+      },
+      {
         "id": "jardin-bricolage-fr-tondeuse-thermique-à-gazon",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -4017,6 +4967,115 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-tronconneuse-batterie",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse batterie",
+        "secondaryKeywords": [
+          "petite tronconneuse a batterie",
+          "tronconneuse makita sur batterie"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "petite tronconneuse a batterie",
+            "volume": 1300,
+            "kd": 21,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "tronconneuse makita sur batterie",
+            "volume": 1000,
+            "kd": 21,
+            "similarity": 0.67
+          }
+        ],
+        "primaryVolume": 3600,
+        "totalVolume": 5900,
+        "avgKD": 22.7,
+        "avgCPC": 0.24,
+        "primaryKD": 26,
+        "score": 138,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-nettoyeur-haute-pression-comparaison",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "nettoyeur haute pression comparaison",
+        "secondaryKeywords": [
+          "nettoyeur haute pression foxter",
+          "nettoyeur haute pression portable",
+          "castorama nettoyeur haute pression",
+          "pistolet pour nettoyeur haute pression",
+          "nettoyeur haute pression stanley",
+          "nettoyeur haute pression sthil",
+          "nettoyeur haute pression promotion"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "nettoyeur haute pression foxter",
+            "volume": 720,
+            "kd": 19,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur haute pression portable",
+            "volume": 720,
+            "kd": 23,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "castorama nettoyeur haute pression",
+            "volume": 720,
+            "kd": 28,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "pistolet pour nettoyeur haute pression",
+            "volume": 590,
+            "kd": 9,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur haute pression stanley",
+            "volume": 590,
+            "kd": 18,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur haute pression sthil",
+            "volume": 590,
+            "kd": 23,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "nettoyeur haute pression promotion",
+            "volume": 590,
+            "kd": 25,
+            "similarity": 0.6
+          }
+        ],
+        "primaryVolume": 720,
+        "totalVolume": 5240,
+        "avgKD": 20.3,
+        "avgCPC": 0.23,
+        "primaryKD": 17,
+        "score": 135,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-chaines-oregon-pour-tronconneuse",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -4058,6 +5117,27 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-debroussailleuse-parkside",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "debroussailleuse parkside",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 3600,
+        "totalVolume": 3600,
+        "avgKD": 15,
+        "avgCPC": 0.16,
+        "primaryKD": 15,
+        "score": 114,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-husqvarna",
@@ -4108,6 +5188,78 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-location-tondeuse-gazon",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "location tondeuse gazon",
+        "secondaryKeywords": [
+          "tondeuse a gazon thermique",
+          "tondeuse à gazon lidl",
+          "tondeuse à gazon manuel",
+          "tondeuse gazon a batterie",
+          "lidl tondeuse à gazon",
+          "brico depot tondeuse gazon",
+          "brico depot tondeuse à gazon"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tondeuse a gazon thermique",
+            "volume": 720,
+            "kd": 20,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse à gazon lidl",
+            "volume": 720,
+            "kd": 28,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse à gazon manuel",
+            "volume": 590,
+            "kd": 19,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "tondeuse gazon a batterie",
+            "volume": 590,
+            "kd": 21,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "lidl tondeuse à gazon",
+            "volume": 590,
+            "kd": 25,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "brico depot tondeuse gazon",
+            "volume": 590,
+            "kd": 27,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "brico depot tondeuse à gazon",
+            "volume": 590,
+            "kd": 27,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 720,
+        "totalVolume": 5110,
+        "avgKD": 23.3,
+        "avgCPC": 0.18,
+        "primaryKD": 19,
+        "score": 109,
+        "intent": "informational",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-carburateur-debroussailleuse",
@@ -4218,6 +5370,57 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-souffleur-a-feuilles",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "souffleur à feuilles",
+        "secondaryKeywords": [
+          "souffleur thermique de feuilles",
+          "souffleur pour feuilles thermique",
+          "souffleur a feuilles",
+          "souffleur de feuilles lidl"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "souffleur thermique de feuilles",
+            "volume": 720,
+            "kd": 20,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "souffleur pour feuilles thermique",
+            "volume": 590,
+            "kd": 12,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "souffleur a feuilles",
+            "volume": 590,
+            "kd": 17,
+            "similarity": 1
+          },
+          {
+            "keyword": "souffleur de feuilles lidl",
+            "volume": 590,
+            "kd": 28,
+            "similarity": 0.67
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 3790,
+        "avgKD": 19.4,
+        "avgCPC": 0.24,
+        "primaryKD": 20,
+        "score": 103,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-tronconneuse-thermique",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -4290,6 +5493,36 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-tetes-debroussailleuses-universelles",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tetes debroussailleuses universelles",
+        "secondaryKeywords": [
+          "tetes pour debroussailleuses"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tetes pour debroussailleuses",
+            "volume": 1300,
+            "kd": 13,
+            "similarity": 0.67
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 2600,
+        "avgKD": 12.5,
+        "avgCPC": 0.16,
+        "primaryKD": 12,
+        "score": 98,
+        "intent": "informational",
+        "semrushIntent": null,
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-taille-haie-thermique-stihl-promotion",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -4331,6 +5564,103 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-perceuses-visseuse-sans-fil",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "perceuses visseuse sans fil",
+        "secondaryKeywords": [
+          "perceuse visseuse sans fil magasin bricolage"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "perceuse visseuse sans fil magasin bricolage",
+            "volume": 1900,
+            "kd": 21,
+            "similarity": 0.43
+          }
+        ],
+        "primaryVolume": 2900,
+        "totalVolume": 4800,
+        "avgKD": 24.5,
+        "avgCPC": 0.15,
+        "primaryKD": 28,
+        "score": 94,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-nettoyeur-haut-pression-sans-fil",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "nettoyeur haut pression sans fil",
+        "secondaryKeywords": [
+          "nettoyeur haut pression thermique",
+          "nettoyeur haut pression pas cher"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "nettoyeur haut pression thermique",
+            "volume": 880,
+            "kd": 11,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "nettoyeur haut pression pas cher",
+            "volume": 590,
+            "kd": 23,
+            "similarity": 0.43
+          }
+        ],
+        "primaryVolume": 1600,
+        "totalVolume": 3070,
+        "avgKD": 17.7,
+        "avgCPC": 0.26,
+        "primaryKD": 19,
+        "score": 93,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-tete-universelle-debroussailleuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tete universelle debroussailleuse",
+        "secondaryKeywords": [
+          "tete universelle pour debroussailleuse"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tete universelle pour debroussailleuse",
+            "volume": 720,
+            "kd": 11,
+            "similarity": 1
+          }
+        ],
+        "primaryVolume": 1600,
+        "totalVolume": 2320,
+        "avgKD": 11.5,
+        "avgCPC": 0.14,
+        "primaryKD": 12,
+        "score": 92,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-top-10-nettoyeur-haute-pression",
@@ -4585,6 +5915,43 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-robots-tondeuses-kress",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "robots tondeuses kress",
+        "secondaryKeywords": [
+          "comparatif robots tondeuses",
+          "comparatif tondeuses robots"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "comparatif robots tondeuses",
+            "volume": 590,
+            "kd": 19,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "comparatif tondeuses robots",
+            "volume": 590,
+            "kd": 19,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 2480,
+        "avgKD": 22,
+        "avgCPC": 0.57,
+        "primaryKD": 28,
+        "score": 78,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-tronconneuse-dolmar",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -4603,6 +5970,27 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-tronconneuse-lidl",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse lidl",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 4400,
+        "totalVolume": 4400,
+        "avgKD": 29,
+        "avgCPC": 0.19,
+        "primaryKD": 29,
+        "score": 77,
+        "intent": "informational",
+        "semrushIntent": "transactional",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-debroussailleuse-echo",
@@ -4868,6 +6256,73 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-taille-haies-sur-perche",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "taille haies sur perche",
+        "secondaryKeywords": [
+          "taille haies ryobi batterie"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "taille haies ryobi batterie",
+            "volume": 1000,
+            "kd": 25,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1900,
+        "totalVolume": 2900,
+        "avgKD": 21.5,
+        "avgCPC": 0.22,
+        "primaryKD": 18,
+        "score": 70,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-souffleur-a-feuille",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "souffleur à feuille",
+        "secondaryKeywords": [
+          "souffleur feuille lidl",
+          "souffleur feuille batterie"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "souffleur feuille lidl",
+            "volume": 1000,
+            "kd": 29,
+            "similarity": 0.67
+          },
+          {
+            "keyword": "souffleur feuille batterie",
+            "volume": 880,
+            "kd": 16,
+            "similarity": 0.67
+          }
+        ],
+        "primaryVolume": 1000,
+        "totalVolume": 2880,
+        "avgKD": 22.7,
+        "avgCPC": 0.27,
+        "primaryKD": 23,
+        "score": 69,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-debroussailleuse-ryobi",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -4895,6 +6350,27 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-guides-tronconneuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "guides tronconneuse",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1300,
+        "totalVolume": 1300,
+        "avgKD": 10,
+        "avgCPC": 0.28,
+        "primaryKD": 10,
+        "score": 68,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-jonsered",
@@ -4926,6 +6402,124 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-guide-tronconneuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "guide tronconneuse",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1600,
+        "totalVolume": 1600,
+        "avgKD": 13,
+        "avgCPC": 0.28,
+        "primaryKD": 13,
+        "score": 66,
+        "intent": "guide",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-tronconneuse-stihl-ms-170",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse stihl ms 170",
+        "secondaryKeywords": [
+          "stihl tronconneuse prix"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "stihl tronconneuse prix",
+            "volume": 720,
+            "kd": 12,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 2020,
+        "avgKD": 13.5,
+        "avgCPC": 0.11,
+        "primaryKD": 15,
+        "score": 66,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-tronconneuse-elagueuse-thermique",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse elagueuse thermique",
+        "secondaryKeywords": [
+          "tronconneuse thermique stihl",
+          "stihl tronconneuse thermique"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tronconneuse thermique stihl",
+            "volume": 1000,
+            "kd": 22,
+            "similarity": 0.5
+          },
+          {
+            "keyword": "stihl tronconneuse thermique",
+            "volume": 720,
+            "kd": 25,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 1000,
+        "totalVolume": 2720,
+        "avgKD": 20.3,
+        "avgCPC": 0.16,
+        "primaryKD": 14,
+        "score": 65,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-stihl-debroussailleuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "stihl debroussailleuse",
+        "secondaryKeywords": [
+          "tete pour debroussailleuse stihl"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tete pour debroussailleuse stihl",
+            "volume": 880,
+            "kd": 19,
+            "similarity": 0.67
+          }
+        ],
+        "primaryVolume": 2400,
+        "totalVolume": 3280,
+        "avgKD": 22,
+        "avgCPC": 0.06,
+        "primaryKD": 25,
+        "score": 63,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.018Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-location-tronconneuse",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -4944,6 +6538,27 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-debroussailleuse-honda",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "debroussailleuse honda",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1600,
+        "totalVolume": 1600,
+        "avgKD": 13,
+        "avgCPC": 0.19,
+        "primaryKD": 13,
+        "score": 60,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-lame-taille-haie",
@@ -4980,6 +6595,50 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-nettoyeur-haute-pression-150-bars-promotion-avril-moins-60-euros",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "nettoyeur haute pression 150 bars promotion avril moins 60 euros",
+        "secondaryKeywords": [
+          "nettoyeur haute pression 150 bars promotion avril",
+          "nettoyeur haute pression foxter 150 bars avis",
+          "nettoyeur haute pression 150 bars"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "nettoyeur haute pression 150 bars promotion avril",
+            "volume": 720,
+            "kd": 21,
+            "similarity": 0.7
+          },
+          {
+            "keyword": "nettoyeur haute pression foxter 150 bars avis",
+            "volume": 720,
+            "kd": 28,
+            "similarity": 0.42
+          },
+          {
+            "keyword": "nettoyeur haute pression 150 bars",
+            "volume": 590,
+            "kd": 21,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 880,
+        "totalVolume": 2910,
+        "avgKD": 21,
+        "avgCPC": 0.05,
+        "primaryKD": 14,
+        "score": 58,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-parkside",
@@ -5226,6 +6885,36 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-debroussailleuse-fil",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "debroussailleuse fil",
+        "secondaryKeywords": [
+          "debroussailleuse electrique sans fil"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "debroussailleuse electrique sans fil",
+            "volume": 1000,
+            "kd": 27,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 1300,
+        "totalVolume": 2300,
+        "avgKD": 23,
+        "avgCPC": 0.26,
+        "primaryKD": 19,
+        "score": 54,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-tronconneuse-makita",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -5302,6 +6991,80 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-prix-des-tondeuses-robot",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "prix des tondeuses robot",
+        "secondaryKeywords": [
+          "comparatif robot tondeuses"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "comparatif robot tondeuses",
+            "volume": 590,
+            "kd": 21,
+            "similarity": 0.5
+          }
+        ],
+        "primaryVolume": 880,
+        "totalVolume": 1470,
+        "avgKD": 22,
+        "avgCPC": 0.73,
+        "primaryKD": 23,
+        "score": 51,
+        "intent": "comparatif",
+        "semrushIntent": "transactional",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-lame-pour-robot-tondeuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "lame pour robot tondeuse",
+        "secondaryKeywords": [
+          "lames pour tondeuse robot husqvarna",
+          "lame pour robot tondeuse husqvarna",
+          "abri robot tondeuse lidl"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "lames pour tondeuse robot husqvarna",
+            "volume": 590,
+            "kd": 24,
+            "similarity": 0.4
+          },
+          {
+            "keyword": "lame pour robot tondeuse husqvarna",
+            "volume": 590,
+            "kd": 26,
+            "similarity": 0.75
+          },
+          {
+            "keyword": "abri robot tondeuse lidl",
+            "volume": 590,
+            "kd": 28,
+            "similarity": 0.4
+          }
+        ],
+        "primaryVolume": 590,
+        "totalVolume": 2360,
+        "avgKD": 24.5,
+        "avgCPC": 0.23,
+        "primaryKD": 20,
+        "score": 51,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-prix-tronconneuse",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -5365,6 +7128,50 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-promo-nettoyeur-haute-pression",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "promo nettoyeur haute pression",
+        "secondaryKeywords": [
+          "nettoyeur haute pression promo",
+          "bricomarché nettoyeur haute pression",
+          "comparateur nettoyeur haute pression"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "nettoyeur haute pression promo",
+            "volume": 590,
+            "kd": 26,
+            "similarity": 1
+          },
+          {
+            "keyword": "bricomarché nettoyeur haute pression",
+            "volume": 590,
+            "kd": 28,
+            "similarity": 0.6
+          },
+          {
+            "keyword": "comparateur nettoyeur haute pression",
+            "volume": 590,
+            "kd": 28,
+            "similarity": 0.6
+          }
+        ],
+        "primaryVolume": 590,
+        "totalVolume": 2360,
+        "avgKD": 26.8,
+        "avgCPC": 0.26,
+        "primaryKD": 25,
+        "score": 48,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-tracteur-debroussailleuse",
@@ -5552,6 +7359,27 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-tronconneuse-a-metaux",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse a metaux",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 880,
+        "totalVolume": 880,
+        "avgKD": 13,
+        "avgCPC": 0.32,
+        "primaryKD": 13,
+        "score": 38,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-tronconneuse-pour-elaguer",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -5641,6 +7469,27 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-tronconneuse-huile",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse huile",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1000,
+        "totalVolume": 1000,
+        "avgKD": 14,
+        "avgCPC": 0.19,
+        "primaryKD": 14,
+        "score": 35,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-tronconneuse-ryobi",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -5688,6 +7537,27 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-chaines-oregon-tronconneuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "chaines oregon tronconneuse",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 880,
+        "totalVolume": 880,
+        "avgKD": 13,
+        "avgCPC": 0.18,
+        "primaryKD": 13,
+        "score": 33,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-mc-culloch",
@@ -5779,6 +7649,27 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-debroussailleuse-mc-culloch",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "debroussailleuse mc culloch",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1000,
+        "totalVolume": 1000,
+        "avgKD": 16,
+        "avgCPC": 0.2,
+        "primaryKD": 16,
+        "score": 31,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-brosse-pour-debroussailleuse",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -5819,6 +7710,27 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-moteur-pour-debroussailleuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "moteur pour debroussailleuse",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 720,
+        "totalVolume": 720,
+        "avgKD": 11,
+        "avgCPC": 0.09,
+        "primaryKD": 11,
+        "score": 28,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-debroussailleuse-tete-universelle",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -5857,6 +7769,27 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-tronconneuse-location",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse location",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1000,
+        "totalVolume": 1000,
+        "avgKD": 19,
+        "avgCPC": 0.2,
+        "primaryKD": 19,
+        "score": 27,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-moteur-debroussailleuse",
@@ -5957,6 +7890,90 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-melange-pour-debroussailleuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "melange pour debroussailleuse",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1000,
+        "totalVolume": 1000,
+        "avgKD": 23,
+        "avgCPC": 0.28,
+        "primaryKD": 23,
+        "score": 24,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-debroussailleuse-pas-cher",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "debroussailleuse pas cher",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 720,
+        "totalVolume": 720,
+        "avgKD": 14,
+        "avgCPC": 0.16,
+        "primaryKD": 14,
+        "score": 24,
+        "intent": "informational",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-tronconneuse-petite",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse petite",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1000,
+        "totalVolume": 1000,
+        "avgKD": 23,
+        "avgCPC": 0.24,
+        "primaryKD": 23,
+        "score": 23,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-tronconneuse-batteries",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse batteries",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 720,
+        "totalVolume": 720,
+        "avgKD": 17,
+        "avgCPC": 0.29,
+        "primaryKD": 17,
+        "score": 23,
+        "intent": "comparatif",
+        "semrushIntent": "transactional",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-gt-garden",
@@ -6079,6 +8096,36 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-tondeuse-gazon-brico-depot",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tondeuse gazon brico depot",
+        "secondaryKeywords": [
+          "tondeuse à gazon brico dépôt"
+        ],
+        "secondaryDetails": [
+          {
+            "keyword": "tondeuse à gazon brico dépôt",
+            "volume": 590,
+            "kd": 27,
+            "similarity": 1
+          }
+        ],
+        "primaryVolume": 590,
+        "totalVolume": 1180,
+        "avgKD": 27,
+        "avgCPC": 0.14,
+        "primaryKD": 27,
+        "score": 21,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-robot-tondeuse-tout-terrain",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -6097,6 +8144,27 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-tronconneuse-sthil",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "tronconneuse sthil",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1000,
+        "totalVolume": 1000,
+        "avgKD": 24,
+        "avgCPC": 0.15,
+        "primaryKD": 24,
+        "score": 20,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-robot-tondeuse-lidl-avis",
@@ -6137,6 +8205,27 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-debroussailleuse-thermique-sthil",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "debroussailleuse thermique sthil",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 880,
+        "totalVolume": 880,
+        "avgKD": 23,
+        "avgCPC": 0.17,
+        "primaryKD": 23,
+        "score": 19,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-casque-pour-debroussailleuse",
@@ -6199,6 +8288,27 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-taille-haie-telescopique-lidl",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "taille haie telescopique lidl",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 1000,
+        "totalVolume": 1000,
+        "avgKD": 29,
+        "avgCPC": 0.2,
+        "primaryKD": 29,
+        "score": 18,
+        "intent": "comparatif",
+        "semrushIntent": "commercial",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-debroussailleuse-scheppach",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -6257,6 +8367,27 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.331Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-debroussailleuse-stilh",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "debroussailleuse stilh",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 880,
+        "totalVolume": 880,
+        "avgKD": 27,
+        "avgCPC": 0.15,
+        "primaryKD": 27,
+        "score": 16,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-tronconneuse-sterwins",
@@ -6399,6 +8530,90 @@
         "errorCount": 0
       },
       {
+        "id": "jardin-bricolage-fr-brosse-debroussailleuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "brosse debroussailleuse",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 880,
+        "totalVolume": 880,
+        "avgKD": 23,
+        "avgCPC": 0,
+        "primaryKD": 23,
+        "score": 15,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-prix-debroussailleuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "prix debroussailleuse",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 880,
+        "totalVolume": 880,
+        "avgKD": 28,
+        "avgCPC": 0.15,
+        "primaryKD": 28,
+        "score": 15,
+        "intent": "informational",
+        "semrushIntent": "transactional",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-parkside-tondeuse-robot-city-smart-pamrc-250-a1",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "parkside tondeuse robot city smart pamrc 250 a1",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 590,
+        "totalVolume": 590,
+        "avgKD": 20,
+        "avgCPC": 0.23,
+        "primaryKD": 20,
+        "score": 15,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-perceuses-visseuses",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "perceuses visseuses",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 590,
+        "totalVolume": 590,
+        "avgKD": 22,
+        "avgCPC": 0.3,
+        "primaryKD": 22,
+        "score": 15,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
         "id": "jardin-bricolage-fr-debroussailleuse-prix",
         "niche": "jardin-bricolage",
         "market": "fr",
@@ -6437,6 +8652,48 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
         "errorCount": 0
+      },
+      {
+        "id": "jardin-bricolage-fr-bricodepot-tronconneuse",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "bricodepot tronconneuse",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 880,
+        "totalVolume": 880,
+        "avgKD": 29,
+        "avgCPC": 0.12,
+        "primaryKD": 29,
+        "score": 14,
+        "intent": "informational",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
+      },
+      {
+        "id": "jardin-bricolage-fr-perceuse-visseuse-filaire",
+        "niche": "jardin-bricolage",
+        "market": "fr",
+        "primaryKeyword": "perceuse visseuse filaire",
+        "secondaryKeywords": [],
+        "secondaryDetails": [],
+        "primaryVolume": 590,
+        "totalVolume": 590,
+        "avgKD": 23,
+        "avgCPC": 0.26,
+        "primaryKD": 23,
+        "score": 14,
+        "intent": "comparatif",
+        "semrushIntent": "informational",
+        "status": "pending",
+        "source": "semrush",
+        "createdAt": "2026-11-22T23:54:39.019Z",
+        "generatedAt": null,
+        "publishedUrl": null
       },
       {
         "id": "jardin-bricolage-fr-black-et-decker-scie-sauteuse",
@@ -6497,23 +8754,6 @@
         "source": "semrush",
         "createdAt": "2026-05-10T19:18:21.332Z",
         "errorCount": 0
-      },
-      {
-        "id": "jardin-bricolage-fr-robot-tondeuse-1000m2-pillar",
-        "niche": "jardin-bricolage",
-        "market": "fr",
-        "primaryKeyword": "comment choisir robot tondeuse 1000m2",
-        "secondaryKeywords": [],
-        "intent": "guide",
-        "status": "pending",
-        "source": "cluster-pillar",
-        "parentClusterId": "jardin-bricolage-fr-robot-tondeuse-1000m2",
-        "parentPublishedUrl": "https://jardinguide.fr/comparatifs/robot-tondeuse-1000m2/",
-        "parentPrimaryKeyword": "robot tondeuse 1000m2",
-        "score": 249,
-        "totalVolume": 6430,
-        "avgKD": 14.9,
-        "createdAt": "2026-08-05T19:25:52.034Z"
       }
     ]
   },

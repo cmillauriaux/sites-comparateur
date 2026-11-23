@@ -522,5 +522,60 @@
     "publishedAt": "2026-08-16T14:47:50.098Z",
     "indexationStatus": "submitted",
     "submittedAt": "2026-08-17T09:04:43.898Z"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/perceuse-visseuse/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "perceuse visseuse",
+    "bundleId": "jardin-bricolage-fr-perceuse-visseuse",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-11-04T09:15:00.000Z",
+    "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/tondeuse-a-gazon-electrique/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "tondeuse à gazon électrique",
+    "bundleId": "jardin-bricolage-fr-tondeuse-a-gazon-electrique",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-11-08T11:30:00.000Z",
+    "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/taille-haie-electrique/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "taille haie électrique",
+    "bundleId": "jardin-bricolage-fr-taille-haie-electrique",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-11-13T08:45:00.000Z",
+    "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/debroussailleuse-batterie/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "debroussailleuse batterie",
+    "bundleId": "jardin-bricolage-fr-debroussailleuse-batterie",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-11-17T14:20:00.000Z",
+    "indexationStatus": "pending"
+  },
+  {
+    "url": "https://jardinguide.fr/comparatifs/karcher-nettoyeurs-haute-pression/",
+    "niche": "jardin-bricolage",
+    "market": "fr",
+    "keyword": "karcher nettoyeurs haute pression",
+    "bundleId": "jardin-bricolage-fr-karcher-nettoyeurs-haute-pression",
+    "bundleSlot": "comparatif",
+    "intent": "comparatif",
+    "publishedAt": "2026-11-21T10:05:00.000Z",
+    "indexationStatus": "pending"
   }
 ]
