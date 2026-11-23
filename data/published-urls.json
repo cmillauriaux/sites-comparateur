@@ -532,7 +532,8 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-11-04T09:15:00.000Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-11-23T20:23:27.225Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/tondeuse-a-gazon-electrique/",
@@ -543,7 +544,8 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-11-08T11:30:00.000Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-11-23T20:23:28.368Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/taille-haie-electrique/",
@@ -554,7 +556,8 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-11-13T08:45:00.000Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-11-23T20:23:29.509Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/debroussailleuse-batterie/",
@@ -565,7 +568,8 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-11-17T14:20:00.000Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-11-23T20:23:30.673Z"
   },
   {
     "url": "https://jardinguide.fr/comparatifs/karcher-nettoyeurs-haute-pression/",
@@ -576,6 +580,7 @@
     "bundleSlot": "comparatif",
     "intent": "comparatif",
     "publishedAt": "2026-11-21T10:05:00.000Z",
-    "indexationStatus": "pending"
+    "indexationStatus": "submitted",
+    "submittedAt": "2026-11-23T20:23:31.791Z"
   }
 ]
